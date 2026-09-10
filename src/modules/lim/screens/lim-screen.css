@@ -1,0 +1,3014 @@
+/* ═══════════════════════════════════════════
+   LCC — Liquidity Control Center
+   ═══════════════════════════════════════════ */
+
+.lim-root {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+  min-height: 100%;
+  gap: 0;
+}
+
+/* ─── TOP TAB BAR ─── */
+.lim-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.lim-tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.lim-tab {
+  border: 0;
+  background: transparent;
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lim-tab:hover {
+  color: #1d4ed8;
+}
+
+.lim-tab--active {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.lim-tab--active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #1d4ed8;
+  border-radius: 2px 2px 0 0;
+}
+
+.lim-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+/* badge warn removed — todo neutral */
+
+.lim-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 16px;
+}
+
+.lim-system-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #bbf7d0;
+  background: #ecfdf5;
+  color: #065f46;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lim-system-pill::before {
+  content: "✓";
+}
+
+/* ─── SUB-CONTROLS BAR ─── */
+.lim-subbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.lim-subbar-left {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.lim-sel {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 5px 28px 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E") no-repeat right 8px center / 14px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.lim-sel--scenario {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.lim-sel--opt {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+.lim-sel--pes {
+  background-color: #fef2f2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.lim-scenario-select {
+  position: relative;
+}
+
+.lim-scenario-select__summary {
+  list-style: none;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 5px 28px 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #eff6ff;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+
+.lim-scenario-select__summary::-webkit-details-marker {
+  display: none;
+}
+
+.lim-scenario-select__summary::after {
+  content: "▾";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.lim-scenario-select[open] .lim-scenario-select__summary::after {
+  content: "▴";
+}
+
+.lim-scenario-select__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 255px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(17, 24, 39, 0.12);
+  padding: 8px;
+  z-index: 30;
+}
+
+.lim-scenario-select__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #374151;
+  padding: 6px 4px;
+}
+
+.lim-scenario-select__item input {
+  margin: 0;
+}
+
+.lim-scenario-select--opt .lim-scenario-select__summary {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+.lim-scenario-select--pes .lim-scenario-select__summary {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.lim-subbar-right {
+  display: flex;
+  gap: 6px;
+}
+
+.lim-deposits-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 18px;
+  padding: 18px 20px 0;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.lim-deposits-filter__label-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lim-deposits-filter__eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.lim-deposits-filter__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lim-deposits-filter__tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lim-deposits-filter__tab {
+  min-width: 164px;
+  padding: 12px 16px;
+  border: 1px solid #dbe7f7;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  color: #475569;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.lim-deposits-filter__tab:hover {
+  transform: translateY(-1px);
+  border-color: #bfd3f7;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.1);
+}
+
+.lim-deposits-filter__tab strong {
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: inherit;
+}
+
+.lim-deposits-filter__tab-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.lim-deposits-filter__tab--active {
+  border-color: #2563eb;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  box-shadow: 0 18px 36px rgba(37, 99, 235, 0.16);
+  color: #0f172a;
+}
+
+.lim-deposits-filter__tab--active .lim-deposits-filter__tab-kicker {
+  color: #2563eb;
+}
+
+.lim-btn-ghost {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+
+.lim-btn-ghost:hover {
+  background: #f9fafb;
+}
+
+/* ═══════════════════════════════════════════
+   CASHFLOW TAB LAYOUT
+   ═══════════════════════════════════════════ */
+.lim-cf-layout {
+  display: grid;
+  grid-template-columns: 152px 1fr;
+  background: #fff;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ─── KPI sidebar ─── */
+.lim-kpi-side {
+  border-right: 1px solid #e5e7eb;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lim-kpi-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lim-kpi-val {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+  display: block;
+}
+
+.lim-kpi-val--blue { color: #2563eb; }
+.lim-kpi-val--opt  { color: #059669; }
+.lim-kpi-val--pes  { color: #dc2626; }
+.lim-kpi-val--sm   { font-size: 17px; font-weight: 700; }
+
+.lim-kpi-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.lim-kpi-pill--blue   { color: #2563eb; }
+.lim-kpi-pill--purple { color: #7c3aed; }
+.lim-kpi-pill--opt    { color: #059669; }
+.lim-kpi-pill--pes    { color: #dc2626; }
+
+.lim-kpi-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lim-kpi-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.lim-kpi-sep {
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* ─── Main: chart + table ─── */
+.lim-cf-main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ─── SVG Chart ─── */
+.lim-chart-wrap {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  overflow: hidden;
+  margin: 8px 10px 0;
+}
+
+.lim-chart-wrap--scenario-swap {
+  animation: lim-scenario-swap 0.32s ease-out;
+}
+
+@keyframes lim-scenario-swap {
+  0% {
+    opacity: 0.82;
+    transform: translateY(3px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.lim-chart-svg {
+  width: 100%;
+  height: 500px;
+  display: block;
+}
+
+.lim-chart-lbl {
+  font-size: 10px;
+  fill: #9ca3af;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.lim-chart-lbl--active {
+  fill: #1d4ed8;
+  font-weight: 700;
+}
+
+/* ─── Chart animation keyframes ─── */
+@keyframes lim-line-reveal {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+@keyframes lim-dot-pop {
+  0%   { opacity: 0; r: 0; }
+  60%  { r: 5px; }
+  100% { opacity: 1; r: 3.5px; }
+}
+
+@keyframes lim-fade-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.lim-line-fadein {
+  animation: lim-fade-up 0.45s ease-out both;
+}
+
+.lim-dot-fadein {
+  animation: lim-dot-pop 0.35s ease-out both;
+}
+
+/* ─── Scenario banner ─── */
+.lim-scenario-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  border-bottom: 1px solid transparent;
+}
+
+.lim-scenario-banner strong {
+  font-weight: 700;
+}
+
+.lim-scenario-banner__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.lim-scenario-banner--opt {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #14532d;
+}
+
+.lim-scenario-banner--opt .lim-scenario-banner__dot {
+  background: #16a34a;
+}
+
+.lim-scenario-banner--pes {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #7f1d1d;
+}
+
+.lim-scenario-banner--pes .lim-scenario-banner__dot {
+  background: #dc2626;
+}
+
+/* ─── Data Table ─── */
+.lim-tbl-scroll {
+  overflow-x: auto;
+  flex: 1;
+}
+
+.lim-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 900px;
+}
+
+/* shared header cells */
+.lim-tbl th {
+  padding: 7px 10px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.lim-th-label {
+  text-align: left !important;
+  min-width: 210px;
+  position: sticky;
+  left: 0;
+  background: #f9fafb !important;
+  z-index: 2;
+}
+
+.lim-th-month {
+  min-width: 88px;
+  cursor: pointer;
+}
+
+.lim-th-month:hover { background: #f3f4f6; }
+
+.lim-th-month--active {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-bottom: 2px solid #2563eb !important;
+}
+
+.lim-search {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  width: 160px;
+  outline: none;
+}
+
+/* table cells */
+.lim-td-lbl {
+  padding: 6px 10px;
+  color: #374151;
+  font-size: 12px;
+  white-space: nowrap;
+  text-align: left;
+  display: table-cell;
+  vertical-align: middle;
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.lim-td-lbl--group {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lim-td-lbl--sub {
+  padding-left: 34px;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.lim-td-n {
+  padding: 6px 10px;
+  text-align: center;
+  color: #374151;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.lim-td-n--bold { font-weight: 700; }
+.lim-td-n--sub  { color: #6b7280; font-size: 11px; }
+.lim-td-n--active { background: #eff6ff; }
+.lim-td-n--green { color: #059669; font-weight: 700; }
+.lim-td-n--red   { color: #dc2626; font-weight: 700; }
+.lim-td-n--blue  { color: #2563eb; font-weight: 700; }
+
+.lim-td-mono { font-family: ui-monospace, monospace; font-size: 11px; color: #6b7280; }
+.lim-td-muted { color: #9ca3af; font-size: 12px; }
+
+.lim-pct {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #059669;
+  margin-left: 2px;
+}
+
+/* row variants */
+.lim-tr-section td {
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.lim-tr-group td { background: #fafafa; }
+.lim-tr-group:hover td { background: #f3f4f6; cursor: pointer; }
+.lim-tr-sub td { background: #fff; }
+
+.lim-arrow {
+  display: inline-block;
+  font-size: 7px;
+  color: #9ca3af;
+  transition: transform 0.15s;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.lim-arrow--open { transform: rotate(90deg); }
+
+/* color dots */
+.lim-dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 2px;
+  margin-right: 7px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.lim-dot--blue   { background: #2563eb; }
+.lim-dot--green  { background: #059669; }
+.lim-dot--red    { background: #dc2626; }
+.lim-dot--orange { background: #d97706; }
+
+/* ─── Scenario coloring on table cells (data-scenario) ─── */
+
+/* Optimista: todas las celdas numéricas no-activas en verde */
+.lim-tbl[data-scenario="optimista"] .lim-td-n:not(.lim-td-n--active) {
+  color: #059669;
+}
+
+/* Pesimista: todas las celdas numéricas no-activas en rojo */
+.lim-tbl[data-scenario="pesimista"] .lim-td-n:not(.lim-td-n--active) {
+  color: #dc2626;
+}
+
+/* Colda activa: en optimista el inflow ya es verde (ok), en pesimista el outflow ya es rojo (ok) */
+/* Saldo de caja del mes activo siempre en azul */
+.lim-tbl[data-scenario="optimista"] .lim-td-n--active:not(.lim-td-n--green):not(.lim-td-n--red) {
+  color: #2563eb;
+}
+
+.lim-tbl[data-scenario="pesimista"] .lim-td-n--active:not(.lim-td-n--green):not(.lim-td-n--red) {
+  color: #2563eb;
+}
+
+/* Sub-rows: peso visual más suave para no saturar */
+.lim-tbl[data-scenario="optimista"] .lim-td-n--sub:not(.lim-td-n--active) {
+  color: #34d399;
+}
+
+.lim-tbl[data-scenario="pesimista"] .lim-td-n--sub:not(.lim-td-n--active) {
+  color: #f87171;
+}
+
+/* Bold rows get strong color; sub-rows get softer shade */
+.lim-tbl[data-scenario="optimista"] .lim-td-n--bold:not(.lim-td-n--active) {
+  color: #059669;
+}
+
+.lim-tbl[data-scenario="pesimista"] .lim-td-n--bold:not(.lim-td-n--active) {
+  color: #dc2626;
+}
+
+/* Variación neta KPI row retains its own green/red even with scenario */
+.lim-tbl[data-scenario="optimista"] .lim-td-n--green,
+.lim-tbl[data-scenario="pesimista"] .lim-td-n--green {
+  color: #059669 !important;
+}
+
+.lim-tbl[data-scenario="optimista"] .lim-td-n--red,
+.lim-tbl[data-scenario="pesimista"] .lim-td-n--red {
+  color: #dc2626 !important;
+}
+
+/* Real: default (inherit existing styles — no override needed) */
+
+/* ═══════════════════════════════════════════
+   PANELS (Banco, Expected, Conciliación, etc.)
+   ═══════════════════════════════════════════ */
+.lim-panel {
+  background: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lim-section-head {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lim-section-subhead {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: -8px;
+}
+
+/* list table inside panels */
+.lim-tbl--list { min-width: 500px; }
+
+.lim-tbl--list th {
+  text-align: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  position: static;
+}
+
+.lim-tbl--list td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 13px;
+  color: #374151;
+  text-align: center;
+}
+
+.lim-tbl--list .lim-td-n {
+  text-align: center;
+  font-size: 13px;
+}
+
+.lim-financing-instruments-table th:first-child,
+.lim-financing-instruments-table td:first-child {
+  text-align: left;
+}
+
+.lim-val-up   { color: #059669; font-weight: 700; }
+.lim-val-down { color: #dc2626; font-weight: 700; }
+.lim-val-warn { color: #b45309; font-weight: 700; }
+
+.lim-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.lim-pill--green  { background: #dcfce7; color: #15803d; }
+.lim-pill--yellow { background: #fef9c3; color: #a16207; }
+.lim-pill--red    { background: #fee2e2; color: #dc2626; }
+
+/* KPI card rows */
+.lim-kpi-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.lim-kpi-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.lim-kpi-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lim-kpi-card span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.lim-kpi-card strong {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.02em;
+}
+
+.lim-kpi-card small {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD TAB
+   ═══════════════════════════════════════════ */
+.lim-dashboard {
+  background: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lim-dash-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 14px;
+}
+
+.lim-dash-head h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: #111827;
+}
+
+.lim-dash-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.lim-dash-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.lim-dash-kpi {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #fff;
+}
+
+.lim-dash-kpi-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.lim-dash-kpi-range {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+.lim-dash-kpi-note {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+.lim-dash-kpi-val {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 10px;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.lim-dash-kpi-flag {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.lim-dash-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.lim-dash-chart {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.lim-dash-chart h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.lim-chart-range {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 3px 0 10px;
+}
+
+.lim-mini-svg {
+  width: 100%;
+  height: 160px;
+  display: block;
+}
+
+.lim-income-use-svg {
+  width: 100%;
+  height: 320px;
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+/* ─── Conciliación KPIs compactos ─── */
+.lim-recon-kpis {
+  display: flex;
+  gap: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.lim-recon-kpi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.lim-recon-kpi:last-child { border-right: 0; }
+
+.lim-recon-kpi-val {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.lim-recon-kpi-lbl {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+/* ─── KPI acronym inline label ─── */
+.lim-kpi-acronym {
+  font-size: 10px;
+  color: #9ca3af;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   AI PANEL (Financiamiento)
+   ═══════════════════════════════════════════ */
+.lim-ai-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.lim-ai-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.lim-ai-badge {
+  background: #374151;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.lim-ai-header-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e3a8a;
+  flex: 1;
+}
+
+.lim-ai-header-ts {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.lim-ai-regen {
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.lim-ai-panel .lim-section-head {
+  margin: 14px 16px 0;
+}
+
+.lim-ai-panel .lim-section-subhead {
+  margin: 10px 16px 0;
+}
+
+.lim-ai-panel .lim-tbl--list {
+  margin: 10px 16px 0;
+  width: calc(100% - 32px);
+}
+
+.lim-ai-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.lim-ai-card {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.lim-ai-card:last-child {
+  border-right: 0;
+}
+
+.lim-ai-card--green  { border-top: 2px solid #d1d5db; }
+.lim-ai-card--yellow { border-top: 2px solid #d1d5db; }
+.lim-ai-card--blue   { border-top: 2px solid #d1d5db; }
+
+.lim-ai-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  width: fit-content;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.lim-ai-tag--green  { background: #f3f4f6; color: #374151; }
+.lim-ai-tag--yellow { background: #f3f4f6; color: #374151; }
+.lim-ai-tag--blue   { background: #f3f4f6; color: #374151; }
+
+.lim-ai-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.lim-ai-card-body {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.55;
+  flex: 1;
+}
+
+.lim-ai-card-body strong {
+  color: #374151;
+  font-weight: 700;
+}
+
+.lim-ai-action {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  text-align: left;
+  width: fit-content;
+  transition: background 0.1s;
+}
+
+.lim-ai-action:hover { background: #f3f4f6; }
+
+/* (dashboard kpi colors removed — all neutral) */
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 960px) {
+  .lim-ai-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .lim-ai-card {
+    border-right: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .lim-ai-card:last-child { border-bottom: 0; }
+
+  .lim-cf-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .lim-kpi-side {
+    border-right: 0;
+    border-bottom: 1px solid #e5e7eb;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .lim-kpi-sep { display: none; }
+
+  .lim-dash-kpis {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lim-dash-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .lim-kpi-row-4 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lim-kpi-row-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .lim-tabs { overflow-x: auto; }
+  .lim-topbar { padding: 0 12px; }
+
+  .lim-dash-kpis,
+  .lim-kpi-row-3,
+  .lim-kpi-row-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .lim-dash-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* ─── Scotiabank LIM Demo · Pricing & Tour ─── */
+.lim-pricing-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 20px 24px;
+}
+
+.lim-pricing-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+}
+
+.lim-pricing-hero-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #1e3a8a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+
+.lim-pricing-hero-title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.lim-pricing-hero-sub {
+  margin: 0;
+  font-size: 13px;
+  color: #475569;
+  max-width: 640px;
+}
+
+.lim-pricing-hero-formula {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  min-width: 140px;
+}
+
+.lim-pricing-hero-formula strong {
+  font-size: 28px;
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+.lim-pricing-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.lim-treasury-overview-grid {
+  margin-top: 4px;
+}
+
+.lim-treasury-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lim-treasury-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lim-treasury-filter span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lim-treasury-filter-summary {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 13px;
+}
+
+.lim-treasury-filter-summary strong {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.lim-treasury-empty {
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.lim-pricing-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.lim-pricing-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.lim-pricing-input {
+  width: 72px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lim-pricing-input--wide {
+  width: 110px;
+}
+
+.lim-tier-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lim-tier-max-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.lim-tier-max-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.lim-tier-max-toggle input {
+  margin: 0;
+}
+
+.lim-pricing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.lim-pricing-alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.lim-pricing-alert--warn {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+
+.lim-pricing-alert--info {
+  background: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+.lim-pricing-alert--success {
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+  color: #065f46;
+}
+
+.lim-pricing-alert--warning {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+}
+
+.lim-pricing-bonus {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-top: 12px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+}
+
+.lim-pricing-bonus p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.lim-pricing-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lim-pricing-bonus-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #059669;
+}
+
+.lim-pricing-client-select {
+  margin-bottom: 12px;
+}
+
+.lim-kpi-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.lim-tiie-sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 80px;
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.lim-tiie-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.lim-tiie-bar {
+  width: 100%;
+  max-width: 36px;
+  background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+  transition: height 0.4s ease;
+}
+
+.lim-tiie-bar-wrap span {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.lim-treasury-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lim-btn-tour {
+  border: 0;
+  background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+  color: #fff;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.lim-btn-tour:hover {
+  filter: brightness(1.08);
+}
+
+.lim-btn-primary {
+  border: 0;
+  background: #1d4ed8;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lim-btn-primary:hover {
+  background: #1e40af;
+}
+
+.lim-btn-sm {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.lim-btn--loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.lim-tab-badge--demo {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.lim-tab-badge--scotia {
+  background: #1e3a8a;
+  color: #fff;
+  font-size: 10px;
+}
+
+.lim-tab--scotia.lim-tab--active {
+  color: #1e3a8a;
+}
+
+/* ─── Scotia workspace layout ─── */
+.scotia-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: none;
+}
+
+.scotia-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 4px;
+}
+
+.scotia-section-header__badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.scotia-section-header__title {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.scotia-section-header__subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  max-width: 560px;
+  line-height: 1.45;
+}
+
+.scotia-section-header__metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  min-width: 120px;
+}
+
+.scotia-section-header__metric span {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.scotia-section-header__metric strong {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+.scotia-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.scotia-card--flat {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.scotia-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.scotia-card__head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.scotia-card__hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.scotia-summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.scotia-summary-row--4 {
+  margin-bottom: 0;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.scotia-summary-row--5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.scotia-summary-row span {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.scotia-summary-row strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* ─── Depósitos · sync Pricing ↔ Tesorería ─── */
+.lim-deposits-sync {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin: 0 20px 12px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+}
+
+.lim-deposits-sync__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.lim-deposits-sync__hint {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.35;
+}
+
+.lim-deposits-sync__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  flex: 2 1 320px;
+}
+
+.lim-deposits-sync__metrics div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lim-deposits-sync__metrics span {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lim-deposits-sync__metrics strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+.lim-deposits-sync__nav {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.lim-deposits-sync__link {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1d4ed8;
+  background: #fff;
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.lim-deposits-sync__link:hover {
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.lim-pricing-treasury-preview {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+}
+
+.lim-pricing-treasury-preview .scotia-card__head h3 {
+  color: #1e3a8a;
+}
+
+.lim-credit-link-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-radius: 6px;
+}
+
+.lim-td-credit {
+  color: #0369a1;
+}
+
+.lim-pricing-credit-portfolio {
+  border-color: #c7d2fe;
+}
+
+.lim-credit-deposit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 4px 0 8px;
+}
+
+.lim-credit-deposit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.lim-credit-deposit-card strong {
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.lim-credit-deposit-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.lim-credit-deposit-card__row span {
+  color: #64748b;
+}
+
+.scotia-credit-client-card--zelify {
+  border-color: #93c5fd;
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+}
+
+.scotia-credit-client-card--muted {
+  opacity: 0.72;
+}
+
+.lim-lcc-zelify-strip {
+  border-color: #bfdbfe;
+}
+
+.scotia-client-rate__main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.scotia-client-rate__name {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.scotia-client-rate__value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+.scotia-client-rate__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.scotia-client-rate__grid span {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.scotia-client-rate__grid strong {
+  font-size: 15px;
+  color: #334155;
+}
+
+.scotia-inline-alert {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.scotia-inline-alert--info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+}
+
+.scotia-inline-alert--success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #166534;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.scotia-table-compact th,
+.scotia-table-compact td {
+  padding: 8px 10px !important;
+  font-size: 13px;
+}
+
+.lim-credit-discounts--single {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 900px) {
+  .scotia-summary-row,
+  .scotia-summary-row--4,
+  .scotia-client-rate__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .lim-deposits-sync {
+    margin: 0 12px 10px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lim-deposits-sync__metrics {
+    justify-content: space-between;
+  }
+
+  .lim-deposits-sync__nav {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .scotia-section-header {
+    flex-direction: column;
+  }
+
+  .scotia-section-header__metric {
+    align-items: flex-start;
+    width: 100%;
+  }
+}
+
+.lim-system-pill--scotia {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.lim-system-pill--scotia::before {
+  content: "◆";
+}
+
+.lim-pill--blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.lim-tour-overlay {
+  display: none;
+}
+
+.lim-tour-spotlight {
+  display: none;
+}
+
+/* ─── Scotiabank Tour · recorte sin opacidad en marco ─── */
+.scotia-tour-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.58);
+  z-index: 9998;
+  pointer-events: auto;
+}
+
+.scotia-tour-backdrop--full {
+  clip-path: none;
+}
+
+.scotia-tour-frame {
+  position: fixed;
+  border: 3px solid #2563eb;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 32px rgba(37, 99, 235, 0.45);
+  z-index: 9999;
+  pointer-events: none;
+  background: transparent;
+}
+
+.scotia-tour-target--active {
+  position: relative;
+  z-index: 10000 !important;
+  isolation: isolate;
+}
+
+.scotia-tour-card {
+  position: fixed;
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  z-index: 10001;
+  border: 1px solid #e2e8f0;
+}
+
+.scotia-tour-card--compact {
+  padding: 0;
+  overflow: hidden;
+}
+
+.scotia-tour-drag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.scotia-tour-drag:active {
+  cursor: grabbing;
+}
+
+.scotia-tour-drag-hint {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.scotia-tour-card--compact .scotia-tour-title {
+  padding: 12px 14px 0;
+  margin: 0;
+  font-size: 15px;
+}
+
+.scotia-tour-hint {
+  margin: 6px 14px 12px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.4;
+}
+
+.scotia-tour-progress {
+  margin-right: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.scotia-tour-card--compact .scotia-tour-actions {
+  padding: 0 12px 12px;
+}
+
+.scotia-card--nested {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.scotia-cases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.scotia-case-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.scotia-case-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+}
+
+.scotia-case-card--active {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.scotia-case-card--standard {
+  border-top: 4px solid #2563eb;
+}
+
+.scotia-case-card--vip {
+  border-top: 4px solid #7c3aed;
+}
+
+.scotia-case-card--bonus {
+  border-top: 4px solid #059669;
+}
+
+.scotia-case-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.scotia-case-card__label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.scotia-case-card__type {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.scotia-case-card--vip .scotia-case-card__type {
+  color: #6d28d9;
+}
+
+.scotia-case-card--bonus .scotia-case-card__type {
+  color: #047857;
+}
+
+.scotia-case-card__name {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.scotia-case-card__meta {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.scotia-case-card__rate {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+.scotia-case-card__detail {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #475569;
+}
+
+.scotia-case-card__detail--vip {
+  color: #6d28d9;
+  font-weight: 600;
+}
+
+.scotia-case-card__subdetail {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.scotia-case-card__bonus {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  color: #475569;
+}
+
+.scotia-case-card__bonus-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scotia-case-card__bonus-copy small {
+  font-size: 11px;
+  color: #64748b;
+}
+
+@media (max-width: 1024px) {
+  .scotia-cases-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scotia-tour-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.scotia-tour-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scotia-tour-module {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.scotia-tour-module--a {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.scotia-tour-module--b {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.scotia-tour-step {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.scotia-tour-close {
+  border: 0;
+  background: #f1f5f9;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 18px;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.scotia-tour-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.scotia-tour-objective {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.scotia-tour-bullets {
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.scotia-tour-bullets li {
+  margin-bottom: 4px;
+}
+
+.scotia-tour-expected {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+
+.scotia-tour-expected strong {
+  color: #166534;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.scotia-tour-expected span {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.scotia-tour-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.lim-recalc-before-after {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  background: #eff6ff;
+  border: 1px solid #93c5fd;
+  border-radius: 10px;
+}
+
+.lim-recalc-values {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.lim-recalc-before {
+  color: #64748b;
+  text-decoration: line-through;
+}
+
+.lim-recalc-after {
+  color: #1d4ed8;
+}
+
+.lim-recalc-arrow {
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+.lim-pricing-hero-formula--inline {
+  margin-bottom: 12px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.lim-credit-params-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.lim-credit-param {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.lim-credit-param-input {
+  width: 100%;
+}
+
+.lim-credit-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.lim-credit-discounts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.lim-credit-discount {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.lim-credit-discount--applied {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.lim-credit-discount--potential {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.lim-credit-calc {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+
+.scotia-data-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.scotia-data-flow__node {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #334155;
+}
+
+.scotia-data-flow__node--accent {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.scotia-data-flow__arrow {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.scotia-ai-card {
+  background: linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%);
+  border-color: #c4b5fd;
+}
+
+.scotia-ai-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.scotia-ai-card__head h3 {
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+
+.scotia-ai-card__badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #7c3aed;
+  color: #fff;
+}
+
+.scotia-ai-score {
+  text-align: right;
+}
+
+.scotia-ai-score span {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.scotia-ai-score strong {
+  font-size: 24px;
+  color: #6d28d9;
+}
+
+.scotia-ai-card__rec {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.scotia-ai-card__why {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.scotia-ai-impact {
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.scotia-card--opportunity {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.scotia-opportunity-total {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #92400e;
+}
+
+.lim-credit-cascade {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lim-credit-cascade__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.lim-credit-cascade__row--base {
+  background: #f1f5f9;
+  font-weight: 700;
+}
+
+.lim-credit-cascade__row--applied {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.scotia-cross-sell-card {
+  border-color: #93c5fd;
+}
+
+.scotia-cross-sell-live {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.scotia-cross-sell-live strong {
+  color: #1d4ed8;
+  font-size: 16px;
+}
+
+.scotia-cross-sell-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.scotia-cross-sell-step {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.scotia-cross-sell-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.scotia-cross-sell-option__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.scotia-cross-sell-option__bps {
+  font-size: 12px;
+  font-weight: 700;
+  color: #059669;
+  margin-left: auto;
+}
+
+.scotia-cross-sell-step__rate {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1d4ed8;
+  white-space: nowrap;
+}
+
+.scotia-cross-sell-summary {
+  padding: 14px;
+  background: #eff6ff;
+  border-radius: 12px;
+  border: 1px solid #bfdbfe;
+}
+
+.scotia-cross-sell-summary__calc {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.scotia-cross-sell-summary p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #1e40af;
+}
+
+.scotia-cross-sell-kpis {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.scotia-cross-sell-kpis strong {
+  color: #0f172a;
+}
+
+.lim-pill--yellow {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.lim-pill--red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.scotia-credit-categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.scotia-credit-cat {
+  text-align: left;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.scotia-credit-cat strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+.scotia-credit-cat span {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.scotia-credit-cat--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.scotia-credit-clients-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.scotia-credit-client-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  padding: 12px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.scotia-credit-client-card--active {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.scotia-credit-client-card__type {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.scotia-restrictions-list {
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.scotia-rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scotia-rule-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.scotia-rule-row strong {
+  display: block;
+  font-size: 13px;
+}
+
+.scotia-rule-row span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.scotia-inline-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.scotia-inline-metrics strong {
+  color: #0f172a;
+}
+
+.scotia-ai-batch {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scotia-ai-batch__row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.scotia-ai-batch__row--ok {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.scotia-ai-batch__row--fail {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.scotia-cross-sell-step__desc {
+  display: block;
+  width: 100%;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.scotia-cross-sell-explainer {
+  font-size: 12px;
+  color: #475569;
+  margin: 0 0 8px;
+}
+
+.scotia-approve-btn {
+  margin-bottom: 10px;
+}
+
+.scotia-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.scotia-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: auto;
+}
+
+.scotia-modal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.scotia-modal__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.scotia-modal__grid span {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.scotia-modal__grid strong {
+  font-size: 13px;
+}
+
+.scotia-card__hint--warn {
+  color: #b45309;
+}
+
+.lim-credit-subtabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.lim-credit-subtab {
+  padding: 8px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+}
+
+.lim-credit-subtab--active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.scotia-credit-clients-grid--4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.scotia-compliance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.scotia-compliance-score {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.scotia-compliance-score strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.scotia-compliance-score--ok {
+  color: #15803d;
+}
+
+.scotia-compliance-score--fail {
+  color: #b91c1c;
+}
+
+.scotia-compliance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.scotia-compliance-item--ok {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+@media (max-width: 1100px) {
+  .scotia-summary-row--5,
+  .lim-treasury-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .scotia-summary-row--5,
+  .lim-treasury-filters,
+  .lim-treasury-overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scotia-compliance-item--fail {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+@media (max-width: 900px) {
+  .scotia-credit-categories,
+  .scotia-credit-clients-grid,
+  .scotia-credit-clients-grid--4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .scotia-cross-sell-step {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .lim-credit-discounts,
+  .lim-credit-params-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .lim-deposits-filter {
+    padding: 16px 16px 0;
+  }
+
+  .lim-deposits-filter__tabs {
+    width: 100%;
+  }
+
+  .lim-deposits-filter__tab {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .lim-pricing-grid-2,
+  .lim-kpi-row-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .lim-pricing-hero {
+    flex-direction: column;
+  }
+
+  .lim-pricing-hero-formula {
+    align-items: flex-start;
+    width: 100%;
+  }
+}

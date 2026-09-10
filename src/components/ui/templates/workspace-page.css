@@ -1,0 +1,151 @@
+/* Shell común para páginas workspace (dashboard, clientes, organización). */
+.zelify-workspace-page {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+.zelify-workspace-page__scroll {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.zelify-workspace-page__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.zelify-workspace-page__title {
+  margin: 8px 0 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0a1538;
+}
+
+.zelify-workspace-page__subtitle {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #64748b;
+}
+
+.zelify-workspace-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  min-height: 200px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.zelify-workspace-page__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(var(--zelify-brand-green-rgb), 0.2);
+  border-top-color: var(--zelify-brand-green);
+  border-radius: 50%;
+  animation: zelify-spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes zelify-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.zelify-workspace-page__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.zelify-workspace-page__grid-2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.zelify-workspace-page__col-main {
+  flex: 1.5;
+  min-width: min(100%, 400px);
+}
+
+.zelify-workspace-page__col-side {
+  flex: 1;
+  min-width: min(100%, 350px);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.zelify-org-tabs {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.1);
+  margin-bottom: 8px;
+}
+
+.zelify-org-tabs__list {
+  display: flex;
+  gap: 24px;
+}
+
+.zelify-org-tab {
+  padding: 0 0 10px;
+  margin-bottom: -9px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.zelify-org-tab:hover {
+  color: #0f172a;
+}
+
+.zelify-org-tab.is-active {
+  font-weight: 700;
+  color: var(--zelify-brand-on-green);
+  border-bottom-color: var(--zelify-brand-green);
+}
+
+.zelify-org-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.zelify-org-toolbar__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.zelify-org-toolbar__switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--zelify-brand-green);
+  cursor: pointer;
+}

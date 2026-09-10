@@ -1,0 +1,296 @@
+.atomic-design-page {
+  min-height: 100vh;
+  background: #edf2f6;
+}
+
+.atomic-design-page__content {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+}
+
+.atomic-design-page__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.atomic-design-page__eyebrow,
+.atomic-design-section__title,
+.atomic-design-card__label {
+  letter-spacing: 0.06em;
+}
+
+.atomic-design-page__eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #0a223e;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.atomic-design-page__title {
+  margin: 0;
+  color: #0a1538;
+  font-size: 36px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.atomic-design-page__lead {
+  max-width: 760px;
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.atomic-design-page__status {
+  display: grid;
+  gap: 12px;
+}
+
+.atomic-design-page__status-card,
+.atomic-design-card {
+  border: 1px solid rgba(26, 39, 64, 0.09);
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.atomic-design-page__status-card {
+  padding: 18px;
+}
+
+.atomic-design-page__status-label,
+.atomic-design-card__label {
+  display: inline-block;
+  color: #607189;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.atomic-design-page__status-card strong {
+  display: block;
+  margin: 6px 0 10px;
+  color: #0d1b3d;
+  font-size: 18px;
+}
+
+.atomic-design-section {
+  margin-bottom: 26px;
+}
+
+.atomic-design-section__header {
+  margin-bottom: 14px;
+}
+
+.atomic-design-section__title {
+  margin: 0;
+  color: #0d1b3d;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.atomic-design-section__description {
+  margin: 6px 0 0;
+  max-width: 720px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.atomic-design-section__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.atomic-design-card {
+  min-height: 180px;
+  padding: 16px;
+}
+
+.atomic-design-card.is-wide {
+  grid-column: span 2;
+}
+
+.atomic-design-card.is-full {
+  grid-column: 1 / -1;
+}
+
+.atomic-design-card__body {
+  margin-top: 14px;
+}
+
+.atomic-design-demo__button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 10px;
+  background: #f5f8fb;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.atomic-design-demo__input-shell {
+  padding: 0 11px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 10px;
+  background: #f5f8fb;
+}
+
+.atomic-design-demo__input {
+  width: 100%;
+  color: #0d1b3d;
+  font-size: 13px;
+}
+
+.atomic-design-demo__input::placeholder {
+  color: #7b889d;
+}
+
+.atomic-design-demo__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 8px;
+  background: #f5f8fb;
+  color: #607189;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.atomic-design-demo__text-group {
+  display: grid;
+  gap: 8px;
+}
+
+.atomic-design-page__route-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #0d1b3d;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.atomic-design-page__route-list a {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+.atomic-design-page__code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(26, 39, 64, 0.06);
+  font-size: 12px;
+}
+
+.atomic-design-demo__button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.atomic-design-demo__stack {
+  display: grid;
+  gap: 8px;
+}
+
+.atomic-design-demo__dark-input-shell {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #223148;
+}
+
+.atomic-design-demo__badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.atomic-design-demo__table-filters {
+  display: grid;
+  gap: 12px;
+}
+
+.atomic-design-demo__general-subnav {
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 -4px;
+}
+
+.atomic-design-demo__nav-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.atomic-design-demo__nav-tabs--elevated {
+  min-height: 52px;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.atomic-design-demo__menu-shell {
+  position: relative;
+  min-height: 190px;
+}
+
+.atomic-design-demo__dropdown {
+  left: 0;
+  right: auto;
+}
+
+.atomic-design-demo__navbar-shell {
+  overflow: hidden;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 12px;
+}
+
+.zelify-text {
+  margin: 0;
+  color: #0d1b3d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.zelify-text--muted {
+  color: #62728b;
+}
+
+.zelify-text--strong {
+  color: #0d1b3d;
+  font-weight: 600;
+}
+
+@media (max-width: 1180px) {
+  .atomic-design-page__hero,
+  .atomic-design-section__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .atomic-design-card.is-wide,
+  .atomic-design-card.is-full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 780px) {
+  .atomic-design-page__content {
+    padding: 18px 16px 32px;
+  }
+
+  .atomic-design-page__title {
+    font-size: 30px;
+  }
+}

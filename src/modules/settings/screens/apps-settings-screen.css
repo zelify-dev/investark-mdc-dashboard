@@ -1,0 +1,67 @@
+.zelify-settings-workspace__title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.zelify-settings-workspace__subtitle {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.zelify-apps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 840px) {
+  .zelify-apps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zelify-apps-card {
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  border-radius: 12px;
+  background: #fff;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zelify-apps-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.zelify-apps-card__secret {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(26, 39, 64, 0.14);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.zelify-apps-card__secret input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  height: 38px;
+  padding: 0 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.zelify-apps-card__secret button {
+  border: 0;
+  background: transparent;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

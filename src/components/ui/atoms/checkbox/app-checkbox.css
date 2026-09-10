@@ -1,0 +1,50 @@
+.zelify-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1e293b;
+  user-select: none;
+}
+
+.zelify-checkbox__native {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.zelify-checkbox__native:focus-visible + .zelify-checkbox__ui {
+  outline: 2px solid var(--zelify-brand-green);
+  outline-offset: 2px;
+}
+
+.zelify-checkbox__ui {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 1px solid rgba(26, 39, 64, 0.22);
+  border-radius: 4px;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+.zelify-checkbox__native:checked + .zelify-checkbox__ui {
+  background: #22c55e;
+  border-color: #16a34a;
+}
+
+.zelify-checkbox__native:checked + .zelify-checkbox__ui::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-0.5px, -1px);
+}

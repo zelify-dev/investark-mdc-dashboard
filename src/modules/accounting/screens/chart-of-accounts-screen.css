@@ -1,0 +1,170 @@
+.zelify-accounting-coa {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.zelify-accounting-coa__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+.zelify-accounting-coa__filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.zelify-accounting-coa__pill {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.zelify-accounting-coa__pill:hover {
+  border-color: rgba(var(--zelify-brand-green-rgb), 0.45);
+  background: rgba(var(--zelify-brand-green-rgb), 0.08);
+}
+
+.zelify-accounting-coa__pill.is-active {
+  border-color: rgba(var(--zelify-brand-green-rgb), 0.55);
+  color: var(--zelify-brand-on-green);
+  box-shadow: inset 0 0 0 1px rgba(var(--zelify-brand-green-rgb), 0.35);
+  background: rgba(var(--zelify-brand-green-rgb), 0.12);
+}
+
+.zelify-accounting-coa__filter-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.zelify-accounting-coa__filter-help:hover {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.zelify-accounting-coa__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zelify-accounting-coa__page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zelify-accounting-coa__page-size-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.zelify-accounting-coa__page-size-select.zelify-select {
+  min-width: 72px;
+}
+
+.zelify-accounting-coa__pagination {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.zelify-accounting-coa__range {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.zelify-accounting-coa__all {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.zelify-accounting-coa__page-btns {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.zelify-accounting-coa__table-wrap {
+  min-width: 0;
+}
+
+.zelify-accounting-coa__data-table.zelify-settings-data-table--clients tbody tr:nth-child(even) td {
+  background: rgba(248, 250, 252, 0.85);
+}
+
+.zelify-accounting-coa__data-table.zelify-settings-data-table--clients tbody tr:hover td {
+  background: rgba(var(--zelify-brand-green-rgb), 0.08);
+}
+
+.zelify-accounting-coa__flag {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: #e2e8f0;
+  vertical-align: middle;
+}
+
+.zelify-accounting-coa__flag.is-on {
+  background: var(--zelify-brand-green);
+}
+
+.zelify-accounting-coa__actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.zelify-accounting-coa__icon-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--zelify-brand-green);
+  color: var(--zelify-brand-on-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.zelify-accounting-coa__icon-btn:hover {
+  background: var(--zelify-brand-green-hover);
+}

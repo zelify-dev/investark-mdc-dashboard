@@ -1,0 +1,74 @@
+.zelify-deposits-kpi {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .zelify-deposits-kpi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .zelify-deposits-kpi {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zelify-deposits-kpi__item {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.zelify-deposits-kpi__icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--zelify-brand-green-rgb), 0.15);
+  color: var(--zelify-brand-on-green);
+}
+
+.zelify-deposits-kpi__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.zelify-deposits-kpi__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.zelify-deposits-kpi__value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.zelify-deposits-kpi__meta {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #64748b;
+}

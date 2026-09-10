@@ -1,0 +1,114 @@
+.zelify-deposits-page__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.zelify-deposits-page__inner {
+  padding-bottom: 120px;
+}
+
+.zelify-deposits-tabs {
+  display: flex;
+  gap: 12px;
+  margin: 10px 0 16px;
+  flex-wrap: wrap;
+}
+
+.zelify-deposits-tabs button {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.zelify-deposits-tabs button.is-active {
+  border-color: #1d4ed8;
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+.zelify-deposits-toolbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.zelify-deposits-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.6);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.zelify-deposits-modal {
+  width: min(1000px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  padding: 0 18px 18px;
+}
+
+.zelify-deposits-modal__head {
+  margin: 0 -18px 16px;
+  padding: 18px 18px 16px;
+  background-color: #271a59;
+  background-image: url("/mdc-hero-banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.zelify-deposits-modal__head p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.zelify-deposits-modal__head h3 {
+  margin: 4px 0 0;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.zelify-deposits-modal__head span {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+}
+
+.zelify-deposits-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.zelify-deposits-modal-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .zelify-deposits-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}

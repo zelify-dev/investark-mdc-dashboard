@@ -1,0 +1,9 @@
+site_name: zelify-core
+docs_dir: docs
+nav:
+  - Inicio: index.md
+  - Arquitectura: architecture.md
+  - Pagos y cobranza: manuales/pagos-y-cobranza/README.md
+  - guion-exposicion-scotiabank: guion-exposicion-scotiabank.md
+plugins:
+  - techdocs-core

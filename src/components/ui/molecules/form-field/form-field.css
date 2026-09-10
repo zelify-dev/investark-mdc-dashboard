@@ -1,0 +1,20 @@
+.zelify-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.zelify-form-field__label {
+  min-height: 1em;
+}
+
+.zelify-form-field__control {
+  min-width: 0;
+}
+
+.zelify-form-field__label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

@@ -1,0 +1,342 @@
+.cortex-quote-result {
+  background: #fff;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 14px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cortex-quote-result__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-quote-result__eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.cortex-quote-result__header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cortex-quote-result__score {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 10px;
+}
+
+.cortex-quote-result__score > span:first-child {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cortex-quote-result__score strong {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.cortex-quote-result__score-hint {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.cortex-quote-result__section h4,
+.cortex-quote-result__footer h4 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cortex-quote-result__hint,
+.cortex-quote-result__muted {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.cortex-quote-result__hint {
+  margin: 0 0 10px;
+}
+
+.cortex-quote-result__warn {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #b45309;
+}
+
+.cortex-quote-result__rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cortex-quote-result__rules-table th,
+.cortex-quote-result__rules-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-quote-result__rules-table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.cortex-quote-result__cascade {
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cortex-quote-result__cascade-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-top: 1px solid rgba(26, 39, 64, 0.06);
+  background: #fff;
+}
+
+.cortex-quote-result__cascade-row:first-child {
+  border-top: none;
+}
+
+.cortex-quote-result__cascade-row--base {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.cortex-quote-result__cascade-row--final {
+  background: #f1f5f9;
+  font-weight: 700;
+}
+
+.cortex-quote-result__cascade-row strong {
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+}
+
+.cortex-quote-result__xs-list {
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.cortex-quote-result__xs-list li {
+  font-size: 13px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border-radius: 8px;
+  color: #334155;
+}
+
+.cortex-quote-result__xs-total {
+  margin: 0;
+  font-size: 13px;
+  color: #475569;
+}
+
+.cortex-quote-result__xs-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.cortex-quote-result__xs-head h4 {
+  margin: 0;
+}
+
+.cortex-quote-result__xs-head span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.cortex-quote-result__xs-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cortex-quote-result__xs-step {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(26, 39, 64, 0.06);
+  background: #fff;
+}
+
+.cortex-quote-result__xs-step:first-child {
+  border-top: none;
+}
+
+.cortex-quote-result__xs-step--on {
+  background: #fcfdfc;
+}
+
+.cortex-quote-result__xs-step .zelify-checkbox {
+  align-items: flex-start;
+}
+
+.cortex-quote-result__xs-step-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cortex-quote-result__xs-step-label strong {
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.cortex-quote-result__xs-step-label span:last-child {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cortex-quote-result__xs-step-rate {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cortex-quote-result__summary {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-quote-result__summary-rate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.cortex-quote-result__kpis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-quote-result__kpis div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cortex-quote-result__kpis span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.cortex-quote-result__kpis strong {
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.cortex-quote-result__footer {
+  padding-top: 16px;
+  border-top: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-quote-result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.cortex-quote-result__fixed {
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #166534;
+}
+
+.cortex-btn--lg.zelify-button {
+  min-height: 48px;
+  padding: 0 24px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cortex-btn--lg.zelify-button--secondary {
+  min-height: 48px;
+}
+
+.cortex-ai-panel__actions .cortex-btn--lg {
+  min-width: 240px;
+}
+
+@media (max-width: 720px) {
+  .cortex-quote-result__xs-list {
+    grid-template-columns: 1fr;
+  }
+
+  .cortex-quote-result__xs-step {
+    grid-template-columns: 1fr;
+  }
+
+  .cortex-quote-result__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cortex-quote-result__actions .zelify-button {
+    width: 100%;
+  }
+}

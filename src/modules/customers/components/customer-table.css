@@ -1,0 +1,27 @@
+.zelify-customer-table__name-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.zelify-customer-table__name-link:hover {
+  text-decoration: underline;
+}
+
+.zelify-customer-table__avatar {
+  flex-shrink: 0;
+}
+
+.zelify-customer-table .zelify-settings-data-table th.is-numeric-header,
+.zelify-customer-table .zelify-settings-data-table td.is-numeric {
+  text-align: right;
+}
+
+.zelify-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}

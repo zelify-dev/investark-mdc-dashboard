@@ -1,0 +1,11 @@
+:root ._fd-column{flex-direction:column;}
+:root ._gap-c-space-4{gap:var(--c-space-4);}
+:root ._fd-row{flex-direction:row;}
+:root ._gap-c-space-2{gap:var(--c-space-2);}
+:root ._items-center{align-items:center;}
+:root ._col-color{color:var(--color);}
+:root ._fs-f-size-5{font-size:var(--f-size-5);}
+:root ._fw-700{font-weight:700;}
+:root ._justify-space-betwe3241{justify-content:space-between;}
+:root ._fw-600{font-weight:600;}
+:root ._fs-f-size-3{font-size:var(--f-size-3);}

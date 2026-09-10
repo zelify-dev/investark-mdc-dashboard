@@ -1,0 +1,887 @@
+.cortex-rules-panel {
+  background: #fff;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.cortex-rules-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-rules-panel__eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.cortex-rules-panel__title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.cortex-rules-panel__subtitle {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #64748b;
+  max-width: 52ch;
+}
+
+.cortex-rules-panel__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.cortex-rules-panel__total {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.cortex-rules-panel__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cortex-rules-group {
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fafbfc;
+}
+
+.cortex-rules-group__head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  background: #f1f5f9;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.06);
+}
+
+.cortex-rules-group__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  color: #334155;
+}
+
+.cortex-rules-group__head h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cortex-rules-group__head p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cortex-rules-group__count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+}
+
+.cortex-rules-group__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cortex-rule-item {
+  border-top: 1px solid rgba(26, 39, 64, 0.06);
+  background: #fff;
+  transition: background 120ms ease;
+}
+
+.cortex-rule-item:first-child {
+  border-top: none;
+}
+
+.cortex-rule-item--on {
+  background: #fcfdfc;
+}
+
+.cortex-rule-item__checkbox {
+  width: 100%;
+  padding: 12px 14px;
+  align-items: flex-start;
+}
+
+.cortex-rule-item__checkbox .zelify-checkbox__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.cortex-rule-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cortex-rule-item__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.cortex-rule-item__main strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.cortex-rule-item__desc {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+@media (max-width: 720px) {
+  .cortex-rules-panel__header {
+    flex-direction: column;
+  }
+
+  .cortex-rules-panel__meta {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.cortex-ai-panel {
+  background: #fff;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+
+.cortex-ai-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.cortex-ai-panel__eyebrow {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.cortex-ai-panel__header h3 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cortex-ai-panel__hint,
+.cortex-ai-panel__rec,
+.cortex-ai-panel__summary {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.cortex-ai-panel__rec {
+  margin-bottom: 14px;
+}
+
+.cortex-ai-panel__metric {
+  text-align: right;
+}
+
+.cortex-ai-panel__metric span {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.cortex-ai-panel__metric strong {
+  font-size: 22px;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.cortex-ai-panel__actions {
+  margin-bottom: 14px;
+}
+
+.cortex-ai-panel__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cortex-ai-panel__table th,
+.cortex-ai-panel__table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.cortex-ai-panel__table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.cortex-ai-panel__summary {
+  margin-top: 10px;
+}
+
+.scotia-data-layer--compact {
+  padding: 14px 18px;
+}
+
+.scotia-card__head--minimal h3 {
+  font-size: 14px;
+}
+
+.scotia-data-flow--compact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.scotia-data-flow--compact span:nth-child(odd) {
+  padding: 4px 10px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.scotia-card--flat {
+  box-shadow: none;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.scotia-credit-client-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid #dbe3f0;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.scotia-credit-client-card:hover {
+  transform: translateY(-1px);
+  border-color: #bfd4fa;
+  box-shadow: 0 12px 24px rgba(29, 78, 216, 0.08);
+}
+
+.scotia-credit-client-card--active {
+  border-color: #2a62f2;
+  box-shadow: 0 0 0 1px rgba(42, 98, 242, 0.12), 0 14px 28px rgba(42, 98, 242, 0.08);
+}
+
+.scotia-credit-client-card__type {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #6b7c95;
+  text-transform: uppercase;
+}
+
+.scotia-credit-client-table-wrap {
+  overflow-x: auto;
+}
+
+.scotia-credit-client-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.scotia-credit-client-table th,
+.scotia-credit-client-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.scotia-credit-client-table th {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  background: #f8fafc;
+}
+
+.scotia-credit-client-table th:nth-child(n + 3),
+.scotia-credit-client-table td:nth-child(n + 3) {
+  text-align: center;
+}
+
+.scotia-credit-client-table tbody tr {
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.scotia-credit-client-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.scotia-credit-client-table__row--active {
+  background: #eff6ff;
+}
+
+.scotia-credit-client-table__name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.scotia-credit-client-table__score,
+.scotia-credit-client-table__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.scotia-credit-client-table__score--strong,
+.scotia-credit-client-table__status--ok {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.scotia-credit-client-table__score--standard {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.scotia-credit-client-table__score--review,
+.scotia-credit-client-table__status--warn {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.scotia-credit-client-table__status--bad {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.scotia-credit-client-table__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  background: #ffffff;
+}
+
+.scotia-credit-client-table__link:hover {
+  border-color: #94a3b8;
+  color: #1d4ed8;
+  background: #f8fafc;
+}
+
+.scotia-credit-client-table__detail-cell {
+  text-align: center;
+}
+
+.scotia-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.56);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+}
+
+.scotia-modal {
+  position: relative;
+  width: min(820px, calc(100vw - 40px));
+  max-height: min(90vh, 920px);
+  overflow: auto;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
+  padding: 22px;
+}
+
+.scotia-modal::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 88px;
+  background: linear-gradient(90deg, rgba(29, 78, 216, 0.06), rgba(14, 165, 233, 0.03), transparent 72%);
+  pointer-events: none;
+}
+
+.scotia-modal > * {
+  position: relative;
+}
+
+.scotia-modal__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.scotia-modal__eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.scotia-modal__head h3 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  color: #0f172a;
+}
+
+.scotia-tour-close {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 16px;
+  border: 1px solid rgba(219, 227, 240, 0.95);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  color: #475569;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.scotia-tour-close:hover {
+  transform: translateY(-1px);
+  border-color: #c7d6f5;
+  box-shadow: 0 10px 26px rgba(29, 78, 216, 0.12);
+}
+
+.scotia-modal__summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.scotia-modal__score-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 28%),
+    linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+  border: 1px solid #dbe7fb;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.06);
+}
+
+.scotia-modal__score-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -8px -10px auto;
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(29, 78, 216, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+.scotia-modal__score-card--strong {
+  background: linear-gradient(180deg, #f3fbf7 0%, #ecfdf5 100%);
+  border-color: #cdeedf;
+}
+
+.scotia-modal__score-card--strong::after {
+  background: radial-gradient(circle, rgba(4, 120, 87, 0.12), transparent 70%);
+}
+
+.scotia-modal__score-card--review {
+  background: linear-gradient(180deg, #fffaf3 0%, #fff7ed 100%);
+  border-color: #fde2bf;
+}
+
+.scotia-modal__score-card--review::after {
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.12), transparent 70%);
+}
+
+.scotia-modal__score-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.scotia-modal__score-head span {
+  position: relative;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #62738f;
+  text-transform: uppercase;
+}
+
+.scotia-modal__score-head em {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  color: #60708b;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.scotia-modal__score-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+}
+
+.scotia-modal__score-card strong {
+  display: block;
+  margin: 0;
+  font-size: 64px;
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: -0.07em;
+  color: #1d4ed8;
+}
+
+.scotia-modal__score-card--strong strong {
+  color: #047857;
+}
+
+.scotia-modal__score-card--review strong {
+  color: #c2410c;
+}
+
+.scotia-modal__score-card p {
+  display: inline-flex;
+  align-self: center;
+  margin: 0;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #42526b;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(219, 227, 240, 0.9);
+}
+
+.scotia-modal__score-meter {
+  margin-top: 16px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(191, 203, 225, 0.45);
+  overflow: hidden;
+}
+
+.scotia-modal__score-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #93c5fd 0%, #2563eb 60%, #1d4ed8 100%);
+}
+
+.scotia-modal__score-card--strong .scotia-modal__score-meter span {
+  background: linear-gradient(90deg, #6ee7b7 0%, #10b981 60%, #047857 100%);
+}
+
+.scotia-modal__score-card--review .scotia-modal__score-meter span {
+  background: linear-gradient(90deg, #fdba74 0%, #f97316 60%, #c2410c 100%);
+}
+
+.scotia-modal__score-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.scotia-modal__score-meta span {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #60708b;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(219, 227, 240, 0.9);
+}
+
+.scotia-modal__status-panel {
+  border-radius: 22px;
+  border: 1px solid #e3e9f5;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  padding: 14px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.scotia-modal__status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+.scotia-modal__status-card,
+.scotia-modal__section {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid #dfe7f3;
+  background: #fbfdff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.03);
+}
+
+.scotia-modal__status-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 94px;
+  padding: 14px;
+}
+
+.scotia-modal__status-card span,
+.scotia-modal__section-head span,
+.scotia-modal__grid span {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.scotia-modal__status-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.25;
+  color: #0f172a;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.scotia-modal__status-card--ok strong {
+  color: #047857;
+}
+
+.scotia-modal__status-card--warn strong {
+  color: #b45309;
+}
+
+.scotia-modal__status-card--bad strong {
+  color: #b91c1c;
+}
+
+.scotia-modal__identity-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e7edf6;
+  font-size: 12px;
+  color: #60708b;
+}
+
+.scotia-modal__section {
+  padding: 16px;
+  margin-top: 14px;
+}
+
+.scotia-modal__section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.scotia-modal__section-head h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  color: #0f172a;
+}
+
+.scotia-modal__section-head span {
+  text-transform: none;
+  letter-spacing: 0;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.scotia-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.scotia-modal__grid > div {
+  min-width: 0;
+  overflow: hidden;
+  padding: 13px 14px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e7edf6;
+}
+
+.scotia-modal__grid strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.3;
+  color: #111827;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.scotia-modal__empty {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.scotia-modal__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.scotia-modal__state--ok {
+  color: #047857;
+}
+
+.scotia-modal__state--warn {
+  color: #b45309;
+}
+
+.scotia-modal__state--bad {
+  color: #b91c1c;
+}
+
+.scotia-modal__state--info {
+  color: #1d4ed8;
+}
+
+@media (max-width: 900px) {
+  .scotia-modal__summary,
+  .scotia-modal__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scotia-modal__status-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .scotia-modal__score-body {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .scotia-modal {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .scotia-modal__head h3 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .scotia-modal__status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scotia-modal__status-card,
+  .scotia-credit-client-table__link {
+    min-height: auto;
+  }
+
+  .scotia-modal__identity-row,
+  .scotia-credit-client-table-wrap {
+    align-items: flex-start;
+  }
+
+  .scotia-modal__status-card,
+  .scotia-credit-client-table__status {
+    padding: 14px;
+  }
+}

@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Análisis de cobertura para conciliación y dispersión de pagos.">
+  <title>Conciliación y dispersión de pagos · Aethereun</title>
+  <style>
+@font-face {
+  font-family: "Nata Sans";
+  src: url("./fonts/Nata_Sans/NataSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+html, body { margin: 0; min-width: 320px; }
+button { font: inherit; }
+.aml-deck[hidden] { display: none; }
+.aml-analisis {
+  --ink: #271a59;
+  --muted: #6b6578;
+  --line: #eceae4;
+  --paper: #fafaf9;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-nata-sans), "Nata Sans", Arial, Helvetica, sans-serif;
+}
+
+.aml-analisis__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 12px 28px;
+  background: #271a59;
+  color: #fff;
+}
+
+.aml-analisis__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aml-analisis__brand img {
+  display: block;
+  height: 22px;
+  width: auto;
+}
+
+.aml-analisis__brand-partner {
+  height: 28px;
+  filter: brightness(0) invert(1);
+}
+
+.aml-analisis__brand i {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.aml-analisis__top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aml-analisis__top p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.aml-analisis__slides-btn {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  background: #fff;
+  color: #271a59;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aml-analisis__slides-btn:hover {
+  background: #f7f3fb;
+}
+
+.aml-deck {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: #271a59;
+  color: #fff;
+}
+
+.aml-deck__bar,
+.aml-deck__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+}
+
+.aml-deck__bar p,
+.aml-deck__bar span {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aml-deck__bar button,
+.aml-deck__nav button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aml-deck__nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.aml-deck__stage {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  padding: 8px 48px 12px;
+}
+
+.aml-deck__slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.aml-deck__slide > p {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.aml-deck__slide h2 {
+  margin: 0 0 18px;
+  font-size: 40px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.aml-deck__slide > span {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.aml-deck__cards,
+.aml-deck__stack,
+.aml-deck__lists,
+.aml-deck__flow {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-deck__cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aml-deck__cards li,
+.aml-deck__stack li,
+.aml-deck__lists li,
+.aml-deck__flow li {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.aml-deck__cards em,
+.aml-deck__flow em {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-deck__cards strong,
+.aml-deck__stack strong,
+.aml-deck__flow strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.aml-deck__cards span,
+.aml-deck__stack span,
+.aml-deck__flow span {
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.aml-deck__stack {
+  grid-template-columns: 1fr 1fr;
+}
+
+.aml-deck__lists {
+  grid-template-columns: 1fr 1fr;
+}
+
+.aml-deck__lists li {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.aml-deck__flow {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.aml-deck__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.aml-deck__dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.aml-deck__dots button.is-active {
+  width: 22px;
+  background: #fff;
+}
+
+.aml-analisis__main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 72px;
+}
+
+.aml-analisis__hero {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.aml-analisis__hero p,
+.aml-analisis__block > p.aml-analisis__lead,
+.aml-analisis-kyc__person p,
+.aml-analisis-kyc__engine p,
+.aml-analisis-split article > p {
+  margin: 0 0 8px;
+  color: #8b8498;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.aml-analisis__hero h1,
+.aml-analisis__block h2,
+.aml-analisis__grid3 h2 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.aml-analisis__hero h1 {
+  font-size: 36px;
+  line-height: 1.15;
+}
+
+.aml-analisis__hero span,
+.aml-analisis__lead {
+  display: block;
+  color: #5c5670;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.aml-analisis__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.aml-analisis__stats article,
+.aml-analisis__block,
+.aml-analisis-groups__card,
+.aml-analisis-split article,
+.aml-analisis__grid3 article {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.aml-analisis-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f7f3fb;
+  color: #271a59;
+  flex-shrink: 0;
+}
+
+.aml-analisis-ico svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.aml-analisis-kyc__person .aml-analisis-ico,
+.aml-analisis-kyc__engine .aml-analisis-ico {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.aml-analisis__stats article {
+  padding: 18px 18px 20px;
+}
+
+.aml-analisis__stats .aml-analisis-ico,
+.aml-analisis-split .aml-analisis-ico,
+.aml-analisis-groups__card .aml-analisis-ico {
+  margin-bottom: 12px;
+}
+
+.aml-analisis-chart {
+  margin-top: 16px;
+}
+
+.aml-analisis-chart__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aml-analisis-chart__row {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr) 78px;
+  align-items: center;
+  gap: 12px;
+}
+
+.aml-analisis-chart__row span {
+  color: #3f3a4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.aml-analisis-chart__row b {
+  display: block;
+  height: 12px;
+  border-radius: 99px;
+  background: #d9d0e8;
+}
+
+.aml-analisis-chart__row b.is-ok {
+  background: #271a59;
+}
+
+.aml-analisis-chart__row b.is-mid {
+  background: #8b7ab8;
+}
+
+.aml-analisis-chart__row b.is-out {
+  background: #c4bed4;
+}
+
+.aml-analisis-chart__row em {
+  color: #8b8498;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-analisis-chart__legend {
+  display: flex;
+  gap: 18px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #5c5670;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.aml-analisis-chart__legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 99px;
+  background: #271a59;
+}
+
+.aml-analisis-chart__legend i.is-mid {
+  background: #8b7ab8;
+}
+
+.aml-analisis-chart__legend i.is-out {
+  background: #c4bed4;
+}
+
+.aml-analisis__stats strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.aml-analisis__stats p {
+  margin: 0;
+  color: #5c5670;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.aml-analisis__block {
+  margin-bottom: 20px;
+  padding: 22px 22px 24px;
+}
+
+.aml-analisis__block h2,
+.aml-analisis__grid3 h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+}
+
+.aml-analisis__grid3 h2 .aml-analisis-ico {
+  width: 28px;
+  height: 28px;
+}
+
+.aml-analisis__grid3 h2 .aml-analisis-ico svg {
+  width: 16px;
+  height: 16px;
+}
+
+.aml-analisis-flow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-analisis-flow li {
+  position: relative;
+  padding: 14px 14px 16px;
+  border-radius: 12px;
+  background: #f7f3fb;
+}
+
+.aml-analisis-flow .aml-analisis-ico {
+  margin-bottom: 10px;
+}
+
+.aml-analisis-flow li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid #271a59;
+  border-right: 2px solid #271a59;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.aml-analisis-flow em {
+  display: block;
+  margin-bottom: 8px;
+  color: #8b8498;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-analisis-flow strong,
+.aml-analisis-kyc__person strong,
+.aml-analisis-kyc__engine strong,
+.aml-analisis-split h3 {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.aml-analisis-flow span,
+.aml-analisis-kyc__person span,
+.aml-analisis-kyc__engine span {
+  display: block;
+  margin-top: 6px;
+  color: #5c5670;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.aml-analisis-kyc {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) 28px minmax(0, 0.9fr) 28px minmax(0, 1.3fr);
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.aml-analisis-kyc__person,
+.aml-analisis-kyc__engine {
+  padding: 16px;
+  border-radius: 12px;
+  background: #271a59;
+  color: #fff;
+}
+
+.aml-analisis-kyc__person p,
+.aml-analisis-kyc__engine p,
+.aml-analisis-kyc__person span,
+.aml-analisis-kyc__engine span {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aml-analisis-kyc__person strong,
+.aml-analisis-kyc__engine strong {
+  color: #fff;
+}
+
+.aml-analisis-kyc__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aml-analisis-kyc__arrow b {
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid #271a59;
+  border-right: 2px solid #271a59;
+  transform: rotate(45deg);
+}
+
+.aml-analisis-kyc__lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-analisis-kyc__lists li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #d9d0e8;
+  border-radius: 10px;
+  background: #f7f3fb;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.aml-analisis-kyc__lists li svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #271a59;
+}
+
+.aml-analisis-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.aml-analisis-glossary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aml-analisis-glossary span {
+  display: block;
+  color: #5c5670;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.aml-analisis-split article {
+  padding: 16px 18px 18px;
+}
+
+.aml-analisis-split h3 {
+  margin: 0 0 10px;
+}
+
+.aml-analisis-split ul,
+.aml-analisis-groups__card ul,
+.aml-analisis__grid3 ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-analisis-split li,
+.aml-analisis-groups__card li {
+  position: relative;
+  padding: 7px 0 7px 14px;
+  color: #3f3a4f;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.aml-analisis-split li::before,
+.aml-analisis-groups__card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: #271a59;
+}
+
+.aml-analisis-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.aml-analisis-groups__card {
+  padding: 16px 16px 18px;
+}
+
+.aml-analisis-groups__card h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.aml-analisis-groups__card.is-ok {
+  border-color: #cfc3e8;
+  background: #f7f3fb;
+}
+
+.aml-analisis-groups__card.is-mid {
+  background: #fff;
+}
+
+.aml-analisis-groups__card.is-out li::before {
+  background: #8b8498;
+}
+
+.aml-analisis__grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.aml-analisis__grid3 article {
+  padding: 18px 16px 8px;
+}
+
+.aml-analisis__grid3 li {
+  padding: 0 0 16px;
+}
+
+.aml-analisis__grid3 em {
+  display: block;
+  margin-bottom: 4px;
+  color: #8b8498;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-analisis__grid3 strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.aml-analisis__grid3 span {
+  display: block;
+  color: #5c5670;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.payment-sequence {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.payment-sequence__inner {
+  min-width: 980px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.payment-sequence__actors {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.payment-sequence__actor {
+  min-height: 68px;
+  padding: 14px 12px;
+  border-radius: 12px;
+  background: #f7f3fb;
+  text-align: center;
+}
+
+.payment-sequence__actor strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.payment-sequence__actor span {
+  display: block;
+  color: #5c5670;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.payment-sequence__lanes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  min-height: 690px;
+}
+
+.payment-sequence__lane {
+  position: relative;
+  margin-left: 50%;
+  border-left: 2px dashed #d9d0e8;
+}
+
+.payment-sequence__events {
+  position: absolute;
+  inset: 0;
+}
+
+.payment-sequence__arrow {
+  position: absolute;
+  height: 42px;
+  left: calc((var(--from) - 1) * 20% + 10%);
+  width: calc((var(--to) - var(--from)) * 20%);
+  top: var(--top);
+}
+
+.payment-sequence__arrow.is-reverse {
+  left: calc((var(--to) - 1) * 20% + 10%);
+  width: calc((var(--from) - var(--to)) * 20%);
+}
+
+.payment-sequence__arrow-line {
+  position: relative;
+  top: 20px;
+  border-top: 2px solid #271a59;
+}
+
+.payment-sequence__arrow.is-reverse .payment-sequence__arrow-line {
+  border-top-color: #8b7ab8;
+}
+
+.payment-sequence__arrow-line::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -5px;
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid #271a59;
+  border-right: 2px solid #271a59;
+  background: #fff;
+  transform: rotate(45deg);
+}
+
+.payment-sequence__arrow.is-reverse .payment-sequence__arrow-line::after {
+  right: auto;
+  left: -1px;
+  transform: rotate(-135deg);
+  border-color: #8b7ab8;
+}
+
+.payment-sequence__arrow label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  max-width: 210px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #fff;
+  color: #271a59;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.payment-sequence__note {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f7f3fb;
+  color: #5c5670;
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.payment-sequence__notes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.payment-sequence__note strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #271a59;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .aml-analisis__stats,
+  .aml-analisis-flow,
+  .aml-analisis-groups,
+  .aml-analisis__grid3,
+  .aml-analisis-split,
+  .aml-analisis-glossary,
+  .aml-analisis-kyc {
+    grid-template-columns: 1fr;
+  }
+
+  .aml-analisis-flow li:not(:last-child)::after,
+  .aml-analisis-kyc__arrow {
+    display: none;
+  }
+
+  .aml-analisis__hero h1 {
+    font-size: 28px;
+  }
+
+  .aml-analisis-chart__row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .aml-analisis__top {
+    padding: 12px 16px;
+  }
+
+  .aml-deck__stage {
+    padding: 8px 18px;
+  }
+
+  .aml-deck__slide h2 {
+    font-size: 26px;
+  }
+
+  .aml-deck__cards,
+  .aml-deck__stack,
+  .aml-deck__lists,
+  .aml-deck__flow {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="aml-analisis">
+    <header class="aml-analisis__top">
+      <div class="aml-analisis__brand">
+        <img src="./mdc-navbar-logo.svg" alt="Aethereun">
+        <i></i>
+        <img src="./LOGO%20TULANA.svg" alt="Aethereun" class="aml-analisis__brand-partner">
+      </div>
+      <div class="aml-analisis__top-actions">
+        <p>Análisis operativo · pagos</p>
+        <button type="button" class="aml-analisis__slides-btn" id="open-slides">Slides</button>
+      </div>
+    </header>
+
+    <main class="aml-analisis__main">
+      <section class="aml-analisis__hero">
+        <p>Aethereun · conciliación y dispersión</p>
+        <h1>Qué tenemos y qué falta para operar pagos de punta a punta</h1>
+        <span>Aethereun ya cuenta con una base operativa para administrar dispersión de pagos: registro de cuentas destino, creación de órdenes de pago, consulta de estados, cancelación cuando aplica y seguimiento de movimientos. Para cerrar el proceso completo falta fortalecer la conciliación automática, la gestión de excepciones, la trazabilidad operativa y los reportes de cierre.</span>
+      </section>
+
+      <section class="aml-analisis__stats">
+        <article><span class="aml-analisis-ico">$</span><strong>Dispersión de pagos</strong><p>Aethereun ya permite crear órdenes de pago, hacer seguimiento de su estado y cancelar operaciones cuando el estado lo permite.</p></article>
+        <article><span class="aml-analisis-ico">▤</span><strong>Carga de cuentas</strong><p>Ya se definió un flujo CSV para guardar cuentas destino en la base de cuentas de Aethereun, útil para dashboard y operación masiva.</p></article>
+        <article><span class="aml-analisis-ico">☷</span><strong>Conciliación</strong><p>Ya tenemos información base para conciliar: órdenes, estados y movimientos. Falta automatizar el cruce y la gestión de diferencias.</p></article>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Resumen ejecutivo</h2>
+        <p class="aml-analisis__lead">El sistema ya puede iniciar pagos. Lo que falta es cerrar el ciclo: confirmar qué se pagó, cuándo se liquidó, contra qué movimiento bancario se concilió y qué excepción requiere atención.</p>
+        <div class="aml-analisis-split aml-analisis-glossary">
+          <article><span class="aml-analisis-ico">✓</span><p>Disponible</p><h3>Gestión de pagos</h3><span>Crear pagos, hacer seguimiento y cancelar órdenes cuando aplique.</span></article>
+          <article><span class="aml-analisis-ico">◐</span><p>Parcial</p><h3>Administración de cuentas</h3><span>Existe carga CSV y persistencia base. Falta flujo de aprobación, validación bancaria y edición desde dashboard.</span></article>
+          <article><span class="aml-analisis-ico">×</span><p>Pendiente</p><h3>Conciliación automática</h3><span>Falta importar extractos, normalizar estados, hacer matching, marcar diferencias y generar reportes operativos.</span></article>
+        </div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Cobertura actual vs requerida</h2>
+        <p class="aml-analisis__lead">Lectura rápida: la dispersión está encaminada; la conciliación necesita diseño funcional y técnico antes de decir que está lista para operación.</p>
+        <div class="aml-analisis-chart"><div class="aml-analisis-chart__bars">
+          <div class="aml-analisis-chart__row"><span>Órdenes de pago: creación, seguimiento y cancelación</span><b class="is-ok" style="width:90%"></b><em>Cubierto</em></div>
+          <div class="aml-analisis-chart__row"><span>Seguridad y autorización operativa</span><b class="is-ok" style="width:86%"></b><em>Cubierto</em></div>
+          <div class="aml-analisis-chart__row"><span>Carga masiva de cuentas destino</span><b class="is-ok" style="width:72%"></b><em>Cubierto</em></div>
+          <div class="aml-analisis-chart__row"><span>Información base para conciliación</span><b class="is-mid" style="width:62%"></b><em>Parcial</em></div>
+          <div class="aml-analisis-chart__row"><span>Conciliación automática, tablero y auditoría</span><b class="is-out" style="width:25%"></b><em>Pendiente</em></div>
+        </div><ul class="aml-analisis-chart__legend"><li><i class="is-ok"></i>Implementado</li><li><i class="is-mid"></i>Parcial</li><li><i class="is-out"></i>Falta</li></ul></div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Flujo esperado de dispersión</h2>
+        <p class="aml-analisis__lead">La operación empieza con cuentas destino confiables, sigue con la creación de órdenes y termina cuando el pago queda liquidado y conciliado.</p>
+        <ol class="aml-analisis-flow">
+          <li><span class="aml-analisis-ico">▤</span><em>01</em><strong>Cuentas</strong><span>Carga CSV, validación de campos y alta en base de datos</span></li>
+          <li><span class="aml-analisis-ico">◉</span><em>02</em><strong>Orden</strong><span>Creación de pago order con monto, moneda y destino</span></li>
+          <li><span class="aml-analisis-ico">☷</span><em>03</em><strong>Firma</strong><span>Validación y autorización del pago</span></li>
+          <li><span class="aml-analisis-ico">$</span><em>04</em><strong>Ejecución</strong><span>Se procesa el pago y se actualiza el estado</span></li>
+          <li><span class="aml-analisis-ico">✓</span><em>05</em><strong>Conciliación</strong><span>Matching contra banco/proveedor y cierre contable</span></li>
+        </ol>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Diagrama de secuencia de conciliación</h2>
+        <p class="aml-analisis__lead">Conciliar no es solo ver si una orden dice completed. El flujo debe cruzar varias fuentes y dejar evidencia de cierre o de excepción.</p>
+        <div class="payment-sequence" role="img" aria-label="Secuencia de conciliación entre Operaciones, Aethereun, proveedor de pagos, banco y motor de conciliación">
+          <div class="payment-sequence__inner">
+            <div class="payment-sequence__actors">
+              <div class="payment-sequence__actor"><strong>Cliente</strong><span>Solicita pagos y revisa resultados</span></div>
+              <div class="payment-sequence__actor"><strong>Aethereun</strong><span>Administra cuentas, órdenes y estados</span></div>
+              <div class="payment-sequence__actor"><strong>Operación</strong><span>Valida, aprueba y da seguimiento</span></div>
+              <div class="payment-sequence__actor"><strong>Red de pago</strong><span>Procesa la dispersión</span></div>
+              <div class="payment-sequence__actor"><strong>Conciliación</strong><span>Cruza movimientos y cierra diferencias</span></div>
+            </div>
+            <div class="payment-sequence__lanes">
+              <div class="payment-sequence__lane"></div><div class="payment-sequence__lane"></div><div class="payment-sequence__lane"></div><div class="payment-sequence__lane"></div><div class="payment-sequence__lane"></div>
+              <div class="payment-sequence__events">
+                <div class="payment-sequence__arrow" style="--from:1; --to:2; --top:34px"><div class="payment-sequence__arrow-line"></div><label>Carga cuentas destino</label></div>
+                <div class="payment-sequence__arrow is-reverse" style="--from:2; --to:1; --top:92px"><div class="payment-sequence__arrow-line"></div><label>Confirma cuentas recibidas</label></div>
+                <div class="payment-sequence__arrow" style="--from:1; --to:2; --top:154px"><div class="payment-sequence__arrow-line"></div><label>Solicita dispersión</label></div>
+                <div class="payment-sequence__arrow" style="--from:2; --to:3; --top:212px"><div class="payment-sequence__arrow-line"></div><label>Envía a revisión operativa</label></div>
+                <div class="payment-sequence__arrow is-reverse" style="--from:3; --to:2; --top:270px"><div class="payment-sequence__arrow-line"></div><label>Aprueba o rechaza</label></div>
+                <div class="payment-sequence__arrow" style="--from:2; --to:4; --top:332px"><div class="payment-sequence__arrow-line"></div><label>Ordena el pago</label></div>
+                <div class="payment-sequence__arrow is-reverse" style="--from:4; --to:2; --top:390px"><div class="payment-sequence__arrow-line"></div><label>Actualiza estado</label></div>
+                <div class="payment-sequence__arrow is-reverse" style="--from:2; --to:1; --top:448px"><div class="payment-sequence__arrow-line"></div><label>Cliente consulta avance</label></div>
+                <div class="payment-sequence__arrow" style="--from:4; --to:5; --top:510px"><div class="payment-sequence__arrow-line"></div><label>Movimiento disponible</label></div>
+                <div class="payment-sequence__arrow" style="--from:2; --to:5; --top:568px"><div class="payment-sequence__arrow-line"></div><label>Orden + estado + referencia</label></div>
+                <div class="payment-sequence__arrow is-reverse" style="--from:5; --to:2; --top:626px"><div class="payment-sequence__arrow-line"></div><label>Resultado conciliado o excepción</label></div>
+              </div>
+            </div>
+            <div class="payment-sequence__notes">
+              <div class="payment-sequence__note"><strong>Ya tenemos</strong>Registro de cuentas, creación de pagos y seguimiento de estados.</div>
+              <div class="payment-sequence__note"><strong>Falta completar</strong>Matching automático, diferencias, aprobaciones y reportes de cierre.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Qué tenemos vs qué falta</h2>
+        <div class="aml-analisis-split">
+          <article><span class="aml-analisis-ico">✓</span><p>Disponible hoy</p><h3>Base técnica ya construida</h3><ul><li>Crear órdenes de pago</li><li>Listar órdenes de pago con filtros</li><li>Consultar estado por identificador de pago</li><li>Cancelar órdenes cuando el estado lo permite</li><li>Seguridad para autorizar pagos</li><li>Acceso controlado y operación disponible</li><li>Carga CSV de cuentas destino</li><li>Consulta de saldos, movimientos y reportes de cuenta</li></ul></article>
+          <article><span class="aml-analisis-ico">!</span><p>Requerido para operación completa</p><h3>Cierre operativo</h3><ul><li>Importación de movimientos bancarios</li><li>Modelo de conciliación y excepciones</li><li>Normalización de estados del proveedor</li><li>Bitácora de cambios y evidencia</li><li>Dashboard para seguimiento por lote</li><li>Export contable y reportes de cierre</li></ul></article>
+        </div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Requerimientos pendientes</h2>
+        <p class="aml-analisis__lead">Para cumplir un proceso serio de conciliación y dispersión faltan piezas funcionales, no solo pantallas o botones. Toca definirlas antes de prometer operación automática.</p>
+        <div class="aml-analisis-groups">
+          <article class="aml-analisis-groups__card is-ok"><span class="aml-analisis-ico">✓</span><h3>Ya construido</h3><ul><li>Gestión de órdenes de pago</li><li>Crear, consultar estado y cancelar pagos</li><li>Seguridad y autorización de pagos</li><li>Persistencia de cuentas por CSV</li><li>Saldos, movimientos y reportes de cuenta</li><li>Documentación funcional</li><li>Ambiente productivo disponible</li></ul></article>
+          <article class="aml-analisis-groups__card is-mid"><span class="aml-analisis-ico">◐</span><h3>Falta completar</h3><ul><li>Validación bancaria de cuentas</li><li>Estados internos normalizados</li><li>Control de lotes de dispersión</li><li>Reintentos controlados</li><li>Permisos y roles de dashboard</li></ul></article>
+          <article class="aml-analisis-groups__card is-out"><span class="aml-analisis-ico">×</span><h3>No existe aún</h3><ul><li>Motor de conciliación automática</li><li>Importador de extractos bancarios</li><li>Gestión de diferencias</li><li>Reporte contable de cierre</li><li>Alertas operativas por pagos fallidos</li></ul></article>
+        </div>
+      </section>
+
+      <section class="aml-analisis__grid3">
+        <article><h2><span class="aml-analisis-ico">✓</span>Sí tenemos</h2><ul><li><em>Operación</em><strong>Órdenes de pago</strong><span>Crear órdenes de dispersión, consultar su estado y cancelarlas cuando aplique.</span></li><li><em>Seguridad</em><strong>Seguridad operativa</strong><span>Controles de seguridad para autorizar operaciones sensibles.</span></li><li><em>Cuentas</em><strong>CSV masivo</strong><span>Carga de beneficiarios y cuentas destino a la base de cuentas de Aethereun.</span></li><li><em>Conciliación</em><strong>Fuentes base</strong><span>Saldos, movimientos, estados de cuenta y reportes disponibles como insumo.</span></li><li><em>Docs</em><strong>documentación</strong><span>Documentación funcional para explicar el flujo operativo.</span></li></ul></article>
+        <article><h2><span class="aml-analisis-ico">◐</span>Está parcial</h2><ul><li><strong>Administración de cuentas</strong><span>Falta edición, aprobación, bloqueo y validación previa desde dashboard.</span></li><li><strong>Seguimiento de pagos</strong><span>Hay consulta de estado, pero falta vista por lote, filtros y trazabilidad interna.</span></li><li><strong>Auditoría</strong><span>Falta historial de quién cargó, aprobó, canceló o reintentó una orden.</span></li></ul></article>
+        <article><h2><span class="aml-analisis-ico">×</span>Nos falta</h2><ul><li><strong>Conciliación bancaria</strong><span>Matching automático entre órdenes, estados del pago y movimientos bancarios.</span></li><li><strong>Excepciones</strong><span>Cola de pagos no conciliados, montos diferentes, duplicados y rechazos.</span></li><li><strong>Cierre contable</strong><span>Exportación de conciliados, pendientes, fallidos y comisiones por periodo.</span></li></ul></article>
+      </section>
+    </main>
+  </div>
+
+  <div class="aml-deck" id="deck" role="dialog" aria-modal="true" aria-label="Presentación conciliación y dispersión" hidden>
+    <div class="aml-deck__bar"><p>Slides · pagos</p><span id="slide-count"></span><button type="button" id="close-slides">Salir</button></div>
+    <div class="aml-deck__stage" id="slide-stage"></div>
+    <div class="aml-deck__nav"><button type="button" id="previous-slide">Anterior</button><div class="aml-deck__dots" id="slide-dots"></div><button type="button" id="next-slide">Siguiente</button></div>
+  </div>
+
+  <script>
+    const slides = [
+      ['Conciliación y dispersión', 'Ya tenemos base real para operar pagos', 'Aethereun ya cubre creación y seguimiento de pagos, carga masiva de cuentas, seguridad operativa y consulta de movimientos. Lo que falta es convertir esa información en conciliación automática y control operativo.'],
+      ['Dispersión', 'Órdenes de pago ya está implementado', '<ul class="aml-deck__cards"><li><strong>Crear órdenes</strong><span>Permite enviar una o varias órdenes de dispersión.</span></li><li><strong>Listar y filtrar</strong><span>Consulta por referencia, destinatario, estado y fecha.</span></li><li><strong>Estado y cancelación</strong><span>Consulta de estado y cancelación cuando aplica.</span></li></ul>'],
+      ['Seguridad', 'La seguridad operativa ya está cubierta', '<ul class="aml-deck__cards"><li><em>Control</em><strong>Autorización de pagos</strong><span>Las operaciones sensibles se autorizan de forma controlada.</span></li><li><em>Validación</em><strong>Identidad operativa</strong><span>Se valida la identidad operativa antes de procesar pagos.</span></li><li><em>Acceso</em><strong>Canales autorizados</strong><span>Solo usuarios y sistemas autorizados pueden operar pagos.</span></li></ul>'],
+      ['Cuentas destino', 'Ya hay base para administración masiva', '<ul class="aml-deck__cards"><li><em>Listo</em><strong>CSV</strong><span>Carga masiva de cuentas beneficiarias.</span></li><li><em>Listo</em><strong>Base de datos</strong><span>Registro centralizado de cuentas destino.</span></li><li><em>Falta</em><strong>Gobierno</strong><span>Aprobación, edición, bloqueo y validación bancaria.</span></li></ul>'],
+      ['Conciliación', 'Ya tenemos fuentes, falta el motor', '<ol class="aml-deck__flow"><li><em>01</em><strong>Orden</strong><span>Pago creado</span></li><li><em>02</em><strong>Estado</strong><span>Resultado proveedor</span></li><li><em>03</em><strong>Movimiento</strong><span>Entry bancaria</span></li><li><em>04</em><strong>Matching</strong><span>Monto, fecha y referencia</span></li><li><em>05</em><strong>Cierre</strong><span>Reporte contable</span></li></ol>'],
+      ['Consultas disponibles', 'Aethereun ya cuenta con insumos para conciliación', '<ul class="aml-deck__lists"><li>Saldos actualizados</li><li>Account reports</li><li>Entries / movimientos</li><li>Statements</li><li>Pagos operativos</li><li>Estados de pago</li></ul>'],
+      ['Pendientes clave', 'Lo que falta para cumplir operación completa', '<ul class="aml-deck__lists"><li>Motor de matching</li><li>Importador de extractos</li><li>Dashboard por lotes</li><li>Gestión de excepciones</li><li>Auditoría de acciones</li><li>Export contable</li></ul>'],
+      ['Cierre', 'Ya podemos dispersar; falta conciliar y gobernar', 'El avance importante ya está: gestión de pagos, seguridad, carga de cuentas y consulta de movimientos. Para presentarlo como operación completa falta conciliación automática, trazabilidad, validación de cuentas y reportes de cierre.']
+    ];
+    const deck = document.getElementById('deck');
+    const stage = document.getElementById('slide-stage');
+    const count = document.getElementById('slide-count');
+    const dots = document.getElementById('slide-dots');
+    const previous = document.getElementById('previous-slide');
+    const next = document.getElementById('next-slide');
+    let index = 0;
+    function renderSlide() {
+      const slide = slides[index];
+      const content = slide[2].startsWith('<') ? slide[2] : `<span>${slide[2]}</span>`;
+      stage.innerHTML = `<section class="aml-deck__slide"><p>${slide[0]}</p><h2>${slide[1]}</h2>${content}</section>`;
+      count.textContent = `${index + 1} / ${slides.length}`;
+      previous.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+      dots.innerHTML = slides.map((_, i) => `<button type="button" class="${i === index ? 'is-active' : ''}" aria-label="Ir a la diapositiva ${i + 1}"></button>`).join('');
+      [...dots.children].forEach((dot, i) => dot.addEventListener('click', () => { index = i; renderSlide(); }));
+    }
+    function openDeck() { index = 0; renderSlide(); deck.hidden = false; }
+    function closeDeck() { deck.hidden = true; }
+    document.getElementById('open-slides').addEventListener('click', openDeck);
+    document.getElementById('close-slides').addEventListener('click', closeDeck);
+    previous.addEventListener('click', () => { if (index > 0) { index--; renderSlide(); } });
+    next.addEventListener('click', () => { if (index < slides.length - 1) { index++; renderSlide(); } });
+    window.addEventListener('keydown', (event) => {
+      if (deck.hidden) return;
+      if (event.key === 'Escape') closeDeck();
+      if (event.key === 'ArrowLeft' && index > 0) { index--; renderSlide(); }
+      if ((event.key === 'ArrowRight' || event.key === ' ') && index < slides.length - 1) { event.preventDefault(); index++; renderSlide(); }
+    });
+  </script>
+</body>
+
+</html>

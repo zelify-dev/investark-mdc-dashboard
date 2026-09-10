@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  zelify-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zelify-core
+    ports:
+      - "3020:3020"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    env_file:
+      - .env

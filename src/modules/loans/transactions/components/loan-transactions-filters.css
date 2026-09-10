@@ -1,0 +1,62 @@
+.zelify-loan-tx-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.zelify-loan-tx-filters__select {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 8px;
+  padding: 0 10px;
+  height: 42px;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.zelify-loan-tx-filters__search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 42px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.zelify-loan-tx-filters__search:focus-within {
+  border-color: var(--zelify-brand-green, #271a59);
+  box-shadow: 0 0 0 2px rgba(169, 251, 93, 0.2);
+}
+
+.zelify-loan-tx-filters__search-icon {
+  color: #94a3b8;
+  margin-right: 8px;
+}
+
+.zelify-loan-tx-filters__input {
+  background: transparent;
+  border: none;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  outline: none;
+}
+
+.zelify-loan-tx-filters__input::placeholder {
+  color: #94a3b8;
+}
+
+@media (max-width: 900px) {
+  .zelify-loan-tx-filters__search {
+    min-width: 100%;
+  }
+}

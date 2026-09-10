@@ -1,0 +1,227 @@
+.zelify-activities {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.zelify-activities__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zelify-activities__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.zelify-activities__title-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.zelify-activities__title-help:hover {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.zelify-activities__head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zelify-activities__columns-btn.zelify-button {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.zelify-activities__settings-icon.zelify-icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--zelify-brand-green);
+  border-color: var(--zelify-brand-green);
+  color: var(--zelify-brand-on-green);
+}
+
+.zelify-activities__settings-icon.zelify-icon-button:hover {
+  background: var(--zelify-brand-green-hover);
+  border-color: var(--zelify-brand-green-hover);
+}
+
+.zelify-activities__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 20px;
+}
+
+.zelify-activities__filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: min(100%, 200px);
+  max-width: 240px;
+}
+
+.zelify-activities__filter-field .zelify-select {
+  width: 100%;
+}
+
+.zelify-activities__branch-wrap {
+  position: relative;
+}
+
+.zelify-activities__branch-select {
+  padding-right: 36px;
+}
+
+.zelify-activities__branch-home {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7c3aed;
+  pointer-events: none;
+}
+
+.zelify-activities__filter-submit {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 1px;
+}
+
+.zelify-activities__get-btn.zelify-button {
+  min-height: 40px;
+  padding: 0 18px;
+  background: var(--zelify-brand-green);
+  border-color: var(--zelify-brand-green);
+  color: var(--zelify-brand-on-green);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.zelify-activities__get-btn.zelify-button:hover:not(:disabled) {
+  background: var(--zelify-brand-green-hover);
+  border-color: var(--zelify-brand-green-hover);
+}
+
+.zelify-activities__filters-spacer {
+  flex: 1;
+  min-width: 8px;
+}
+
+.zelify-activities__edit-columns {
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--zelify-brand-on-green);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.zelify-activities__edit-columns:hover {
+  color: #13223f;
+}
+
+.zelify-activities__table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.zelify-activities__page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zelify-activities__page-size-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.zelify-activities__page-size-select.zelify-select {
+  min-width: 72px;
+}
+
+.zelify-activities__pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zelify-activities__range {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.zelify-activities__table-wrap {
+  min-width: 0;
+}
+
+.zelify-activities__data-table.zelify-settings-data-table--clients thead th.zelify-activities__th--accent {
+  color: #14532d;
+  font-weight: 700;
+}
+
+.zelify-activities__data-table.zelify-settings-data-table--clients thead th.zelify-activities__th--muted {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.zelify-activities__cell-link {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.zelify-activities__cell-link:hover {
+  text-decoration: underline;
+}
+
+.zelify-activities__action {
+  font-weight: 700;
+  color: #0a1538;
+}
+
+.zelify-activities__cell-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  color: #475569;
+}
+
+.zelify-activities__cell-dash {
+  color: #94a3b8;
+}
+
+.zelify-activities__data-table.zelify-settings-data-table--clients tbody tr:nth-child(even) td {
+  background: rgba(248, 250, 252, 0.85);
+}
+
+.zelify-activities__data-table.zelify-settings-data-table--clients tbody tr:hover td {
+  background: rgba(var(--zelify-brand-green-rgb), 0.12);
+}

@@ -1,0 +1,23 @@
+.zelify-accounting-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 4px;
+}
+
+.zelify-accounting-page-header__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0a1538;
+}
+
+.zelify-accounting-page-header__meta {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+}

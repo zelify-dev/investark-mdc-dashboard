@@ -1,0 +1,27 @@
+.zelify-profile-menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.zelify-profile-menu__dropdown {
+  text-align: left;
+}
+
+.zelify-profile-menu__separator {
+  height: 1px;
+  margin: 4px 0;
+  background: rgba(214, 219, 226, 0.14);
+}
+
+.zelify-profile-menu__sign-out {
+  width: 100%;
+  color: rgba(248, 113, 113, 0.95) !important;
+}
+
+.zelify-profile-menu__sign-out:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.12) !important;
+}
+
+.zelify-profile-menu__sign-out:disabled {
+  opacity: 0.7;
+}

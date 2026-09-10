@@ -1,0 +1,83 @@
+.zelify-accounting-trial-balance {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-accounting-trial-balance__title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #0f172a;
+}
+
+.zelify-accounting-trial-balance__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+}
+
+.zelify-accounting-trial-balance__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.zelify-accounting-trial-balance__field input {
+  height: 40px;
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  border-radius: 8px;
+  padding: 0 10px;
+}
+
+.zelify-accounting-trial-balance__multi {
+  min-width: 180px;
+  height: 72px;
+}
+
+.zelify-accounting-trial-balance__difference {
+  margin-left: auto;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.zelify-accounting-trial-balance__difference.is-balanced {
+  background: rgba(22, 163, 74, 0.12);
+  color: #166534;
+}
+
+.zelify-accounting-trial-balance__difference.is-unbalanced {
+  background: rgba(220, 38, 38, 0.12);
+  color: #991b1b;
+}
+
+.zelify-accounting-trial-balance__table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.zelify-accounting-trial-balance__tree-toggle {
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.zelify-accounting-trial-balance__child-name {
+  padding-left: 26px;
+  color: #334155;
+}

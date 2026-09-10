@@ -1,0 +1,101 @@
+.zelify-financial-currency {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.zelify-financial-currency__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zelify-financial-currency__section-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+  text-align: left;
+  width: fit-content;
+}
+
+.zelify-financial-currency__section-toggle:hover {
+  color: #15803d;
+}
+
+.zelify-financial-currency__chevron {
+  flex-shrink: 0;
+  color: #64748b;
+  transition: transform 0.2s ease;
+}
+
+.zelify-financial-currency__chevron.is-open {
+  transform: rotate(0deg);
+}
+
+.zelify-financial-currency__chevron:not(.is-open) {
+  transform: rotate(-90deg);
+}
+
+.zelify-financial-currency__table-wrap {
+  min-width: 0;
+}
+
+.zelify-financial-currency__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zelify-financial-currency__base-badge.zelify-badge {
+  background: #2563eb;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.zelify-financial-currency__empty {
+  color: #94a3b8;
+}
+
+.zelify-financial-currency__code {
+  font-weight: 600;
+  color: #0a1538;
+}
+
+.zelify-financial-currency__not-set {
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+.zelify-financial-currency__empty-row {
+  text-align: center !important;
+  padding: 28px 16px !important;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.zelify-financial-currency .zelify-settings-data-table th.is-numeric-header,
+.zelify-financial-currency .zelify-settings-data-table td.is-numeric {
+  text-align: right;
+}
+
+.zelify-financial-currency__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}

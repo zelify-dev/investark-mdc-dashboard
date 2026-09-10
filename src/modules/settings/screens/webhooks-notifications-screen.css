@@ -1,0 +1,228 @@
+.zelify-webhooks-notifications {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.zelify-webhooks-notifications__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.zelify-webhooks-notifications__lead {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #64748b;
+  max-width: 820px;
+}
+
+.zelify-webhooks-notifications__summary {
+  min-width: 220px;
+  padding: 18px 20px;
+  border: 1px solid #d9e2f0;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff 0%, #f7fbff 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.zelify-webhooks-notifications__summary-kpi {
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 800;
+  color: #0a1538;
+}
+
+.zelify-webhooks-notifications__summary-label {
+  font-size: 13px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.zelify-webhooks-notifications__summary-note {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.zelify-webhooks-notifications__composer {
+  border: 1px solid #d9e2f0;
+  border-radius: 20px;
+  padding: 22px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+.zelify-webhooks-notifications__composer-head h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #0a1538;
+}
+
+.zelify-webhooks-notifications__composer-head p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.zelify-webhooks-notifications__grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.zelify-webhooks-notifications__grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.zelify-webhooks-notifications__grid textarea,
+.zelify-webhooks-notifications__grid select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  color: #0f172a;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.zelify-webhooks-notifications__grid-full {
+  grid-column: 1 / -1;
+}
+
+.zelify-webhooks-notifications__table-wrap {
+  min-width: 0;
+}
+
+.zelify-webhooks-notifications__data-table.zelify-settings-data-table--clients tbody tr:nth-child(even) td {
+  background: rgba(248, 250, 252, 0.85);
+}
+
+.zelify-webhooks-notifications__data-table.zelify-settings-data-table--clients tbody tr:hover td {
+  background: rgba(var(--zelify-brand-green-rgb), 0.08);
+}
+
+.zelify-webhooks-notifications__name-cell {
+  min-width: 180px;
+}
+
+.zelify-webhooks-notifications__name {
+  display: block;
+  font-weight: 700;
+  color: #0a1538;
+}
+
+.zelify-webhooks-notifications__provider {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.zelify-webhooks-notifications__event-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: 420px;
+}
+
+.zelify-webhooks-notifications__event-title {
+  font-weight: 600;
+  color: #0a1538;
+}
+
+.zelify-webhooks-notifications__event-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+.zelify-webhooks-notifications__secret-cell,
+.zelify-webhooks-notifications__config-cell,
+.zelify-webhooks-notifications__status-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zelify-webhooks-notifications__secret-cell code {
+  display: inline-block;
+  font-size: 12px;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.zelify-webhooks-notifications__config-cell span,
+.zelify-webhooks-notifications__last-sync {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.zelify-webhooks-notifications__row-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.zelify-webhooks-notifications__inline-btn {
+  border: 1px solid rgba(26, 39, 64, 0.15);
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.zelify-webhooks-notifications__inline-btn--danger {
+  color: #b91c1c;
+}
+
+.zelify-webhooks-notifications__footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+@media (max-width: 1100px) {
+  .zelify-webhooks-notifications__header {
+    flex-direction: column;
+  }
+
+  .zelify-webhooks-notifications__summary {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .zelify-webhooks-notifications__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .zelify-webhooks-notifications__grid {
+    grid-template-columns: 1fr;
+  }
+}

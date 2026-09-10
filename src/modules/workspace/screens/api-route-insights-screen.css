@@ -1,0 +1,95 @@
+/* Dentro de GeneralSetupShell / FinancialSetupShell: sin segundo topbar ni 100vh que rompa la subnav. */
+.api-insights-embedded {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: transparent;
+}
+
+.api-insights__cards {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.api-insights__card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.api-insights__card span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.api-insights__card strong {
+  font-size: 1.2rem;
+  line-height: 1.1;
+  color: #0f172a;
+}
+
+.api-insights__table-wrap {
+  margin-top: 20px;
+  overflow-x: auto;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.api-insights__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 860px;
+}
+
+.api-insights__table thead {
+  background: #f8fafc;
+}
+
+.api-insights__table th,
+.api-insights__table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  font-size: 13px;
+}
+
+.api-insights__table th {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.api-insights__table td {
+  color: #334155;
+}
+
+.api-insights__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.api-insights__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.api-insights__action-btn {
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.api-insights__action-btn:hover {
+  background: #f8fafc;
+}

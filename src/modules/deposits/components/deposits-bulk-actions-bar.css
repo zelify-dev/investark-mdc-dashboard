@@ -1,0 +1,39 @@
+.zelify-deposits-bulk {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #f8fafc;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.35);
+  max-width: calc(100vw - 48px);
+}
+
+.zelify-deposits-bulk__text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.zelify-deposits-bulk__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zelify-deposits-bulk .zelify-button--neutral {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.zelify-deposits-bulk .zelify-button--neutral:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

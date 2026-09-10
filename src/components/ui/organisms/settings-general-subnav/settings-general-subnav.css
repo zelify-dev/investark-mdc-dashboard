@@ -1,0 +1,63 @@
+.zelify-general-setup-subnav {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  padding: 0 20px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.1);
+}
+
+.zelify-general-setup-subnav__scroll {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 0 0 2px;
+}
+
+.zelify-general-setup-subnav__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.zelify-general-setup-subnav__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 12px 14px 11px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.zelify-general-setup-subnav__tab:hover {
+  color: #271a59;
+  background: #f7f3fb;
+}
+
+.zelify-general-setup-subnav__tab.is-active {
+  color: #271a59;
+  font-weight: 700;
+  border-color: transparent;
+  border-bottom-color: transparent;
+  margin-bottom: -1px;
+  padding-bottom: 12px;
+  box-shadow: inset 0 -2px 0 0 #271a59;
+  background: transparent;
+}

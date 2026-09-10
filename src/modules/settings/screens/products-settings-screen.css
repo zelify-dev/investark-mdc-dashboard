@@ -1,0 +1,341 @@
+.zelify-products-settings {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-products-settings__tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.1);
+}
+
+.zelify-products-settings__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.zelify-products-settings__branch-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: min(100%, 280px);
+  max-width: 320px;
+  flex: 1;
+}
+
+.zelify-products-settings__branch-field .zelify-select {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.zelify-products-settings__branch-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.zelify-products-settings__checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.zelify-products-settings__table-wrap {
+  min-width: 0;
+}
+
+.zelify-products-settings__create-loan {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 4px;
+}
+
+/* Cebra suave (referencia Figma Deposits) */
+.zelify-products-settings__data-table.zelify-settings-data-table--clients tbody tr:nth-child(even) td {
+  background: rgba(248, 250, 252, 0.85);
+}
+
+.zelify-products-settings__data-table.zelify-settings-data-table--clients tbody tr:hover td {
+  background: rgba(var(--zelify-brand-green-rgb), 0.08);
+}
+
+.zelify-products-settings__product-link {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.zelify-products-settings__product-link:hover {
+  text-decoration: underline;
+}
+
+.zelify-products-settings__active {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.zelify-products-settings__active.is-off {
+  color: #64748b;
+}
+
+.zelify-products-settings__active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  background: #22c55e;
+}
+
+.zelify-products-settings__active.is-off .zelify-products-settings__active-dot {
+  background: #94a3b8;
+}
+
+/* ─────────────────────────────────────────────
+   Subtype pill
+   ───────────────────────────────────────────── */
+.zelify-products-settings__subtype-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.1);
+  color: #4f46e5;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────
+   Toggle switch
+   ───────────────────────────────────────────── */
+.zelify-products-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  border-radius: 99px;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease;
+  background: #cbd5e1;
+  flex-shrink: 0;
+}
+
+.zelify-products-toggle.is-on {
+  background: #22c55e;
+}
+
+.dark .zelify-products-toggle.is-on {
+  background: #66ff00;
+}
+
+.zelify-products-toggle.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.zelify-products-toggle__thumb {
+  position: absolute;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: left 0.18s ease;
+}
+
+.zelify-products-toggle.is-on .zelify-products-toggle__thumb {
+  left: calc(100% - 19px);
+}
+
+/* ─────────────────────────────────────────────
+   Type Catalog tab
+   ───────────────────────────────────────────── */
+.zelify-products-catalog__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-products-catalog__hint {
+  font-size: 13px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 0;
+}
+
+.dark .zelify-products-catalog__hint {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.1);
+  color: #94a3b8;
+}
+
+.zelify-products-catalog__loading {
+  font-size: 14px;
+  color: #64748b;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.zelify-products-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.zelify-products-catalog__section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.zelify-products-catalog__section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.dark .zelify-products-catalog__section-title {
+  color: #f1f5f9;
+}
+
+.zelify-products-catalog__kind-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.zelify-products-catalog__kind-badge.is-loan {
+  background: rgba(234, 179, 8, 0.15);
+  color: #854d0e;
+}
+
+.dark .zelify-products-catalog__kind-badge.is-loan {
+  background: rgba(234, 179, 8, 0.18);
+  color: #fbbf24;
+}
+
+.zelify-products-catalog__kind-badge.is-deposit {
+  background: rgba(34, 197, 94, 0.12);
+  color: #15803d;
+}
+
+.dark .zelify-products-catalog__kind-badge.is-deposit {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.zelify-products-catalog__type-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1e293b;
+  display: block;
+}
+
+.dark .zelify-products-catalog__type-name {
+  color: #e2e8f0;
+}
+
+.zelify-products-catalog__type-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 0;
+  max-width: 340px;
+  line-height: 1.45;
+}
+
+.zelify-products-catalog__code {
+  font-size: 12px;
+  color: #475569;
+  background: rgba(71, 85, 105, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dark .zelify-products-catalog__code {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.zelify-products-catalog__badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(99, 102, 241, 0.08);
+  color: #4338ca;
+  white-space: nowrap;
+}
+
+.dark .zelify-products-catalog__badge {
+  background: rgba(129, 140, 248, 0.14);
+  color: #a5b4fc;
+}
+
+.zelify-products-catalog__no-badge {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.zelify-products-catalog__features summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #3b82f6;
+  user-select: none;
+  list-style: none;
+}
+
+.zelify-products-catalog__features summary::-webkit-details-marker {
+  display: none;
+}
+
+.zelify-products-catalog__features ul {
+  margin: 6px 0 0;
+  padding-left: 14px;
+  font-size: 12px;
+  color: #475569;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dark .zelify-products-catalog__features ul {
+  color: #94a3b8;
+}
+
+.zelify-products-catalog__row--inactive td {
+  opacity: 0.55;
+}

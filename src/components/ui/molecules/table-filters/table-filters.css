@@ -1,0 +1,51 @@
+.zelify-table-filters {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 12px;
+}
+
+.zelify-table-filters__grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.zelify-table-filters__item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+  flex: 1;
+}
+
+.zelify-table-filters__item label {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.zelify-table-filters__actions {
+  display: flex;
+  align-items: center;
+  padding-bottom: 2px;
+}
+
+.zelify-button--sm {
+    min-height: 34px !important;
+    padding: 0 12px !important;
+    font-size: 12px !important;
+}
+
+.animate-in-fade {
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

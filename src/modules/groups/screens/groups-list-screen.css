@@ -1,0 +1,107 @@
+.zelify-groups-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 260px auto;
+  gap: 10px;
+  margin: 12px 0 18px;
+  align-items: end;
+}
+
+.zelify-groups-toolbar__search-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.zelify-groups-toolbar__search-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.zelify-groups-toolbar__select {
+  height: 40px;
+  border: 1px solid rgba(26, 39, 64, 0.14);
+  border-radius: 8px;
+  padding: 0 10px;
+  margin-top: 24px;
+}
+
+@media (max-width: 1020px) {
+  .zelify-groups-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .zelify-groups-toolbar__select {
+    margin-top: 0;
+  }
+}
+
+.zelify-groups-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.zelify-groups-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 90;
+  width: min(420px, 100vw);
+  height: 100vh;
+  background: #fff;
+  border-left: 1px solid rgba(26, 39, 64, 0.12);
+  padding: 0 20px 20px;
+  overflow-y: auto;
+}
+
+.zelify-groups-drawer__head {
+  margin: 0 -20px 18px;
+  padding: 20px 20px 18px;
+  background-color: #271a59;
+  background-image: url("/mdc-hero-banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.zelify-groups-drawer__head p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.zelify-groups-drawer__head h3 {
+  margin: 4px 0 0;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.zelify-groups-drawer__head span {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+}
+
+.zelify-groups-drawer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zelify-groups-drawer li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  border-radius: 8px;
+}

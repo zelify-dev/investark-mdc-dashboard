@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Análisis de cobertura PLD/AML para TESTAFIN.">
+  <title>Análisis PLD/AML · TESTAFIN</title>
+  <style>
+@font-face {
+  font-family: "Nata Sans";
+  src: url("./fonts/Nata_Sans/NataSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+html, body { margin: 0; min-width: 320px; }
+button { font: inherit; }
+.aml-deck[hidden] { display: none; }
+.aml-analisis {
+  --ink: #271a59;
+  --muted: #6b6578;
+  --line: #eceae4;
+  --paper: #fafaf9;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-nata-sans), "Nata Sans", Arial, Helvetica, sans-serif;
+}
+
+.aml-analisis__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 12px 28px;
+  background: #271a59;
+  color: #fff;
+}
+
+.aml-analisis__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aml-analisis__brand img {
+  display: block;
+  height: 22px;
+  width: auto;
+}
+
+.aml-analisis__brand-partner {
+  height: 28px;
+  filter: brightness(0) invert(1);
+}
+
+.aml-analisis__brand i {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.aml-analisis__top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aml-analisis__top p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.aml-analisis__slides-btn {
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  background: #fff;
+  color: #271a59;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aml-analisis__slides-btn:hover {
+  background: #f7f3fb;
+}
+
+.aml-deck {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: #271a59;
+  color: #fff;
+}
+
+.aml-deck__bar,
+.aml-deck__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+}
+
+.aml-deck__bar p,
+.aml-deck__bar span {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aml-deck__bar button,
+.aml-deck__nav button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aml-deck__nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.aml-deck__stage {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  padding: 8px 48px 12px;
+}
+
+.aml-deck__slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.aml-deck__slide > p {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.aml-deck__slide h2 {
+  margin: 0 0 18px;
+  font-size: 40px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.aml-deck__slide > span {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.aml-deck__cards,
+.aml-deck__stack,
+.aml-deck__lists,
+.aml-deck__flow {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-deck__cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aml-deck__cards li,
+.aml-deck__stack li,
+.aml-deck__lists li,
+.aml-deck__flow li {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.aml-deck__cards em,
+.aml-deck__flow em {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-deck__cards strong,
+.aml-deck__stack strong,
+.aml-deck__flow strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.aml-deck__cards span,
+.aml-deck__stack span,
+.aml-deck__flow span {
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.aml-deck__stack {
+  grid-template-columns: 1fr 1fr;
+}
+
+.aml-deck__lists {
+  grid-template-columns: 1fr 1fr;
+}
+
+.aml-deck__lists li {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.aml-deck__flow {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.aml-deck__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.aml-deck__dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.aml-deck__dots button.is-active {
+  width: 22px;
+  background: #fff;
+}
+
+.aml-analisis__main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px 24px 72px;
+}
+
+.aml-analisis__hero {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.aml-analisis__hero p,
+.aml-analisis__block > p.aml-analisis__lead,
+.aml-analisis-kyc__person p,
+.aml-analisis-kyc__engine p,
+.aml-analisis-split article > p {
+  margin: 0 0 8px;
+  color: #8b8498;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.aml-analisis__hero h1,
+.aml-analisis__block h2,
+.aml-analisis__grid3 h2 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.aml-analisis__hero h1 {
+  font-size: 36px;
+  line-height: 1.15;
+}
+
+.aml-analisis__hero span,
+.aml-analisis__lead {
+  display: block;
+  color: #5c5670;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.aml-analisis__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.aml-analisis__stats article,
+.aml-analisis__block,
+.aml-analisis-groups__card,
+.aml-analisis-split article,
+.aml-analisis__grid3 article {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.aml-analisis-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f7f3fb;
+  color: #271a59;
+  flex-shrink: 0;
+}
+
+.aml-analisis-ico svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.aml-analisis-kyc__person .aml-analisis-ico,
+.aml-analisis-kyc__engine .aml-analisis-ico {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.aml-analisis__stats article {
+  padding: 18px 18px 20px;
+}
+
+.aml-analisis__stats .aml-analisis-ico,
+.aml-analisis-split .aml-analisis-ico,
+.aml-analisis-groups__card .aml-analisis-ico {
+  margin-bottom: 12px;
+}
+
+.aml-analisis-chart {
+  margin-top: 16px;
+}
+
+.aml-analisis-chart__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aml-analisis-chart__row {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr) 78px;
+  align-items: center;
+  gap: 12px;
+}
+
+.aml-analisis-chart__row span {
+  color: #3f3a4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.aml-analisis-chart__row b {
+  display: block;
+  height: 12px;
+  border-radius: 99px;
+  background: #d9d0e8;
+}
+
+.aml-analisis-chart__row b.is-ok {
+  background: #271a59;
+}
+
+.aml-analisis-chart__row b.is-mid {
+  background: #8b7ab8;
+}
+
+.aml-analisis-chart__row b.is-out {
+  background: #c4bed4;
+}
+
+.aml-analisis-chart__row em {
+  color: #8b8498;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-analisis-chart__legend {
+  display: flex;
+  gap: 18px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #5c5670;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.aml-analisis-chart__legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 99px;
+  background: #271a59;
+}
+
+.aml-analisis-chart__legend i.is-mid {
+  background: #8b7ab8;
+}
+
+.aml-analisis-chart__legend i.is-out {
+  background: #c4bed4;
+}
+
+.aml-analisis__stats strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.aml-analisis__stats p {
+  margin: 0;
+  color: #5c5670;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.aml-analisis__block {
+  margin-bottom: 20px;
+  padding: 22px 22px 24px;
+}
+
+.aml-analisis__block h2,
+.aml-analisis__grid3 h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+}
+
+.aml-analisis__grid3 h2 .aml-analisis-ico {
+  width: 28px;
+  height: 28px;
+}
+
+.aml-analisis__grid3 h2 .aml-analisis-ico svg {
+  width: 16px;
+  height: 16px;
+}
+
+.aml-analisis-flow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-analisis-flow li {
+  position: relative;
+  padding: 14px 14px 16px;
+  border-radius: 12px;
+  background: #f7f3fb;
+}
+
+.aml-analisis-flow .aml-analisis-ico {
+  margin-bottom: 10px;
+}
+
+.aml-analisis-flow li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid #271a59;
+  border-right: 2px solid #271a59;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.aml-analisis-flow em {
+  display: block;
+  margin-bottom: 8px;
+  color: #8b8498;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-analisis-flow strong,
+.aml-analisis-kyc__person strong,
+.aml-analisis-kyc__engine strong,
+.aml-analisis-split h3 {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.aml-analisis-flow span,
+.aml-analisis-kyc__person span,
+.aml-analisis-kyc__engine span {
+  display: block;
+  margin-top: 6px;
+  color: #5c5670;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.aml-analisis-kyc {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) 28px minmax(0, 0.9fr) 28px minmax(0, 1.3fr);
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.aml-analisis-kyc__person,
+.aml-analisis-kyc__engine {
+  padding: 16px;
+  border-radius: 12px;
+  background: #271a59;
+  color: #fff;
+}
+
+.aml-analisis-kyc__person p,
+.aml-analisis-kyc__engine p,
+.aml-analisis-kyc__person span,
+.aml-analisis-kyc__engine span {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aml-analisis-kyc__person strong,
+.aml-analisis-kyc__engine strong {
+  color: #fff;
+}
+
+.aml-analisis-kyc__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aml-analisis-kyc__arrow b {
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid #271a59;
+  border-right: 2px solid #271a59;
+  transform: rotate(45deg);
+}
+
+.aml-analisis-kyc__lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-analisis-kyc__lists li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #d9d0e8;
+  border-radius: 10px;
+  background: #f7f3fb;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.aml-analisis-kyc__lists li svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #271a59;
+}
+
+.aml-analisis-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.aml-analisis-glossary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aml-analisis-glossary span {
+  display: block;
+  color: #5c5670;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.aml-analisis-split article {
+  padding: 16px 18px 18px;
+}
+
+.aml-analisis-split h3 {
+  margin: 0 0 10px;
+}
+
+.aml-analisis-split ul,
+.aml-analisis-groups__card ul,
+.aml-analisis__grid3 ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aml-analisis-split li,
+.aml-analisis-groups__card li {
+  position: relative;
+  padding: 7px 0 7px 14px;
+  color: #3f3a4f;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.aml-analisis-split li::before,
+.aml-analisis-groups__card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: #271a59;
+}
+
+.aml-analisis-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.aml-analisis-groups__card {
+  padding: 16px 16px 18px;
+}
+
+.aml-analisis-groups__card h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.aml-analisis-groups__card.is-ok {
+  border-color: #cfc3e8;
+  background: #f7f3fb;
+}
+
+.aml-analisis-groups__card.is-mid {
+  background: #fff;
+}
+
+.aml-analisis-groups__card.is-out li::before {
+  background: #8b8498;
+}
+
+.aml-analisis__grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.aml-analisis__grid3 article {
+  padding: 18px 16px 8px;
+}
+
+.aml-analisis__grid3 li {
+  padding: 0 0 16px;
+}
+
+.aml-analisis__grid3 em {
+  display: block;
+  margin-bottom: 4px;
+  color: #8b8498;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.aml-analisis__grid3 strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.aml-analisis__grid3 span {
+  display: block;
+  color: #5c5670;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .aml-analisis__stats,
+  .aml-analisis-flow,
+  .aml-analisis-groups,
+  .aml-analisis__grid3,
+  .aml-analisis-split,
+  .aml-analisis-glossary,
+  .aml-analisis-kyc {
+    grid-template-columns: 1fr;
+  }
+
+  .aml-analisis-flow li:not(:last-child)::after,
+  .aml-analisis-kyc__arrow {
+    display: none;
+  }
+
+  .aml-analisis__hero h1 {
+    font-size: 28px;
+  }
+
+  .aml-analisis-chart__row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .aml-analisis__top {
+    padding: 12px 16px;
+  }
+
+  .aml-deck__stage {
+    padding: 8px 18px;
+  }
+
+  .aml-deck__slide h2 {
+    font-size: 26px;
+  }
+
+  .aml-deck__cards,
+  .aml-deck__stack,
+  .aml-deck__lists,
+  .aml-deck__flow {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="aml-analisis">
+    <header class="aml-analisis__top">
+      <div class="aml-analisis__brand">
+        <img src="./mdc-navbar-logo.svg" alt="Aethereun">
+        <i></i>
+        <img src="./LOGO%20TULANA.svg" alt="Tulana" class="aml-analisis__brand-partner">
+      </div>
+      <div class="aml-analisis__top-actions">
+        <p>Análisis público · sin sesión</p>
+        <button type="button" class="aml-analisis__slides-btn" id="open-slides">Slides</button>
+      </div>
+    </header>
+
+    <main class="aml-analisis__main">
+      <section class="aml-analisis__hero">
+        <p>TESTAFIN · Manual PLD/FT · 220 páginas</p>
+        <h1>Qué cubre el sistema frente al manual de prevención de lavado</h1>
+        <span>El motor identifica al acreditado, cruza listas AML en el KYC y opera el crédito. El programa de cumplimiento de TESTAFIN —reportes UIF, Oficial de Cumplimiento y metodología de riesgo— sigue siendo de la entidad.</span>
+      </section>
+
+      <section class="aml-analisis__stats">
+        <article><span class="aml-analisis-ico">⌾</span><strong>Identidad y listas</strong><p>El KYC no solo toma la INE. Cruza a la persona contra las seis listas restrictivas del flujo PLD antes de soltar el expediente.</p></article>
+        <article><span class="aml-analisis-ico">▣</span><strong>Crédito y cobranza</strong><p>MDC arma la solicitud, guarda documentos, aplica reglas y sigue pagos. Eso es originación, no un monitor de operaciones inusuales.</p></article>
+        <article><span class="aml-analisis-ico">⌂</span><strong>Programa PLD de TESTAFIN</strong><p>Reportes a la Secretaría, comité, capacitación y lista de personas bloqueadas no viven en el motor. Los resuelve el Oficial de Cumplimiento.</p></article>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Qué significan UBO, PEP y conservación</h2>
+        <p class="aml-analisis__lead">Tres palabras del manual. PEP ya lo valida el KYC. UBO y conservación son otra cosa.</p>
+        <div class="aml-analisis-split aml-analisis-glossary">
+          <article><span class="aml-analisis-ico">✓</span><p>Ya lo valida el KYC</p><h3>PEP · Persona políticamente expuesta</h3><span>Alguien con un cargo público relevante, o un familiar cercano. El KYC lo cruza contra la lista PEP nacional. Si hay match, la validación lo marca.</span></article>
+          <article><span class="aml-analisis-ico">◉</span><p>Parcial · persona moral</p><h3>UBO · propietario real</h3><span>Ultimate Beneficial Owner: quién manda de verdad en una empresa. Suele ser quien tiene 25% o más. KYB pide esos accionistas; no arma el expediente legal completo de beneficiario controlador.</span></article>
+          <article><span class="aml-analisis-ico">▤</span><p>Parcial · archivo</p><h3>Conservación</h3><span>Guardar INE, contratos y soportes el tiempo que pide la ley y poder entregarlos a CNBV. MDC almacena el expediente de crédito; no define retención ni destrucción controlada.</span></article>
+        </div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Reparto visual de cobertura</h2>
+        <p class="aml-analisis__lead">Lectura rápida: el sistema cubre identidad, listas y crédito. TESTAFIN cubre reportes y gobierno PLD.</p>
+        <div class="aml-analisis-chart"><div class="aml-analisis-chart__bars">
+          <div class="aml-analisis-chart__row"><span>Identidad + listas KYC (con PEP)</span><b class="is-ok" style="width:92%"></b><em>Cubierto</em></div>
+          <div class="aml-analisis-chart__row"><span>Expediente y pagos</span><b class="is-ok" style="width:78%"></b><em>Cubierto</em></div>
+          <div class="aml-analisis-chart__row"><span>UBO y conservación de expediente</span><b class="is-mid" style="width:42%"></b><em>Parcial</em></div>
+          <div class="aml-analisis-chart__row"><span>Reportes UIF y SITI</span><b class="is-out" style="width:10%"></b><em>Entidad</em></div>
+          <div class="aml-analisis-chart__row"><span>Oficial, comité y capacitación</span><b class="is-out" style="width:8%"></b><em>Entidad</em></div>
+        </div><ul class="aml-analisis-chart__legend"><li><i class="is-ok"></i>Sistema</li><li><i class="is-mid"></i>Apoyo parcial</li><li><i class="is-out"></i>TESTAFIN</li></ul></div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Cómo entra el cliente</h2>
+        <p class="aml-analisis__lead">Del alta en MDC al cobro. El cruce AML ocurre dentro del KYC, no al final del crédito.</p>
+        <ol class="aml-analisis-flow">
+          <li><span class="aml-analisis-ico">▤</span><em>01</em><strong>Alta en MDC</strong><span>CURP, correo, teléfono y producto</span></li>
+          <li><span class="aml-analisis-ico">◉</span><em>02</em><strong>KYC</strong><span>Auth, INE, liveness y listas AML</span></li>
+          <li><span class="aml-analisis-ico">▤</span><em>03</em><strong>Documentos</strong><span>Nómina, domicilio y cruce de datos</span></li>
+          <li><span class="aml-analisis-ico">☷</span><em>04</em><strong>Reglas</strong><span>Decisión de crédito sobre el expediente</span></li>
+          <li><span class="aml-analisis-ico">$</span><em>05</em><strong>Pagos</strong><span>Calendario, matching y cobranza</span></li>
+        </ol>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Qué revisa el KYC en listas</h2>
+        <p class="aml-analisis__lead">La persona identificada se compara con las mismas fuentes que el módulo PLD/AML nombra en listas restrictivas.</p>
+        <div class="aml-analisis-kyc">
+          <div class="aml-analisis-kyc__person"><span class="aml-analisis-ico">◉</span><p>Solicitante</p><strong>CURP · INE · nombre</strong><span>Identidad verificada</span></div>
+          <div class="aml-analisis-kyc__arrow"><b></b></div>
+          <div class="aml-analisis-kyc__engine"><span class="aml-analisis-ico">◌</span><p>Motor KYC</p><strong>Verificación AML</strong><span>Consulta simultánea</span></div>
+          <div class="aml-analisis-kyc__arrow"><b></b></div>
+          <ul class="aml-analisis-kyc__lists"><li>☷ OFAC - Lista SDN</li><li>☷ Consejo de Seguridad ONU</li><li>☷ SAT 69-B</li><li>☷ PEP Nacional</li><li>☷ UIF - Personas bloqueadas</li><li>☷ Interpol - Notificación roja</li></ul>
+        </div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Dónde termina el motor y empieza TESTAFIN</h2>
+        <div class="aml-analisis-split">
+          <article><span class="aml-analisis-ico">▣</span><p>Sistema (MDC + KYC)</p><h3>Identificar y operar</h3><ul><li>Conocer quién es el acreditado</li><li>Cruzar listas AML en el KYC</li><li>Integrar el expediente de crédito</li><li>Cobrar y dar seguimiento a cuotas</li></ul></article>
+          <article><span class="aml-analisis-ico">!</span><p>TESTAFIN</p><h3>Prevenir, detectar y reportar</h3><ul><li>Dictaminar operaciones inusuales</li><li>Enviar reportes por SITI a CNBV/UIF</li><li>Clasificar riesgo Alto / Medio / Bajo</li><li>Capacitar y designar Oficial de Cumplimiento</li></ul></article>
+        </div>
+      </section>
+
+      <section class="aml-analisis__block">
+        <h2>Capítulo 15 · sistema automatizado</h2>
+        <p class="aml-analisis__lead">El manual pide un sistema que conserve expedientes, alerte desviaciones y transmita reportes. No es un conteo de casillas: son tres capas distintas.</p>
+        <div class="aml-analisis-groups">
+          <article class="aml-analisis-groups__card is-ok"><span class="aml-analisis-ico">✓</span><h3>Lo que ya hace el KYC y MDC</h3><ul><li>Conservar y consultar el expediente del acreditado</li><li>Verificar datos y documentos no presenciales</li><li>Cruzar OFAC, ONU, SAT 69-B, PEP, UIF e Interpol</li><li>Ver cuotas y cobranza del cliente</li></ul></article>
+          <article class="aml-analisis-groups__card is-mid"><span class="aml-analisis-ico">◐</span><h3>Lo que el motor apoya a medias</h3><ul><li>Agrupar contratos del mismo cliente</li><li>Bitácora operativa</li><li>Insumos para metodología de riesgo</li></ul></article>
+          <article class="aml-analisis-groups__card is-out"><span class="aml-analisis-ico">×</span><h3>Lo que TESTAFIN resuelve fuera del motor</h3><ul><li>Transmitir reportes a SHCP/CNBV</li><li>Alertas por cambio de perfil transaccional</li><li>Histórico y dictamen de inusuales</li><li>Canal para el Oficial de Cumplimiento</li></ul></article>
+        </div>
+      </section>
+
+      <section class="aml-analisis__grid3">
+        <article><h2><span class="aml-analisis-ico">✓</span>Sí abarcamos</h2><ul><li><em>9.14 · 9.2</em><strong>Identificación no presencial</strong><span>KYC registra correo, teléfono, CURP e INE, y verifica identidad con liveness.</span></li><li><em>15.2 · listas</em><strong>Cruce AML en el KYC, incluido PEP</strong><span>Consulta OFAC, ONU, SAT 69-B, PEP nacional, UIF e Interpol.</span></li><li><em>9.18 · 9.20</em><strong>Expediente de originación</strong><span>MDC guarda nómina, extracto, domicilio y cruces contra KYC.</span></li><li><em>15.2</em><strong>Consulta del cliente y operaciones</strong><span>Detalle de identidad, documentos, cuotas y cobranza.</span></li></ul></article>
+        <article><h2><span class="aml-analisis-ico">◐</span>Apoya, no cumple solo</h2><ul><li><strong>Propietario real / UBO</strong><span>KYB captura accionistas con 25% o más, pero no sustituye el expediente legal completo.</span></li><li><strong>Geolocalización</strong><span>Existe mapa de sucursales, no geolocalización del dispositivo al firmar.</span></li><li><strong>Conservación legal</strong><span>No hay política de 5 o 10 años ni destrucción controlada.</span></li></ul></article>
+        <article><h2><span class="aml-analisis-ico">×</span>Fuera del motor</h2><ul><li><strong>Reportes a la UIF</strong><span>Los envía el Oficial de Cumplimiento de TESTAFIN por SITI.</span></li><li><strong>Perfil transaccional PLD</strong><span>MDC ve pagos de crédito, no un perfil de lavado.</span></li><li><strong>Gobierno PLD</strong><span>Comité, capacitación anual, auditoría y lista de bloqueadas son de la entidad.</span></li></ul></article>
+      </section>
+    </main>
+  </div>
+
+  <div class="aml-deck" id="deck" role="dialog" aria-modal="true" aria-label="Presentación PLD/AML" hidden>
+    <div class="aml-deck__bar"><p>Slides · cobertura PLD</p><span id="slide-count"></span><button type="button" id="close-slides">Salir</button></div>
+    <div class="aml-deck__stage" id="slide-stage"></div>
+    <div class="aml-deck__nav"><button type="button" id="previous-slide">Anterior</button><div class="aml-deck__dots" id="slide-dots"></div><button type="button" id="next-slide">Siguiente</button></div>
+  </div>
+
+  <script>
+    const slides = [
+      ['TESTAFIN · Manual PLD/FT', 'Qué cubrimos frente al manual de prevención de lavado', 'El KYC identifica y cruza listas AML, incluido PEP. MDC opera el crédito. TESTAFIN reporta a la UIF.'],
+      ['Tres capas', 'Identidad, crédito y programa PLD', '<ul class="aml-deck__cards"><li><strong>Identidad y listas</strong><span>KYC verifica INE y cruza OFAC, ONU, SAT 69-B, PEP, UIF e Interpol.</span></li><li><strong>Crédito y cobranza</strong><span>MDC arma expediente, reglas, cuotas y cobranza.</span></li><li><strong>Programa TESTAFIN</strong><span>Reportes UIF, Oficial de Cumplimiento y capacitación.</span></li></ul>'],
+      ['Palabras del manual', 'PEP sí. UBO y conservación, a medias', '<ul class="aml-deck__cards"><li><em>Cubierto</em><strong>PEP</strong><span>El KYC la marca si hay coincidencia.</span></li><li><em>Parcial</em><strong>UBO</strong><span>KYB lo captura, no cierra el expediente legal.</span></li><li><em>Parcial</em><strong>Conservación</strong><span>MDC almacena; TESTAFIN define la política.</span></li></ul>'],
+      ['Origen', 'El cruce AML ocurre en el KYC', '<ol class="aml-deck__flow"><li><em>01</em><strong>Alta en MDC</strong><span>CURP, correo, teléfono y producto</span></li><li><em>02</em><strong>KYC</strong><span>Auth, INE, liveness y listas AML</span></li><li><em>03</em><strong>Documentos</strong><span>Nómina y domicilio</span></li><li><em>04</em><strong>Reglas</strong><span>Decisión de crédito</span></li><li><em>05</em><strong>Pagos</strong><span>Calendario y cobranza</span></li></ol>'],
+      ['Validación KYC', 'Listas que sí consultamos', '<ul class="aml-deck__lists"><li>OFAC - Lista SDN</li><li>Consejo de Seguridad ONU</li><li>SAT 69-B</li><li>PEP Nacional</li><li>UIF - Personas bloqueadas</li><li>Interpol - Notificación roja</li></ul>'],
+      ['Cierre', 'Cubrimos originación y listas. No sustituimos a la UIF', 'El producto identifica al acreditado, valida PEP y las demás listas, y opera el crédito. El Oficial de Cumplimiento sigue siendo de TESTAFIN.']
+    ];
+    const deck = document.getElementById('deck');
+    const stage = document.getElementById('slide-stage');
+    const count = document.getElementById('slide-count');
+    const dots = document.getElementById('slide-dots');
+    const previous = document.getElementById('previous-slide');
+    const next = document.getElementById('next-slide');
+    let index = 0;
+    function renderSlide() {
+      const slide = slides[index];
+      const content = slide[2].startsWith('<') ? slide[2] : `<span>${slide[2]}</span>`;
+      stage.innerHTML = `<section class="aml-deck__slide"><p>${slide[0]}</p><h2>${slide[1]}</h2>${content}</section>`;
+      count.textContent = `${index + 1} / ${slides.length}`;
+      previous.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+      dots.innerHTML = slides.map((_, i) => `<button type="button" class="${i === index ? 'is-active' : ''}" aria-label="Ir a la diapositiva ${i + 1}"></button>`).join('');
+      [...dots.children].forEach((dot, i) => dot.addEventListener('click', () => { index = i; renderSlide(); }));
+    }
+    function openDeck() { index = 0; renderSlide(); deck.hidden = false; }
+    function closeDeck() { deck.hidden = true; }
+    document.getElementById('open-slides').addEventListener('click', openDeck);
+    document.getElementById('close-slides').addEventListener('click', closeDeck);
+    previous.addEventListener('click', () => { if (index > 0) { index--; renderSlide(); } });
+    next.addEventListener('click', () => { if (index < slides.length - 1) { index++; renderSlide(); } });
+    window.addEventListener('keydown', (event) => {
+      if (deck.hidden) return;
+      if (event.key === 'Escape') closeDeck();
+      if (event.key === 'ArrowLeft' && index > 0) { index--; renderSlide(); }
+      if ((event.key === 'ArrowRight' || event.key === ' ') && index < slides.length - 1) { event.preventDefault(); index++; renderSlide(); }
+    });
+  </script>
+</body>
+</html>

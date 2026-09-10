@@ -1,0 +1,35 @@
+.zelify-input {
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Doble clase = mayor especificidad que resets sueltos en otros CSS */
+.zelify-input.zelify-input--surface {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(26, 39, 64, 0.18);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #0f172a;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.zelify-input.zelify-input--surface:focus {
+  outline: none;
+  border-color: var(--zelify-brand-green);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 0 0 2px rgba(var(--zelify-brand-green-rgb), 0.35);
+}
+
+.zelify-input.zelify-input--ghost {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}

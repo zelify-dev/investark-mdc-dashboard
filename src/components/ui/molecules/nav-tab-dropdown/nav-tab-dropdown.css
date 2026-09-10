@@ -1,0 +1,70 @@
+/* Contenedor del trigger (el menú en portal no depende del overflow del nav). */
+.zelify-nav-tab-dropdown {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.zelify-nav-tab.zelify-nav-tab--with-menu {
+  gap: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: -10px;
+  margin-right: -10px;
+  border-radius: 6px;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+/* Hover / abierto — mismo verde que botones del navbar */
+.zelify-nav-tab-dropdown:hover > .zelify-nav-tab--with-menu,
+.zelify-nav-tab-dropdown.is-open > .zelify-nav-tab--with-menu {
+  background: var(--zelify-brand-green);
+  color: var(--zelify-brand-on-green);
+}
+
+.zelify-nav-tab-dropdown:hover > .zelify-nav-tab--with-menu.is-active::after,
+.zelify-nav-tab-dropdown.is-open > .zelify-nav-tab--with-menu.is-active::after {
+  background: var(--zelify-brand-on-green);
+}
+
+/* Panel en portal: solo estilos visuales; posición vía inline (fixed) */
+.zelify-nav-tab-dropdown__panel--portal {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #1a2332;
+  box-shadow: 0 16px 40px rgba(6, 14, 28, 0.35);
+  max-width: min(320px, calc(100vw - 24px));
+}
+
+.zelify-nav-tab-dropdown__item {
+  display: block;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(248, 250, 252, 0.95);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 120ms ease;
+}
+
+.zelify-nav-tab-dropdown__item:hover {
+  background: rgba(var(--zelify-brand-green-rgb), 0.18);
+  color: #ffffff;
+}
+
+.zelify-nav-tab-dropdown__separator {
+  height: 1px;
+  margin: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  flex-shrink: 0;
+}

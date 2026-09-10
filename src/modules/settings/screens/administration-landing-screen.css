@@ -1,0 +1,131 @@
+.zelify-admin-landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* Hub Administration: fondo gris muy claro. */
+  background: #f8f9fb;
+}
+
+.zelify-admin-landing__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.zelify-admin-landing__inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.zelify-admin-landing__header {
+  margin-bottom: 20px;
+}
+
+.zelify-admin-landing__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #271a59;
+}
+
+.zelify-admin-landing__layout {
+  display: block;
+}
+
+.zelify-admin-landing__main {
+  min-width: 0;
+}
+
+/* Grid: misma altura por fila (la fila mide lo que pide la tarjeta más alta; el texto corto deja hueco abajo, alineado). */
+.zelify-admin-landing__card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zelify-admin-landing__card-cell {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+@media (max-width: 720px) {
+  .zelify-admin-landing__card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zelify-admin-landing__card {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  padding: 24px 26px 26px;
+  background: #fff;
+  border: 1px solid #eceae4;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(39, 26, 89, 0.04);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.zelify-admin-landing__card:hover {
+  border-color: rgba(26, 39, 64, 0.22);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.zelify-admin-landing__card--featured {
+  border-color: rgba(13, 27, 61, 0.2);
+  box-shadow: 0 2px 8px rgba(13, 27, 61, 0.06);
+}
+
+.zelify-admin-landing__card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: #edf2f7;
+  color: #2d3748;
+}
+
+.zelify-admin-landing__card-icon--featured {
+  background: #edf2f7;
+  color: #1a365d;
+}
+
+.zelify-admin-landing__card-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.zelify-admin-landing__card-title--featured {
+  color: #1a202c;
+}
+
+.zelify-admin-landing__card-desc {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #718096;
+}

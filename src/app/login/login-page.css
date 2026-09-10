@@ -1,0 +1,345 @@
+.zelify-login {
+  --login-navy: #271a59;
+  --login-navy-deep: #1a1040;
+  --login-navy-mid: #3d2a7a;
+  --login-navy-soft: #5b4a9a;
+  --login-card: #ffffff;
+  --login-ink: #111111;
+  --login-muted: #6b6578;
+  --login-line: #e6e3ee;
+  --login-field: #f7f6fa;
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 24px 16px;
+  background:
+    radial-gradient(1200px 720px at 12% -10%, rgba(120, 92, 196, 0.38), transparent 58%),
+    radial-gradient(900px 640px at 92% 110%, rgba(61, 42, 122, 0.55), transparent 52%),
+    linear-gradient(160deg, #1a1040 0%, #271a59 42%, #3d2a7a 72%, #1f1450 100%);
+  font-family: "Nata Sans", "Plus Jakarta Sans", sans-serif;
+}
+
+.zelify-login__backdrop {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.zelify-login__halftone-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.zelify-login__halftone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 2px 2px, rgba(232, 224, 255, 0.28) 1.2px, transparent 0);
+  background-size: 28px 28px;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  animation: zelify-login-halftone 8s ease-in-out infinite;
+}
+
+.zelify-login__fade {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(26, 16, 64, 0) 55%, rgba(26, 16, 64, 0.88) 100%);
+}
+
+.zelify-login__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255, 255, 255, 0.08), transparent 55%);
+}
+
+@keyframes zelify-login-halftone {
+  0%,
+  100% {
+    opacity: 0.18;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.zelify-login__lang {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  padding: 8px 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.zelify-login__lang:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.zelify-login__card-wrap {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+}
+
+.zelify-login__card {
+  position: relative;
+  padding: 36px 32px 32px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  background: var(--login-card);
+  box-shadow:
+    0 24px 60px rgba(16, 8, 40, 0.28),
+    0 2px 8px rgba(16, 8, 40, 0.12);
+}
+
+.zelify-login__busy {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(6px);
+}
+
+.zelify-login__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #d9d4e8;
+  border-top-color: var(--login-navy);
+  border-radius: 50%;
+  animation: zelify-login-spin 0.8s linear infinite;
+}
+
+.zelify-login__busy-text {
+  color: var(--login-navy);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.zelify-login__brands {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.zelify-login__logo {
+  display: block;
+  object-fit: contain;
+}
+
+.zelify-login__logo--product {
+  width: 168px;
+  height: 28px;
+}
+
+.zelify-login__logo--client {
+  width: 132px;
+  height: 36px;
+}
+
+.zelify-login__logo--ink {
+  filter: brightness(0);
+}
+
+.zelify-login__brand-divider {
+  width: 1px;
+  height: 28px;
+  background: #d4d0de;
+}
+
+.zelify-login__subtitle {
+  margin: 0 0 24px;
+  color: var(--login-muted);
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.zelify-login__otp-title {
+  margin: 0 0 8px;
+  color: var(--login-ink);
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.zelify-login__note {
+  margin: -8px 0 20px;
+  color: #7a7488;
+  font-size: 12px;
+  text-align: center;
+}
+
+.zelify-login__alert {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.zelify-login__alert--error {
+  border: 1px solid #f0c4c2;
+  background: #fdf2f2;
+  color: #b42318;
+}
+
+.zelify-login__alert--warn {
+  border: 1px solid #f3d19a;
+  background: #fff8eb;
+  color: #8a5a10;
+}
+
+.zelify-login .zelify-login__fields label {
+  color: #3d3850 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.zelify-login .zelify-login__fields input[type="email"],
+.zelify-login .zelify-login__fields input[type="password"],
+.zelify-login .zelify-login__fields input[type="text"] {
+  height: 48px;
+  padding: 0 16px !important;
+  border: 1.5px solid var(--login-line) !important;
+  border-radius: 12px !important;
+  background: var(--login-field) !important;
+  box-shadow: none !important;
+  color: var(--login-ink) !important;
+  font-size: 15px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.zelify-login .zelify-login__fields input::placeholder {
+  color: #9a94a8 !important;
+}
+
+.zelify-login .zelify-login__fields input:focus {
+  border-color: var(--login-navy) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(39, 26, 89, 0.12) !important;
+}
+
+.zelify-login .zelify-login__fields input.is-invalid,
+.zelify-login .zelify-login__fields .is-invalid input {
+  border-color: #d92d20 !important;
+}
+
+.zelify-login__field-error {
+  margin: -8px 0 14px;
+  color: #d92d20;
+  font-size: 12px;
+}
+
+.zelify-login__submit {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  margin: 8px 0 20px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--login-navy);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.zelify-login__submit:hover:not(:disabled) {
+  background: #35246f;
+}
+
+.zelify-login__submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.zelify-login__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.zelify-login__footer {
+  margin: 0;
+  color: var(--login-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.zelify-login__footer a,
+.zelify-login__back {
+  color: var(--login-navy);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.zelify-login__footer a:hover,
+.zelify-login__back:hover {
+  text-decoration: underline;
+}
+
+.zelify-login__back {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+@keyframes zelify-login-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 520px) {
+  .zelify-login__card {
+    padding: 28px 20px 24px;
+  }
+
+  .zelify-login__brands {
+    gap: 12px;
+  }
+
+  .zelify-login__logo--product {
+    width: 132px;
+    height: 22px;
+  }
+
+  .zelify-login__logo--client {
+    width: 108px;
+    height: 30px;
+  }
+}

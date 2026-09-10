@@ -1,0 +1,33 @@
+.zelify-tasks-settings {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.zelify-tasks-settings__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.zelify-tasks-settings__sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.zelify-tasks-settings__link {
+  border: 0;
+  background: none;
+  color: #2563eb;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-right: 4px;
+}
+
+.zelify-tasks-settings__link:hover {
+  text-decoration: underline;
+}

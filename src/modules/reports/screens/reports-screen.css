@@ -1,0 +1,113 @@
+.zelify-reports-page__inner {
+  padding-bottom: 120px;
+}
+
+.zelify-report-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 980px) {
+  .zelify-report-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.zelify-report-card {
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  padding: 14px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+
+.zelify-report-card h3 {
+  margin: 0 0 12px;
+  font-size: 0.98rem;
+}
+
+.zelify-report-card span {
+  font-size: 12px;
+  color: #64748b;
+  display: block;
+}
+
+.zelify-report-card strong {
+  margin-top: 4px;
+  display: block;
+  font-size: 1.4rem;
+  color: #0f172a;
+}
+
+.zelify-report-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 980px) {
+  .zelify-report-charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zelify-report-pdf-preview {
+  border: 1px solid rgba(26, 39, 64, 0.14);
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 14px;
+  min-height: 220px;
+}
+
+.zelify-report-pdf-preview__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.zelify-report-pdf-preview__line {
+  height: 10px;
+  border-radius: 6px;
+  background: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.zelify-report-pdf-preview__line.short {
+  width: 68%;
+}
+
+.zelify-report-pdf-preview__meta {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.zelify-report-prompt-card {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.zelify-report-pdf-preview__body {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #334155;
+}
+
+.zelify-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.zelify-report-table th,
+.zelify-report-table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.1);
+}

@@ -1,0 +1,195 @@
+.zelify-settings-workspace {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-settings-workspace__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.zelify-settings-workspace__head h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.zelify-fields-settings__lead {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.zelify-fields-settings__summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 16px;
+  border: 1px solid rgba(26, 39, 64, 0.08);
+  background: rgba(248, 250, 252, 0.92);
+  border-radius: 12px;
+}
+
+.zelify-fields-settings__summary p {
+  margin: 0;
+  color: #475569;
+}
+
+.zelify-fields-settings__usage {
+  min-width: 260px;
+  color: #475569;
+}
+
+.zelify-fields-settings__modal-note {
+  border-radius: 10px;
+  background: rgba(var(--zelify-brand-green-rgb), 0.1);
+  color: #1e293b;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+}
+
+.zelify-settings-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zelify-settings-tabs button {
+  border: 1px solid rgba(26, 39, 64, 0.14);
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.zelify-settings-tabs button.is-active {
+  border-color: rgba(var(--zelify-brand-green-rgb), 0.55);
+  background: rgba(var(--zelify-brand-green-rgb), 0.12);
+}
+
+.zelify-switch {
+  position: relative;
+  display: inline-flex;
+  width: 38px;
+  height: 22px;
+}
+
+.zelify-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.zelify-switch span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.zelify-switch span::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: #fff;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.15s ease;
+}
+
+.zelify-switch input:checked + span {
+  background: #16a34a;
+}
+
+.zelify-switch input:checked + span::after {
+  transform: translateX(16px);
+}
+
+.zelify-icon-btn {
+  border: 1px solid rgba(26, 39, 64, 0.15);
+  background: #fff;
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 6px;
+}
+
+.zelify-icon-btn.danger {
+  color: #b91c1c;
+}
+
+.zelify-settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zelify-settings-modal {
+  width: min(520px, calc(100vw - 32px));
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  padding: 0 16px 16px;
+  overflow: hidden;
+}
+
+.zelify-settings-modal__head {
+  margin: 0 -16px 14px;
+  padding: 18px 16px 16px;
+  background-color: #271a59;
+  background-image: url("/mdc-hero-banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.zelify-settings-modal__head p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.zelify-settings-modal__head h2 {
+  margin: 4px 0 0;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.zelify-settings-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zelify-settings-modal__footer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.zelify-fields-native-select {
+  height: 40px;
+  border: 1px solid rgba(26, 39, 64, 0.14);
+  border-radius: 8px;
+  padding: 0 10px;
+}

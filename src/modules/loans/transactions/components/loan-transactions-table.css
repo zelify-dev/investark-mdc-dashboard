@@ -1,0 +1,24 @@
+.zelify-loan-tx-table {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.zelify-loan-tx-table__account {
+  display: flex;
+  flex-direction: column;
+}
+
+.zelify-loan-tx-table__holder {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.zelify-loan-tx-table__acc-id {
+  font-size: 12px;
+  color: #64748b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+

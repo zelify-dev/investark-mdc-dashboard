@@ -1,0 +1,29 @@
+.zelify-customer-segment-page__subtitle {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #64748b;
+  line-height: 1.45;
+  max-width: 720px;
+}
+
+.zelify-customer-segment-page__search {
+  margin: 20px 0 4px;
+  max-width: 440px;
+}
+
+.zelify-customer-segment-page__search .zelify-input {
+  width: 100%;
+}
+
+.zelify-customer-segment-page__summary {
+  margin-top: 20px;
+}
+
+.zelify-customer-segment-page__filters {
+  margin-top: 8px;
+}
+
+.zelify-customer-segment-page__table {
+  margin-top: 16px;
+}

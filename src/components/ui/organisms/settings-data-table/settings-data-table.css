@@ -1,0 +1,174 @@
+.zelify-settings-data-table-wrap {
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.zelify-settings-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.zelify-settings-data-table thead {
+  background: #f8fafc;
+}
+
+.zelify-settings-data-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.zelify-settings-data-table th.is-lower {
+  font-size: 12px;
+  text-transform: lowercase;
+}
+
+.zelify-settings-data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(26, 39, 64, 0.06);
+  color: #1e293b;
+}
+
+.zelify-settings-data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.zelify-settings-data-table td.is-numeric {
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.zelify-settings-data-table td.is-actions {
+  width: 120px;
+  text-align: right;
+}
+
+.zelify-settings-data-table__actions-col {
+  width: 120px;
+}
+
+/* —— Variant: listados de clientes / unidades —— */
+.zelify-settings-data-table-wrap--clients {
+  border-radius: 12px;
+  border-color: rgba(26, 39, 64, 0.08);
+}
+
+.zelify-settings-data-table--clients thead th {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: #6b778d;
+  background: rgba(26, 39, 64, 0.02);
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.zelify-settings-data-table--clients tbody td {
+  font-size: 14px;
+  color: #0a1538;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.zelify-settings-data-table--clients tbody tr:hover td {
+  background: rgba(var(--zelify-brand-green-rgb), 0.08);
+}
+
+.zelify-settings-data-table--clients tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* —— Variant: resumen de cuentas (detalle cliente) —— */
+.zelify-settings-data-table-wrap--accounts .zelify-settings-data-table tbody tr.is-total td {
+  border-top: 1px solid rgba(26, 39, 64, 0.1);
+  font-weight: 700;
+  background: rgba(26, 39, 64, 0.02);
+}
+
+/* Pie de tabla (paginación) reutilizable */
+.zelify-data-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(26, 39, 64, 0.02);
+  border-top: 1px solid rgba(26, 39, 64, 0.08);
+}
+
+.zelify-data-table-footer__info {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.zelify-data-table-footer__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zelify-data-table-footer__pages {
+  display: flex;
+  gap: 4px;
+}
+
+.zelify-pagination-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.zelify-pagination-btn:hover:not(:disabled) {
+  background: rgba(26, 39, 64, 0.04);
+  color: #0d1b3d;
+}
+
+.zelify-pagination-btn.is-active {
+  background: #ffffff;
+  border-color: rgba(13, 27, 61, 0.08);
+  color: #0d1b3d;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.zelify-pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.zelify-data-table-footer__page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zelify-data-table-footer__page-size-value {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.zelify-table-balance--negative {
+  color: #b91c1c;
+  font-weight: 600;
+}

@@ -1,0 +1,152 @@
+.zelify-access-settings {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.zelify-access-settings__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.zelify-access-settings__sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.zelify-access-settings__toolbar {
+  margin-bottom: 12px;
+}
+
+.zelify-access-settings__toolbar input {
+  max-width: 420px;
+}
+
+.zelify-access-settings__link {
+  border: 0;
+  background: none;
+  color: #2563eb;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-right: 4px;
+}
+
+.zelify-access-settings__link:hover {
+  text-decoration: underline;
+}
+
+.zelify-access-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.66);
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.zelify-access-modal {
+  width: min(980px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #dbe3ee;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.28);
+}
+
+.zelify-access-modal__header {
+  padding: 20px 22px 18px;
+  background-color: #271a59;
+  background-image: url("/mdc-hero-banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 0;
+}
+
+.zelify-access-modal__header p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.zelify-access-modal__header h2 {
+  margin: 4px 0 0;
+  font-size: 22px;
+  color: #fff;
+}
+
+.zelify-access-modal__header span {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+}
+
+.zelify-access-modal__body {
+  padding: 18px 22px;
+  display: grid;
+  gap: 16px;
+}
+
+.zelify-access-modal__section {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.zelify-access-modal__section h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.zelify-access-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.zelify-access-modal__checkbox-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.zelify-access-modal__error {
+  margin: 0;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.zelify-access-modal__footer {
+  border-top: 1px solid #edf2f7;
+  padding: 14px 22px 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .zelify-access-modal__grid {
+    grid-template-columns: 1fr;
+  }
+}

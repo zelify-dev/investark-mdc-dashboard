@@ -1,0 +1,73 @@
+.zelify-integration-gateway-settings {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.zelify-integration-gateway-settings__field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.zelify-integration-gateway-settings__label-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zelify-integration-gateway-settings__label-row .zelify-field-label {
+  margin: 0;
+}
+
+.zelify-integration-gateway-settings__help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.zelify-integration-gateway-settings__help:hover {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.zelify-integration-gateway-settings__select.zelify-select {
+  width: 100%;
+  max-width: 400px;
+}
+
+.zelify-integration-gateway-settings__divider {
+  width: 100%;
+  max-width: 400px;
+  height: 0;
+  margin-top: 28px;
+  margin-bottom: 20px;
+  border: none;
+  border-top: 1px solid rgba(26, 39, 64, 0.12);
+}
+
+.zelify-integration-gateway-settings__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}

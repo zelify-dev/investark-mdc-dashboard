@@ -1,0 +1,20 @@
+.zelify-group-table {
+  width: 100%;
+}
+
+.zelify-group-table .zelify-data-table-footer {
+  margin-top: 1rem;
+}
+
+.zelify-group-table__crud {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.zelify-group-table__crud-btn {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}

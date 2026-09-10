@@ -1,0 +1,43 @@
+.zelify-settings-workspace {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-settings-workspace__title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.zelify-settings-workspace__subtitle {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.zelify-risk-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.zelify-risk-pill.is-low {
+  background: #16a34a;
+  color: #fff;
+}
+
+.zelify-risk-pill.is-mid {
+  background: #d97706;
+  color: #fff;
+}
+
+.zelify-risk-pill.is-high {
+  background: #dc2626;
+  color: #fff;
+}

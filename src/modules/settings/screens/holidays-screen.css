@@ -1,0 +1,102 @@
+.zelify-holidays {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.zelify-holidays__main {
+  flex: 1;
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 32px;
+}
+
+.zelify-holidays__section {
+  margin-bottom: 32px;
+}
+
+.zelify-holidays__day-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zelify-holidays__day-item {
+  margin: 0;
+}
+
+.zelify-holidays__add-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.zelify-holidays__add-btn.zelify-button {
+  padding: 8px 14px;
+  min-height: auto;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: #f1f5f9;
+  color: #334155;
+  border-color: rgba(26, 39, 64, 0.14);
+}
+
+.zelify-holidays__add-btn.zelify-button:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.zelify-holidays__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding: 12px 0;
+}
+
+.zelify-holidays__warning-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #4ade80, #22c55e);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 22px;
+  text-align: center;
+}
+
+.zelify-holidays__warning p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c2410c;
+  line-height: 1.45;
+}
+
+.zelify-holidays__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.zelify-holidays__save.zelify-button {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .zelify-holidays__save.zelify-button {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}

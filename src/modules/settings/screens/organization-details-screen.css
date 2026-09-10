@@ -1,0 +1,46 @@
+.zelify-org-details {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+.zelify-org-details__form {
+  max-width: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.zelify-org-details__field--full {
+  width: 100%;
+}
+
+.zelify-org-details__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+
+@media (max-width: 720px) {
+  .zelify-org-details__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zelify-org-details__help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #94a3b8;
+  cursor: help;
+  line-height: 0;
+}
+
+.zelify-org-details__help:hover {
+  color: #64748b;
+}

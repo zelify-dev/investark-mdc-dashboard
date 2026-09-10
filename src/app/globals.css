@@ -1,0 +1,46 @@
+/* Paleta de producto (morados MDC). Los tokens --zelify-brand-green* se mantienen por compatibilidad. */
+:root {
+  --zelify-brand-primary: #271a59;
+  --zelify-brand-primary-rgb: 39, 26, 89;
+  --zelify-brand-green: #271a59;
+  --zelify-brand-green-hover: #3a2a75;
+  --zelify-brand-green-active: #1f1638;
+  --zelify-brand-on-green: #ffffff;
+  --zelify-brand-green-rgb: 39, 26, 89;
+}
+
+html {
+  height: 100%;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fafaf9;
+  color: #271a59;
+  font-family: var(--font-nata-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body > * {
+  flex: 1;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

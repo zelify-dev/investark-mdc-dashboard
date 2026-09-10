@@ -1,0 +1,70 @@
+.zelify-tx-channels {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-tx-channels__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.zelify-tx-channels__table-wrap {
+  min-width: 0;
+}
+
+.zelify-tx-channels__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 500;
+  color: #0a1538;
+}
+
+.zelify-tx-channels__default-badge.zelify-badge {
+  background: #2563eb;
+  color: #fff;
+}
+
+.zelify-tx-channels__creator-link {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.zelify-tx-channels__creator-link:hover {
+  text-decoration: underline;
+}
+
+.zelify-tx-channels__active {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.zelify-tx-channels__active.is-off {
+  color: #64748b;
+}
+
+.zelify-tx-channels__active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  background: #22c55e;
+}
+
+.zelify-tx-channels__active.is-off .zelify-tx-channels__active-dot {
+  background: #94a3b8;
+}

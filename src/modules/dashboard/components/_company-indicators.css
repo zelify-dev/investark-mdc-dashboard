@@ -1,0 +1,16 @@
+:root ._fd-column{flex-direction:column;}
+:root ._gap-c-space-4{gap:var(--c-space-4);}
+:root ._col-color{color:var(--color);}
+:root ._fs-f-size-5{font-size:var(--f-size-5);}
+:root ._fw-700{font-weight:700;}
+:root ._fd-row{flex-direction:row;}
+:root ._fwr-wrap{flex-wrap:wrap;}
+:root ._gap-c-space-3{gap:var(--c-space-3);}
+:root ._gap-c-space-1{gap:var(--c-space-1);}
+:root ._col-gray11{color:var(--gray11);}
+:root ._fs-f-size-2{font-size:var(--f-size-2);}
+:root ._tt-uppercase{text-transform:uppercase;}
+:root ._fw-600{font-weight:600;}
+:root ._fs-f-size-6{font-size:var(--f-size-6);}
+:root ._fw-800{font-weight:800;}
+:root ._items-center{align-items:center;}

@@ -1,0 +1,39 @@
+.zelify-unit-table__empty {
+  text-align: center;
+  padding: 40px 16px !important;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.zelify-unit-table__name-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zelify-unit-table__grip {
+  flex-shrink: 0;
+  color: #94a3b8;
+}
+
+.zelify-unit-table__name-btn {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2563eb;
+  cursor: pointer;
+  text-align: left;
+}
+
+.zelify-unit-table__name-btn:hover {
+  text-decoration: underline;
+}
+
+.zelify-unit-table .zelify-settings-data-table th.is-numeric-header,
+.zelify-unit-table .zelify-settings-data-table td.is-numeric {
+  text-align: right;
+}

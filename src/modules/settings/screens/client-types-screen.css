@@ -1,0 +1,50 @@
+.zelify-client-types {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.zelify-client-types__main {
+  flex: 1;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+.zelify-client-types__toolbar {
+  margin-bottom: 16px;
+}
+
+.zelify-client-types__filter-field {
+  max-width: 260px;
+}
+
+.zelify-client-types__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zelify-client-types__default-badge.zelify-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #0d47a1;
+  background: rgba(13, 71, 161, 0.1);
+  border: 0;
+}
+
+.zelify-client-types__footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.zelify-client-types__footer-actions .zelify-button--primary {
+  min-width: 120px;
+}

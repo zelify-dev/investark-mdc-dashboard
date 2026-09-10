@@ -1,0 +1,700 @@
+{
+  "title": "Manual de usuario",
+  "subtitle": "Motor MDC · Tulana Finanzas",
+  "source": "docs/manuales/mdc-usuario/Manual_Usuario_MDC_Testafin.pdf",
+  "sections": [
+    {
+      "id": "manual-de-usuario",
+      "title": "Manual de usuario",
+      "page": 2,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Este documento describe el flujo operativo del Motor MDC para la creación de una solicitud de crédito, el proceso KYC del solicitante y la carga y análisis de documentación."
+        }
+      ]
+    },
+    {
+      "id": "1-plataforma-de-acceso",
+      "title": "1. Plataforma de acceso",
+      "page": 2,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El Motor MDC centraliza el registro y seguimiento de solicitudes de crédito, la verificación de identidad del solicitante y la gestión documental requerida para el análisis de la solicitud. URL de producción​ URL: tulana.aethereun.com/login"
+        }
+      ]
+    },
+    {
+      "id": "2-credenciales-de-acceso",
+      "title": "2. Credenciales de acceso",
+      "page": 2,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El acceso a MDC se realiza con las credenciales asignadas al usuario autorizado. Estas credenciales son personales y deben mantenerse bajo resguardo."
+        }
+      ]
+    },
+    {
+      "id": "3-solicitud-de-credito",
+      "title": "3. Solicitud de crédito",
+      "page": 2,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El proceso inicia con el alta manual de una nueva solicitud desde MDC. El usuario interno registra los datos requeridos para crear la solicitud y definir las condiciones del crédito."
+        },
+        {
+          "type": "step",
+          "text": "Paso 1. Abrir el alta manual"
+        },
+        {
+          "type": "paragraph",
+          "text": "Desde el módulo de solicitudes, seleccione la opción para crear una nueva solicitud. Se mostrará la ventana “Nueva solicitud - Alta manual”."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 1. Alta manual de una nueva solicitud.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-03-img-03.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 2. Completar los datos de la solicitud"
+        },
+        {
+          "type": "paragraph",
+          "text": "Registre ID (CURP), correo electrónico, teléfono, banco, producto, monto y plazo. Revise la información y seleccione “Crear solicitud”. Enlace de verificación KYC"
+        },
+        {
+          "type": "step",
+          "text": "Paso 3. Abrir o compartir el enlace"
+        },
+        {
+          "type": "paragraph",
+          "text": "MDC genera el acceso al proceso KYC. El enlace puede abrirse desde la computadora o copiarse para enviarlo al solicitante y continuar desde un dispositivo móvil. La pantalla observada indica una vigencia de 24 horas."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 2. Opciones para copiar o continuar el enlace de verificación.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-03-img-04.jpeg"
+        }
+      ]
+    },
+    {
+      "id": "4-kyc-validacion-y-verificacion-de-identidad",
+      "title": "4. KYC - Validación y verificación de identidad",
+      "page": 4,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El KYC se realiza en kyc.zelify.com y está compuesto por dos etapas consecutivas: Auth, para registro y validación de los medios de contacto; e Identity, para captura del documento y verificación de identidad. El proceso puede realizarse desde un teléfono celular o desde una computadora. Para la captura del documento y la verificación por vídeo, el dispositivo debe contar con cámara y permisos habilitados.​"
+        },
+        {
+          "type": "heading",
+          "text": "4.1 Auth - Registro y autenticación"
+        },
+        {
+          "type": "step",
+          "text": "Paso 1. Registrar el correo electrónico"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ingrese el correo electrónico del solicitante y seleccione “Continuar”."
+        },
+        {
+          "type": "step",
+          "text": "Paso 2. Verificar el correo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ingrese el código OTP enviado al correo electrónico y seleccione “Verificar”. Si es necesario, utilice la opción de reenvío cuando se encuentre disponible."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 3. Registro del correo.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-04-img-05.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 4. OTP enviado al correo.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-04-img-06.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 3. Registrar el número de teléfono"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ingrese el número telefónico. Para México, la interfaz muestra el prefijo +52. Seleccione “Continuar”."
+        },
+        {
+          "type": "step",
+          "text": "Paso 4. Verificar el teléfono"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ingrese el código OTP recibido por SMS y seleccione “Verificar”. La interfaz permite solicitar un nuevo SMS después del tiempo indicado."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 5. Registro del teléfono.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-05-img-07.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 6. OTP recibido por SMS.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-05-img-08.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 5. Completar el registro"
+        },
+        {
+          "type": "paragraph",
+          "text": "Finalizadas las verificaciones de correo y teléfono, complete el registro con la información requerida por Tulana. En el flujo observado se incluyen contraseña, CURP/INE, fecha de nacimiento, estado civil, información de cónyuge o pareja cuando corresponda, grado máximo de estudios y demás datos del perfil mostrados por la plataforma."
+        },
+        {
+          "type": "step",
+          "text": "Paso 6. Registrar referencias personales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Complete las tres referencias personales solicitadas. Para cada referencia se registra nombre completo, tipo de relación y número de teléfono. El formulario también incluye una referencia de ubicación."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 7. Completar perfil.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-06-img-09.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 8. Referencias personales.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-06-img-10.jpeg"
+        },
+        {
+          "type": "heading",
+          "text": "4.2 Identity - Validación y verificación de identidad"
+        },
+        {
+          "type": "step",
+          "text": "Paso 7. Aceptar términos e iniciar la verificación"
+        },
+        {
+          "type": "paragraph",
+          "text": "Una vez finalizado Auth, se inicia Identity. El solicitante debe aceptar la política de privacidad y los términos de servicio y seleccionar “Iniciar Verificación”."
+        },
+        {
+          "type": "step",
+          "text": "Paso 8. Iniciar la validación del documento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La plataforma presenta la credencial para votar emitida por el INE como documento de identidad oficial de México. Seleccione “Siguiente”."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 9. Inicio de Identity y aceptación de términos.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-07-img-11.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 10. Documento de identidad admitido.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-07-img-12.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 9. Capturar el anverso"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tome una fotografía de la parte frontal del documento. Procure que la credencial esté enfocada, completamente visible y dentro del recuadro indicado."
+        },
+        {
+          "type": "step",
+          "text": "Paso 10. Capturar y revisar el reverso"
+        },
+        {
+          "type": "paragraph",
+          "text": "Capture el reverso del documento. Revise la previsualización y confirme que esté completamente visible, enfocado y sin reflejos. Si la imagen es correcta, seleccione “Enviar”; de lo contrario, repita la captura."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 11. Captura del anverso del INE.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-08-img-13.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 12. Previsualización del reverso del INE.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-08-img-14.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 11. Procesamiento del documento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Después de enviar las imágenes del anverso y reverso, la plataforma procesa la información del documento. Espere a que esta etapa finalice para continuar."
+        },
+        {
+          "type": "step",
+          "text": "Paso 12. Verificación de identidad por video"
+        },
+        {
+          "type": "paragraph",
+          "text": "Una vez procesado el documento, el solicitante continúa con la verificación mediante video. Debe permitir el acceso a la cámara y seguir las instrucciones que la plataforma muestre durante la validación. Nota: No se dispone de una captura del procedimiento intermedio de video;"
+        },
+        {
+          "type": "step",
+          "text": "Paso 13. Confirmar la verificación exitosa"
+        },
+        {
+          "type": "paragraph",
+          "text": "Al concluir correctamente la validación, el KYC queda completado. En MDC el módulo KYC/KYB se muestra como “Verificación completa”."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 13. Estado KYC/KYB con verificación completa.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-09-img-15.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Resultado del KYC en MDC Desde el detalle del KYC, el usuario interno puede consultar el estado de la verificación, el resultado de INE/Liveness y la información obtenida durante el proceso."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 14. Detalle del KYC y datos verificados.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-10-img-16.jpeg"
+        }
+      ]
+    },
+    {
+      "id": "5-carga-documental",
+      "title": "5. Carga documental",
+      "page": 11,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Una vez completada la verificación de identidad, la solicitud continúa con la carga de los documentos requeridos. El módulo muestra el estado de cada categoría y el progreso de procesamiento."
+        },
+        {
+          "type": "step",
+          "text": "Paso 1. Abrir la carga de documentos"
+        },
+        {
+          "type": "paragraph",
+          "text": "Abra “Carga de Documentos”. El flujo observado contempla Nómina, Extracto Bancario y Comprobante de domicilio. Para nómina, la interfaz permite cargar archivos uno por uno o utilizar un PDF consolidado."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 15. Módulo de carga documental.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-11-img-17.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 2. Subir el documento"
+        },
+        {
+          "type": "paragraph",
+          "text": "En la categoría correspondiente seleccione “Subir PDF” y elija el archivo. En el ejemplo documentado se utiliza un comprobante de domicilio."
+        },
+        {
+          "type": "step",
+          "text": "Paso 3. Esperar el análisis automático"
+        },
+        {
+          "type": "paragraph",
+          "text": "Después de la carga, el documento cambia a estado “En proceso / Analizando…”. El análisis se inicia automáticamente; no se requiere una acción manual adicional para comenzar el procesamiento."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 16. Comprobante de domicilio en proceso de análisis.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-12-img-18.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 17. Estado “Analizando con Bedrock”.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-12-img-19.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 4. Confirmar la finalización"
+        },
+        {
+          "type": "paragraph",
+          "text": "Al concluir el procesamiento, el documento aparece como “Completado” y “Extracción lista”. La opción “Ver extracción” queda disponible."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 18. Documento completado y extracción disponible.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-12-img-20.jpeg"
+        },
+        {
+          "type": "step",
+          "text": "Paso 5. Consultar la extracción"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seleccione “Ver extracción”. La vista presenta el documento original y, en paralelo, la información extraída. En el comprobante de domicilio observado se muestran datos principales del domicilio, dirección normalizada e información del documento."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 19. Consulta de la extracción documental del comprobante de domicilio.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-12-img-21.jpeg"
+        },
+        {
+          "type": "heading",
+          "text": "Estados de referencia"
+        },
+        {
+          "type": "paragraph",
+          "text": "Estado Descripción Pendiente El documento todavía no ha sido cargado. En proceso / Analizando El archivo fue cargado y se encuentra en procesamiento. Completado El procesamiento terminó correctamente. Extracción lista Los datos extraídos pueden consultarse mediante “Ver extracción”."
+        }
+      ]
+    },
+    {
+      "id": "6-reglas-parametrizables",
+      "title": "6. Reglas parametrizables",
+      "page": 13,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "1. Flujo de reglas"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 20. Dashboard para el manejo y control de reglas",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-13-img-22.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "La tabla presenta cada regla en una fila independiente. Esto permite identificar rápidamente el producto al que pertenece, el nombre de la regla y si se encuentra activa. Desde la columna de acciones se puede consultar su configuración o realizar ajustes. 2. Edición de reglas"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 21. Detalle de reglas",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-13-img-23.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Al seleccionar el icono de visualización se abre el detalle de la regla. En esta vista se muestra el producto financiero relacionado, el tipo de contrato, el estado, la severidad, la descripción y las condiciones que se evaluarán durante una solicitud. Las condiciones pueden modificarse directamente desde este detalle. Por ejemplo, la regla de Neto mínimo de nóminas permite definir cuántas nóminas se revisan y cuál es el descuento que se aplica antes de validar el ingreso disponible."
+        },
+        {
+          "type": "heading",
+          "text": "2.1 Edición de Neto mínimo de nóminas"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 22. Detalle de Neto mínimo de nóminas",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-14-img-24.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Las condiciones pueden modificarse directamente desde este detalle. Por ejemplo, la regla de Neto mínimo de nóminas permite definir cuántas nóminas se revisan y cuál es el descuento que se aplica antes de validar el ingreso disponible."
+        },
+        {
+          "type": "heading",
+          "text": "2.2 Edición de Score crediticio mínimo"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 23. Detalle de Score crediticio mínimo",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-14-img-25.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "La regla Score crediticio mínimo permite establecer el puntaje de Buró requerido para aprobar automáticamente la validación. El sistema compara el score obtenido por el solicitante contra este valor."
+        },
+        {
+          "type": "heading",
+          "text": "2.3 Edición de DTI promedio de nóminas"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 24. Detalle de DTI promedio de nóminas",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-15-img-26.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para la regla DTI promedio de nóminas, se configura la cantidad de nóminas a considerar y el porcentaje máximo de endeudamiento permitido. Si el DTI promedio supera el límite definido, la solicitud pasa a revisión. Después de modificar una condición, se debe seleccionar Guardar cambios. La actualización se aplica exclusivamente a la regla abierta, sin modificar las demás reglas asociadas al producto. 3. Desglose de reglas"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 25. Sección de reglas dentro del detalle de la solicitud",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-15-img-27.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para evaluar una solicitud, se ingresa a su detalle y se selecciona Ejecutar reglas. El motor procesa las reglas activas asociadas al producto solicitado y actualiza el resultado general de la etapa Reglas de decisión. Si todas las reglas se cumplen, el resultado se muestra como Aprobado. Cuando una regla requiere validación adicional, el resultado será Revisión; si incumple un criterio crítico, se mostrará como Rechazado. 3. Ejecución de reglas"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 26. Ejecución de las reglas con sus estados",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-16-img-28.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "En los casos de Revisión o Rechazado, el sistema muestra los motivos generales de la decisión y el detalle del incumplimiento de cada regla. Esto permite conocer qué dato, documento o valor impidió la aprobación automática."
+        }
+      ]
+    },
+    {
+      "id": "7-pagos-y-cobranzas",
+      "title": "7. Pagos y cobranzas",
+      "page": 16,
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "Pagos"
+        },
+        {
+          "type": "paragraph",
+          "text": "Propósito del módulo Cuando se da de alta una solicitud de crédito, el sistema genera de manera automática el calendario de pagos. Para ello toma el plazo capturado en la solicitud y la tasa de interés del producto contratado, y arma un plan de cuotas en el que cada vencimiento queda desglosado en capital, interés y fecha. Ese calendario es la referencia de trabajo a lo largo de la vida del crédito, pues en él se observa qué se ha cubierto, qué saldo permanece abierto y cuál es el próximo vencimiento. La operación diaria se concentra en tres momentos. En Pagos se consultan los calendarios y, al llegar el archivo de nómina, se carga el Excel para que el sistema aplique los descuentos. Si el monto no alcanza o la ficha no coincide con ningún expediente, el caso pasa a Cobranza, donde el personal contacta al titular, registra la gestión y consulta las cuotas que siguen abiertas. En síntesis, Pagos muestra qué se debe y qué ya se debitó, mientras que Cobranza concentra a las personas que deben ser localizadas porque faltó dinero o porque no se encontró coincidencia en el archivo."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 30. Acceso al módulo MDC, con las pestañas Pagos y Cobranza y el selector de persona natural o persona moral.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-17-img-29.jpeg"
+        },
+        {
+          "type": "heading",
+          "text": "Acceso a las pantallas"
+        },
+        {
+          "type": "paragraph",
+          "text": "El usuario inicia sesión en Zelify con su cuenta institucional y abre el módulo MDC. En la parte superior de la pantalla existe un selector entre persona natural y persona moral. La distinción es relevante, porque cada vista muestra únicamente a los clientes de ese tipo: si se busca una empresa estando en persona natural, el registro no aparecerá, y lo mismo ocurre a la inversa. Una vez elegido el tipo de persona, se selecciona la pestaña Pagos o la pestaña Cobranza, según la tarea que corresponda."
+        },
+        {
+          "type": "heading",
+          "text": "Pantalla de pagos"
+        },
+        {
+          "type": "paragraph",
+          "text": "Al ingresar a Pagos se presenta, en primer lugar, un resumen del periodo. En la parte superior se muestran tarjetas con indicadores como el volumen de pagos, el nivel de éxito y el ticket promedio; debajo aparece una gráfica del movimiento de los últimos 7, 30 o 90 días, y más abajo se encuentra el listado Pagos recientes. Las tarjetas no sustituyen la revisión caso por caso: su utilidad es dar una lectura rápida del día, de modo que una baja en el porcentaje de éxito o un aumento de registros no pagados suele indicar un problema en la nómina o en el archivo cargado."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 31. Vista general de la pantalla de Pagos: indicadores, gráfica y listado.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-18-img-31.jpeg"
+        },
+        {
+          "type": "heading",
+          "text": "Calendario de cuotas"
+        },
+        {
+          "type": "paragraph",
+          "text": "El calendario es el recuadro central del crédito. En la parte superior se resume el total del plan, el monto ya pagado, el saldo pendiente y la fecha del próximo vencimiento; debajo se listan las cuotas una por una. En cada cuota aparecen el capital, el interés, lo debitado hasta el momento y la fecha de vencimiento. Los estados más frecuentes son Pendiente, Pagado, Parcial y Vencido. Al cargar el Excel, el sistema no asigna el dinero a una cuota al azar: aplica el monto a la cuota abierta más antigua y continúa hacia las siguientes, en ese orden. El criterio es el mismo que se usa cuando se cubre primero un atraso y después el periodo vigente."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 32. Vista general de la pantalla de calendario de cutoas",
+          "src": null
+        },
+        {
+          "type": "paragraph",
+          "text": "Carga del archivo de nómina Cuando llega el archivo del periodo, la conciliación no se realiza de forma manual: el archivo se carga desde la propia pantalla de Pagos. El procedimiento consiste en pulsar Agregar pago, arrastrar el Excel a la zona indicada o elegirlo desde el equipo —solo se aceptan archivos con extensión .xlsx— y, a continuación, pulsar Subir archivo y esperar a que termine el proceso. Al concluir, el sistema informa cuántos registros quedaron pagados, cuántos quedaron parciales y cuántos se enviaron a cobranza."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 33. Ventana para cargar el archivo de pagos.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-19-img-32.jpeg"
+        },
+        {
+          "type": "heading",
+          "text": "Estructura del archivo"
+        },
+        {
+          "type": "paragraph",
+          "text": "La primera fila del archivo debe contener los títulos de columna. El sistema busca, como mínimo, tres campos: FICHA, que también se admite como NUMERO_EMPLEADO_FICHA; NOMBRE; y MONTO, que en algunos formatos aparece como TESTAFIN. La ficha es la llave de coincidencia, pues se compara con la ficha extraída del expediente de nómina del titular. No debe usarse el número de solicitud ni un identificador interno, porque con esos datos el sistema no localiza el crédito. Si la ficha trae espacios de más, le faltan ceros o está escrita de forma distinta a la del expediente, el registro no se reconoce y el movimiento pasa a cobranza, aunque la persona exista en la cartera."
+        },
+        {
+          "type": "heading",
+          "text": "Lectura del resultado"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cuando el archivo se procesa de forma correcta, cada renglón queda en uno de tres resultados. Queda Pagado cuando el monto cubrió lo que correspondía a esa ficha en el periodo y el calendario avanza. Queda Parcial cuando se debitó una parte, pero no alcanzó para cerrar lo pendiente: el saldo permanece abierto y se crea o se actualiza un caso de cobranza. Queda A cobranza cuando no se encontró esa ficha en los expedientes y se abre un caso para que el área lo investigue. El monto que debe ir en el archivo es el descuento de ese periodo, no el saldo total del crédito; el importe completo del préstamo solo se registra cuando el titular liquidó de una sola vez."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 33. Resultado de la conciliación: registros pagados, parciales y enviados a cobranza.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-19-img-33.jpeg"
+        },
+        {
+          "type": "heading",
+          "text": "Pantalla de Cobranza"
+        },
+        {
+          "type": "paragraph",
+          "text": "Después de cargar el archivo se cambia a la pestaña Cobranza. El listado se actualiza de forma automática, por lo que no es necesario recargar la página de manera reiterada. En la parte superior se muestran cuatro indicadores que orientan el orden de trabajo: el número de casos, el monto vencido, los días promedio de atraso (DPD) y la cantidad de casos escalados. Debajo se encuentra la tabla, en la que es posible buscar por nombre, solicitud, número de caso o estado. Cuando el volumen es alto, conviene atender primero los casos con mayor DPD y los que ya están escalados."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 34. Vista general de Cobranza",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-20-img-34.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Rutina recomendada para nómina Cuando el archivo de nómina llega por la mañana, se sugiere el siguiente orden de trabajo. En primer lugar se ingresa a Pagos y se verifica que las solicitudes nuevas ya tengan calendario; después se carga el archivo del periodo y, una vez procesado, se revisa el resumen para identificar los registros parciales y los no encontrados. A continuación se pasa a Cobranza y se atienden esos casos. En cada llamada, mensaje o intento de contacto se deja una nota, aunque sea breve. Al cierre del día no debería haber un caso gestionado sin una línea registrada en el historial."
+        },
+        {
+          "type": "heading",
+          "text": "Situaciones financieras"
+        },
+        {
+          "type": "paragraph",
+          "text": "-​ Si no aparece un titular en Pagos, conviene recordar que el calendario se genera al crear la solicitud, siempre que existan plazo y producto. En esos casos se recarga la pestaña y se confirma que el selector esté en persona natural o persona moral, según corresponda. -​ Cuando casi todos los renglones del archivo pasan a cobranza, la causa más habitual es la ficha: un espacio de más, un cero omitido o una nómina que todavía no está extraída en el expediente. Se recomienda comparar la ficha del archivo con la del documento de nómina. -​ El calendario no puede regenerarse si ya se debitó algún importe, porque el sistema no vuelve a armar el plan a fin de no perder los pagos aplicados. Si nadie ha pagado y el calendario está incorrecto, el ajuste debe solicitarse a operación o a soporte. -​ Si se cargó el monto total del crédito y los saldos quedaron descuadrados, debe tenerse presente que el archivo debe contener el descuento de ese periodo. El total del préstamo solo corresponde cuando hubo liquidación completa. -​ Si se está en persona moral y no aparecen las personas físicas, se trata del comportamiento esperado: debe cambiarse el selector de la parte superior."
+        }
+      ]
+    },
+    {
+      "id": "8-flujo-general-del-proceso",
+      "title": "8. Flujo general del proceso",
+      "page": 20,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "El recorrido documentado en este manual sigue la siguiente secuencia operativa: 1. Acceso a MDC 2. Alta manual de la solicitud de crédito 3. Generación y apertura del enlace de verificación 4. KYC - Auth: correo → OTP correo → teléfono → OTP SMS → completar registro → referencias 5. KYC - Identity: términos → INE anverso → INE reverso → procesamiento → video → verificación exitosa 6. Confirmación del KYC completo en MDC 7. Carga de documentos 8. Procesamiento automático 9. Consulta de la extracción documental Este flujo permite mantener en una sola operación el registro de la solicitud, la validación de identidad del solicitante y el procesamiento de la documentación asociada."
+        }
+      ]
+    },
+    {
+      "id": "9-informes",
+      "title": "9. Informes",
+      "page": 24,
+      "blocks": [
+        {
+          "type": "heading",
+          "text": "Pantalla inicial"
+        },
+        {
+          "type": "paragraph",
+          "text": "El módulo Informes permite consultar información crediticia de una solicitud desde un único punto. Su propósito es reunir los resultados disponibles de KYC, AML, Buró, reglas del motor de decisión y capacidad de pago, según la consulta realizada por el usuario. Para acceder, seleccione Informes en la navegación principal."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 38. Pantalla inicial del módulo Informes.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-24-img-38.png"
+        },
+        {
+          "type": "heading",
+          "text": "Consulta en lenguaje natural"
+        },
+        {
+          "type": "paragraph",
+          "text": "En la pantalla inicial se muestra el campo Consulta en lenguaje natural. Escriba la información que necesita consultar, identificando al solicitante por el número de solicitud. También puede indicar el tipo de información requerida, por ejemplo KYC, reglas, documentación, Buró o capacidad de pago. El sistema interpreta la consulta y genera el informe con los módulos relacionados."
+        },
+        {
+          "type": "heading",
+          "text": "Acciones disponibles"
+        },
+        {
+          "type": "paragraph",
+          "text": "Después de escribir la consulta, seleccione Generar informe. El sistema busca la solicitud y consulta los módulos relacionados con lo solicitado. Durante este proceso debe esperar a que termine la carga antes de realizar otra consulta. Al finalizar, el resultado se muestra debajo del formulario con el nombre del usuario, los identificadores de usuario y solicitud, y las secciones consultadas."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 39. Informe generado con el detalle de referencias personales del solicitante.",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-24-img-39.png"
+        },
+        {
+          "type": "heading",
+          "text": "Revisión y descarga del informe"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revise los módulos presentados en el resultado para confirmar que corresponden a la consulta realizada. En el ejemplo, el informe muestra el módulo KYC y agrupa las referencias personales por separado, con su nombre, relación y teléfono. El contenido cambia según los términos de la consulta y la información disponible para el solicitante."
+        },
+        {
+          "type": "paragraph",
+          "text": "El botón Descargar PDF se habilita cuando el informe se ha generado correctamente. Selecciónelo para descargar un documento con los módulos y datos incluidos en el resultado visible. El botón Limpiar elimina tanto la consulta escrita como el informe mostrado, y permite iniciar una búsqueda nueva."
+        }
+      ]
+    },
+    {
+      "id": "10-configuracion",
+      "title": "10. Configuración",
+      "page": 21,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Configuración de Sucursales La sección sucursales permite administrar las ubicaciones físicas asociadas a la organización, registrando su información general, ubicación geográfica, tipo y estado. Las sucursales pueden ser de tipo principal o secundarias según corresponda el giro del negocio. Ubicación en el sistema"
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 27. Sección de Sucursales desde configuración",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-21-img-35.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Configuración general de cercanía con la sucursal La configuración de cercanía con la sucursal permite establecer el radio geográfico dentro del cual una ubicación será considerada cercana a una sucursal registrada en el sistema. Esta configuración permite definir una distancia máxima alrededor de la sucursal para determinar si una ubicación se encuentra dentro del área de cercanía establecida."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 28. Configuración de radio de cercanía para la sucursal",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-22-img-36.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "El radio configurado establece una distancia alrededor de la ubicación de la sucursal. Por ejemplo, si se configura un radio de 5 km, el sistema considerará como zona de cercanía para comprobar una solicitud dentro del área comprendida dentro de los 5 kilómetros a las sucursales registradas dentro del comercio. La representación en el mapa permite al usuario visualizar el alcance configurado y verificar que corresponda con la zona geográfica requerida. ●​ El radio se calcula tomando como punto de referencia la ubicación geográfica registrada para la sucursal. ●​ La modificación del radio actualizará el área de cercanía utilizada por el sistema. ●​ Se recomienda verificar que la ubicación de la sucursal sea correcta antes de configurar el radio. ●​ La unidad de medida utilizada para el radio se encuentra indicada en el formulario de configuración.Crear una nueva sucursal"
+        },
+        {
+          "type": "heading",
+          "text": "Crear una nueva sucursal"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para registrar una nueva sucursal, seleccione la opción \"Nueva sucursal\". El sistema mostrará un formulario con los siguientes campos: Registro de ubicación Campo Descripción Obligatorio Nombre de la sucursal Nombre con el que se identificará la sucursal Sí Dirección Calle y numeración de la ubicación Sí Colonia / Sector Sector o colonia donde se encuentra Sí Latitud Coordenada geográfica de la sucursal Sí Longitud Coordenada geográfica de la sucursal Sí Tipo de sucursal Clasificación de la sucursal Sí Estado Estado actual de la sucursal Sí La ubicación de la sucursal puede registrarse de dos maneras:"
+        },
+        {
+          "type": "heading",
+          "text": "Ingreso manual"
+        },
+        {
+          "type": "paragraph",
+          "text": "El usuario puede ingresar directamente la dirección y las coordenadas geográficas de la sucursal en los campos correspondientes. Selección mediante el mapa 1.​ Ubique en el mapa la posición correspondiente a la sucursal. 2.​ Seleccione el punto de ubicación. 3.​ El sistema obtendrá las coordenadas geográficas correspondientes. 4.​ Cuando la información esté disponible, el sistema podrá completar los datos relacionados con la dirección. 5.​ Verifique que la ubicación seleccionada corresponda con la ubicación física de la sucursal."
+        },
+        {
+          "type": "figure",
+          "caption": "Figura 29. Selección de ubicación de la sucursal mediante el mapa",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-23-img-37.jpeg"
+        },
+        {
+          "type": "paragraph",
+          "text": "Nota: Antes de guardar la información, se recomienda verificar que tanto la dirección como la ubicación mostrada en el mapa sean correctas."
+        },
+        {
+          "type": "heading",
+          "text": "Guardar una sucursal"
+        },
+        {
+          "type": "paragraph",
+          "text": "Una vez completada la información: 1.​ Verifique los datos ingresados. 2.​ Confirme la ubicación de la sucursal en el mapa. 3.​ Seleccione \"Guardar\". 4.​ El sistema realizará las validaciones correspondientes. 5.​ Si la información es válida, la sucursal será registrada correctamente."
+        },
+        {
+          "type": "heading",
+          "text": "Consideraciones"
+        },
+        {
+          "type": "paragraph",
+          "text": "●​ Los campos marcados como obligatorios deben ser completados para poder registrar la sucursal. ●​ La ubicación geográfica debe corresponder con la ubicación física real de la sucursal. ●​ Verifique la información antes de guardar los cambios."
+        },
+        {
+          "type": "figure",
+          "caption": "Imagen de la página 1",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-01-img-01.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Imagen de la página 2",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-02-img-02.jpeg"
+        },
+        {
+          "type": "figure",
+          "caption": "Imagen de la página 17",
+          "src": "/manuales/mdc-usuario/imagenes/pagina-17-img-30.jpeg"
+        }
+      ]
+    }
+  ]
+}

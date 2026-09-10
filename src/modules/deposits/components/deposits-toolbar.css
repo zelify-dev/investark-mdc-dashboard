@@ -1,0 +1,71 @@
+.zelify-deposits-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.zelify-deposits-toolbar__search {
+  flex: 1;
+  min-width: min(100%, 280px);
+  position: relative;
+}
+
+.zelify-deposits-toolbar__search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.zelify-deposits-toolbar__search .zelify-input {
+  width: 100%;
+  padding-left: 40px;
+  box-sizing: border-box;
+}
+
+.zelify-deposits-toolbar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.zelify-deposits-toolbar__filter {
+  min-width: 140px;
+}
+
+.zelify-deposits-toolbar__filter .zelify-field-label {
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.zelify-deposits-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.zelify-deposits-toolbar__ghost {
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  background: #fff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zelify-deposits-toolbar__ghost:hover {
+  background: rgba(var(--zelify-brand-green-rgb), 0.08);
+  border-color: rgba(var(--zelify-brand-green-rgb), 0.35);
+}

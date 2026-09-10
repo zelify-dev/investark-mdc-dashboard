@@ -1,0 +1,79 @@
+/* Mismo patrón que financial-table-row-actions (botón verde + menú). */
+.zelify-customer-table-row-actions {
+  position: relative;
+  display: inline-block;
+  text-align: right;
+}
+
+.zelify-customer-table-row-actions__summary svg {
+  transition: transform 0.15s ease;
+}
+
+.zelify-customer-table-row-actions[open] .zelify-customer-table-row-actions__summary svg {
+  transform: rotate(180deg);
+}
+
+.zelify-customer-table-row-actions__summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(var(--zelify-brand-green-rgb), 0.45);
+  background: var(--zelify-brand-green);
+  color: var(--zelify-brand-on-green);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.zelify-customer-table-row-actions__summary::-webkit-details-marker {
+  display: none;
+}
+
+.zelify-customer-table-row-actions__summary:hover {
+  background: var(--zelify-brand-green-hover);
+  border-color: rgba(var(--zelify-brand-green-rgb), 0.55);
+}
+
+.zelify-customer-table-row-actions[open] .zelify-customer-table-row-actions__summary {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.zelify-customer-table-row-actions__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  min-width: 200px;
+  padding: 6px 0;
+  border-radius: 8px;
+  border: 1px solid rgba(26, 39, 64, 0.12);
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.zelify-customer-table-row-actions__menu .zelify-dropdown-menu {
+  position: static;
+  min-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.zelify-customer-table-row-actions__menu .zelify-dropdown-menu__item {
+  width: 100%;
+  text-align: left;
+  color: #0f172a;
+  border-radius: 6px;
+}
+
+.zelify-customer-table-row-actions__menu .zelify-dropdown-menu__item:hover {
+  background: rgba(var(--zelify-brand-green-rgb), 0.18);
+  color: #0f172a;
+}

@@ -1,0 +1,36 @@
+.zelify-customer-segment-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px 20px;
+  padding: 4px 0 8px;
+}
+
+.zelify-customer-segment-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+}
+
+.zelify-customer-segment-filters__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.zelify-customer-segment-filters__select {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(26, 39, 64, 0.14);
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.zelify-customer-segment-filters__select:focus {
+  outline: 2px solid rgba(var(--zelify-brand-green-rgb), 0.45);
+  outline-offset: 1px;
+}

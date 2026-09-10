@@ -1,0 +1,126 @@
+.zelify-group-roles {
+  gap: 20px;
+}
+
+.zelify-group-roles__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zelify-group-roles__lead {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.zelify-group-roles__creator,
+.zelify-group-roles__card,
+.zelify-group-roles__summary {
+  border: 1px solid #dbe4f0;
+  border-radius: 24px;
+  background: #fff;
+  padding: 20px;
+}
+
+.zelify-group-roles__creator-grid,
+.zelify-group-roles__card-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.zelify-group-roles__field,
+.zelify-group-roles__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zelify-group-roles__field span,
+.zelify-group-roles__permissions-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.zelify-group-roles textarea {
+  width: 100%;
+  min-height: 88px;
+  border: 1px solid #d5deea;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font: inherit;
+  resize: vertical;
+  background: #fff;
+}
+
+.zelify-group-roles textarea:disabled {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.zelify-group-roles__permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.zelify-group-roles__checks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.zelify-group-roles__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  background: #f8fbff;
+  color: #1e293b;
+}
+
+.zelify-group-roles__check input {
+  width: 16px;
+  height: 16px;
+}
+
+.zelify-group-roles__creator-actions,
+.zelify-group-roles__card-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.zelify-group-roles__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.zelify-group-roles__card.is-editing {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.zelify-group-roles__summary p {
+  margin: 0;
+  color: #334155;
+}
+
+@media (max-width: 1100px) {
+  .zelify-group-roles__creator-grid,
+  .zelify-group-roles__card-top,
+  .zelify-group-roles__checks {
+    grid-template-columns: 1fr;
+  }
+
+  .zelify-group-roles__card-actions {
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,81 @@
+/* Contenedor con scroll + cabecera sticky para tablas de segmentos */
+.zelify-customer-segment-empty {
+  padding: 48px 24px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px dashed rgba(26, 39, 64, 0.15);
+  background: #f8fafc;
+}
+
+.zelify-customer-segment-empty__msg {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.zelify-customer-segment-reason {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #334155;
+}
+
+.zelify-customer-segment-actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.zelify-customer-segment-table-wrap {
+  overflow: auto;
+  max-height: min(560px, 62vh);
+  border-radius: 10px;
+  border: 1px solid rgba(26, 39, 64, 0.1);
+  background: #fff;
+}
+
+.zelify-customer-segment-table-wrap .zelify-settings-data-table-wrap {
+  border: none;
+  border-radius: 0;
+}
+
+.zelify-customer-segment-table-wrap .zelify-settings-data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f8fafc;
+  box-shadow: 0 1px 0 rgba(26, 39, 64, 0.08);
+}
+
+.zelify-customer-segment-table-wrap .zelify-settings-data-table--clients tbody tr {
+  transition: background-color 0.12s ease;
+}
+
+.zelify-customer-segment-table-wrap .zelify-settings-data-table--clients tbody tr:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.zelify-customer-segment-table .zelify-settings-data-table th.is-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.zelify-customer-segment-table .zelify-settings-data-table th.is-sortable:hover {
+  color: #0f172a;
+}
+
+/* Badges segmento inactive (después de tonos base para poder sobreescribir) */
+.zelify-badge.zelify-badge--dormant {
+  background: rgba(51, 65, 85, 0.12) !important;
+  color: #334155 !important;
+}
+
+.zelify-badge.zelify-badge--closed-subtle {
+  background: rgba(220, 38, 38, 0.1) !important;
+  color: #b91c1c !important;
+}
+
+/* Risk medium (yellow) */
+.zelify-badge.zelify-badge--risk-medium {
+  background: rgba(234, 179, 8, 0.2);
+  color: #a16207;
+}
