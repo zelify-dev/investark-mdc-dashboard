@@ -18,7 +18,6 @@ import "./login-page.css";
 const DEMO_BYPASS_EMAIL = "demo@zwippe.com";
 const DEMO_BYPASS_PASSWORD = "image.png";
 const DEMO_BYPASS_STORAGE_KEY = "zelify_demo_bypass";
-const CLIENT_LOGO_SRC = "/logo-kumaza.svg";
 const PRODUCT_LOGO_DARK = "/mdc-navbar-logo-dark.svg";
 
 function AnimatedHalftoneBackdrop() {
@@ -440,9 +439,6 @@ export default function LoginPage() {
     }
   };
 
-  const isDefaultProductLogo =
-    !branding.logoUrl || branding.logoUrl === "/mdc-navbar-logo.svg" || branding.logoUrl === DEFAULT_BRANDING.logoUrl;
-  const productLogoSrc = isDefaultProductLogo ? PRODUCT_LOGO_DARK : branding.logoUrl;
   const showLoginMessage =
     step === 1 &&
     Boolean(branding.loginMessage) &&
@@ -478,13 +474,10 @@ export default function LoginPage() {
           <div className="zelify-login__brands">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={productLogoSrc}
-              alt={branding.displayName || "Aethereun"}
-              className={`zelify-login__logo zelify-login__logo--product${isDefaultProductLogo ? "" : " zelify-login__logo--ink"}`}
+              src={PRODUCT_LOGO_DARK}
+              alt="Aethereun"
+              className="zelify-login__logo zelify-login__logo--product"
             />
-            <span className="zelify-login__brand-divider" aria-hidden="true" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={CLIENT_LOGO_SRC} alt="Kumaza" className="zelify-login__logo zelify-login__logo--client" />
           </div>
 
           {step === 2 ? (

@@ -18,7 +18,7 @@ import { DropdownMenu } from "@/components/ui/molecules/dropdown-menu/dropdown-m
 import { NavTab } from "@/components/ui/molecules/nav-tab/nav-tab";
 import { ProfileMenu } from "@/components/ui/molecules/profile-trigger/profile-menu";
 import { TopbarSearchBox } from "@/components/ui/molecules/search-box/topbar-search-box";
-import { useBranding } from "@/providers/branding-provider";
+import { resolveOrgNavbarLogoUrl, useBranding } from "@/providers/branding-provider";
 import { useI18n } from "@/providers/i18n-provider";
 import { getStoredUser } from "@/lib/auth-api";
 import { resolveProfilePhotoUrl } from "@/lib/auth-dashboard";
@@ -386,31 +386,37 @@ type BrandBlockProps = {
 
 function BrandBlock({ brandAlt }: BrandBlockProps) {
   const { branding } = useBranding();
-  const logoUrl = "/mdc-navbar-logo.svg";
-  const logoAlt =
-    branding.displayName && !/zelify/i.test(branding.displayName)
+  const productLogoUrl = "/mdc-navbar-logo.svg";
+  const productAlt = brandAlt || "Aethereun";
+  const orgLogoUrl = resolveOrgNavbarLogoUrl(branding);
+  const orgAlt =
+    branding.displayName && !/zelify|aethereun/i.test(branding.displayName)
       ? branding.displayName
-      : brandAlt || "Aethereun";
+      : "Organización";
+  const usesLightVariant = Boolean(orgLogoUrl && branding.logoLightUrl && orgLogoUrl === branding.logoLightUrl);
+
   return (
     <div className="zelify-topbar__brand">
-      {logoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={logoUrl}
-          alt={logoAlt}
-          className="zelify-topbar__brand-logo"
-        />
-      ) : (
-        <span className="zelify-topbar__brand-name">{logoAlt}</span>
-      )}
-
-      <span className="zelify-topbar__brand-divider" aria-hidden="true" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/logo-kumaza.svg"
-        alt="Kumaza"
-        className="zelify-topbar__brand-logo zelify-topbar__brand-logo--partner"
+        src={productLogoUrl}
+        alt={productAlt}
+        className="zelify-topbar__brand-logo"
       />
+
+      {orgLogoUrl ? (
+        <>
+          <span className="zelify-topbar__brand-divider" aria-hidden="true" />
+          <span className={`zelify-topbar__brand-org${usesLightVariant ? "" : " zelify-topbar__brand-org--chip"}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={orgLogoUrl}
+              alt={orgAlt}
+              className="zelify-topbar__brand-logo zelify-topbar__brand-logo--org"
+            />
+          </span>
+        </>
+      ) : null}
     </div>
   );
 }

@@ -3,12 +3,17 @@
 import type { PropsWithChildren } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+import { getOrganizationBranding, getStoredOrganization } from "@/lib/auth-api";
+
 export type BrandingState = {
   displayName: string;
   tagline: string;
   primaryHex: string;
   accentHex: string;
   logoUrl: string;
+  logoLightUrl?: string | null;
+  logoDarkUrl?: string | null;
+  sourceOrgId?: string | null;
   loginMessage: string;
 };
 
@@ -26,8 +31,29 @@ export const DEFAULT_BRANDING: BrandingState = {
   primaryHex: "#271a59",
   accentHex: "#271a59",
   logoUrl: "/mdc-navbar-logo.svg",
+  logoLightUrl: null,
+  logoDarkUrl: null,
+  sourceOrgId: null,
   loginMessage: "Mensaje opcional en la pantalla de acceso.",
 };
+
+const PRODUCT_LOGO_URLS = new Set([
+  "/mdc-navbar-logo.svg",
+  "/mdc-navbar-logo-dark.svg",
+  DEFAULT_BRANDING.logoUrl,
+]);
+
+export function isProductLogoUrl(url?: string | null): boolean {
+  return !url || PRODUCT_LOGO_URLS.has(url);
+}
+
+/** Logo de la organización para el navbar oscuro. Prefiere la variante clara. */
+export function resolveOrgNavbarLogoUrl(branding: BrandingState): string | null {
+  const storedOrg = getStoredOrganization();
+  if (!storedOrg?.id || branding.sourceOrgId !== storedOrg.id) return null;
+  const candidate = branding.logoLightUrl || branding.logoUrl;
+  return isProductLogoUrl(candidate) ? null : candidate;
+}
 
 const LEGACY_GREEN_ACCENTS = new Set([
   "#c4f542",
@@ -91,6 +117,9 @@ function sanitizeBranding(input: BrandingState): BrandingState {
     primaryHex: dropGreen || primary === LEGACY_NAVY_PRIMARY ? DEFAULT_BRANDING.primaryHex : input.primaryHex,
     accentHex: dropGreen ? DEFAULT_BRANDING.accentHex : input.accentHex,
     logoUrl: dropZelifyLogo ? DEFAULT_BRANDING.logoUrl : input.logoUrl,
+    logoLightUrl: input.logoLightUrl ?? null,
+    logoDarkUrl: input.logoDarkUrl ?? null,
+    sourceOrgId: input.sourceOrgId ?? null,
   };
 }
 
@@ -135,6 +164,42 @@ export function BrandingProvider({ children }: PropsWithChildren) {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(branding));
     }
   }, [branding]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const syncOrganizationBranding = async () => {
+      const org = getStoredOrganization();
+      if (!org?.id) return;
+      try {
+        const data = await getOrganizationBranding(org.id);
+        if (cancelled) return;
+        setBrandingState((current) =>
+          sanitizeBranding({
+            ...current,
+            displayName: org.name || current.displayName,
+            logoUrl: data.url_log || DEFAULT_BRANDING.logoUrl,
+            logoLightUrl: data.url_log_light ?? null,
+            logoDarkUrl: data.url_log_dark ?? null,
+            sourceOrgId: org.id,
+            primaryHex: data.color_a || current.primaryHex,
+            accentHex: data.color_b || current.accentHex,
+          }),
+        );
+      } catch {
+        // Si el branding aún no existe o falla la carga, se mantiene el estado local.
+      }
+    };
+
+    void syncOrganizationBranding();
+    window.addEventListener("authchange", syncOrganizationBranding);
+    window.addEventListener("storage", syncOrganizationBranding);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("authchange", syncOrganizationBranding);
+      window.removeEventListener("storage", syncOrganizationBranding);
+    };
+  }, []);
 
   const value = useMemo<BrandingContextValue>(
     () => ({
