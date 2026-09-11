@@ -271,7 +271,7 @@ export function AmlAnalisisView() {
           <img src="/mdc-navbar-logo.svg" alt="Aethereun" />
           <i />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/LOGO%20TULANA.svg" alt="Tulana" className="aml-analisis__brand-partner" />
+          <img src="/logo-kumaza.svg" alt="Kumaza" className="aml-analisis__brand-partner" />
         </div>
         <div className="aml-analisis__top-actions">
           <p>Análisis público · sin sesión</p>

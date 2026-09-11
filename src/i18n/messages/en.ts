@@ -82,6 +82,7 @@ export const en = {
       administration: "Configuration",
       mdc: "MDC",
       kyb: "KYB",
+      crm: "CRM",
     },
     admin: {
       generalSetup: "General Setup",
@@ -143,6 +144,12 @@ export const en = {
         cashflow: "Cashflow",
         outreach: "Outreach",
         risk: "Risk",
+      },
+      crm: {
+        whatsapp: "WhatsApp channel",
+        settings: "Settings",
+        leads: "Leads",
+        alaiza: "Alaiza",
       },
       accounting: {
         balanceSheet: "Balance Sheet",

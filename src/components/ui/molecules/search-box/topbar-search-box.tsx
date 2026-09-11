@@ -34,6 +34,10 @@ const MDC_SHORTCUTS: { id: string; labelEs: string; labelEn: string; keywords: s
   { id: "collections", labelEs: "Cobranza", labelEn: "Collections", keywords: ["cobranza", "collections", "cobro"], href: "/mdc?tab=collections" },
   { id: "account", labelEs: "Mi cuenta", labelEn: "My account", keywords: ["cuenta", "account", "perfil", "profile", "password"], href: "/settings?section=profile" },
   { id: "configuration", labelEs: "Configuración", labelEn: "Configuration", keywords: ["configuracion", "configuration", "ajustes", "settings", "usuarios", "roles"], href: "/settings" },
+  { id: "crm-whatsapp", labelEs: "CRM · Canal de WhatsApp", labelEn: "CRM · WhatsApp channel", keywords: ["crm", "whatsapp", "api", "inbox", "canal"], href: "/crm/whatsapp" },
+  { id: "crm-settings", labelEs: "CRM · Configuración", labelEn: "CRM · Settings", keywords: ["crm", "configuracion", "whatsapp", "organizacion"], href: "/crm/configuracion" },
+  { id: "crm-leads", labelEs: "CRM · Leads", labelEn: "CRM · Leads", keywords: ["crm", "leads", "expediente", "precalificacion"], href: "/crm/leads" },
+  { id: "crm-alaiza", labelEs: "CRM · Alaiza", labelEn: "CRM · Alaiza", keywords: ["crm", "alaiza", "ia", "faq", "agente"], href: "/crm/alaiza" },
 ];
 
 function normalize(value: string): string {

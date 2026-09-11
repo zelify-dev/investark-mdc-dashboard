@@ -81,6 +81,7 @@ export const es: Messages = {
       administration: "Configuración",
       mdc: "MDC",
       kyb: "KYB",
+      crm: "CRM",
     },
     admin: {
       generalSetup: "Configuración general",
@@ -142,6 +143,12 @@ export const es: Messages = {
         cashflow: "Flujo de caja",
         outreach: "Alcance",
         risk: "Riesgo",
+      },
+      crm: {
+        whatsapp: "Canal de WhatsApp",
+        settings: "Configuración",
+        leads: "Leads",
+        alaiza: "Alaiza",
       },
       accounting: {
         balanceSheet: "Balance general",

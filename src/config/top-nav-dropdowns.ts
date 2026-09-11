@@ -14,6 +14,12 @@ export type TopNavDropdownEntry =
   | { kind: "separator" };
 
 const topNavDropdownsByNavId: Record<string, TopNavDropdownSourceEntry[]> = {
+  crm: [
+    { kind: "item", labelKey: "nav.dropdowns.crm.whatsapp", href: "/crm/whatsapp" },
+    { kind: "item", labelKey: "nav.dropdowns.crm.settings", href: "/crm/configuracion" },
+    { kind: "item", labelKey: "nav.dropdowns.crm.leads", href: "/crm/leads" },
+    { kind: "item", labelKey: "nav.dropdowns.crm.alaiza", href: "/crm/alaiza" },
+  ],
   accounting: [
     { kind: "item", labelKey: "nav.dropdowns.accounting.balanceSheet", href: "/accounting/balance-sheet" },
     {

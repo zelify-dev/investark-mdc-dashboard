@@ -407,8 +407,8 @@ function BrandBlock({ brandAlt }: BrandBlockProps) {
       <span className="zelify-topbar__brand-divider" aria-hidden="true" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/LOGO%20TULANA.svg"
-        alt="Tulana"
+        src="/logo-kumaza.svg"
+        alt="Kumaza"
         className="zelify-topbar__brand-logo zelify-topbar__brand-logo--partner"
       />
     </div>

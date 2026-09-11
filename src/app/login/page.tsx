@@ -18,7 +18,7 @@ import "./login-page.css";
 const DEMO_BYPASS_EMAIL = "demo@zwippe.com";
 const DEMO_BYPASS_PASSWORD = "image.png";
 const DEMO_BYPASS_STORAGE_KEY = "zelify_demo_bypass";
-const CLIENT_LOGO_SRC = "/LOGO%20TULANA.svg";
+const CLIENT_LOGO_SRC = "/logo-kumaza.svg";
 const PRODUCT_LOGO_DARK = "/mdc-navbar-logo-dark.svg";
 
 function AnimatedHalftoneBackdrop() {
@@ -484,7 +484,7 @@ export default function LoginPage() {
             />
             <span className="zelify-login__brand-divider" aria-hidden="true" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={CLIENT_LOGO_SRC} alt="Tulana" className="zelify-login__logo zelify-login__logo--client" />
+            <img src={CLIENT_LOGO_SRC} alt="Kumaza" className="zelify-login__logo zelify-login__logo--client" />
           </div>
 
           {step === 2 ? (

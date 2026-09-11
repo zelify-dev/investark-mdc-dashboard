@@ -15,6 +15,7 @@ export type ZelifyAccountingSubNavItem = {
 export const zelifyTopNavItems: ZelifyTopNavItem[] = [
   { id: "dashboard", labelKey: "nav.top.dashboard", href: "/" },
   { id: "clients", labelKey: "nav.top.clients", href: "/customers" },
+  { id: "crm", labelKey: "nav.top.crm", href: "/crm" },
   { id: "reporting", labelKey: "nav.top.reporting", href: "/reporting" },
   { id: "administration", labelKey: "nav.top.administration", href: "/settings" },
   { id: "mdc", labelKey: "nav.top.mdc", href: "/mdc" },

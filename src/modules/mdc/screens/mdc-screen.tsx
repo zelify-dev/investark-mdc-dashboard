@@ -1727,10 +1727,21 @@ function LineChart({ points }: { points: { label: string; value: number }[] }) {
   const xForIndex = (index: number) => leftPad + (chartWidth * index) / Math.max(points.length - 1, 1);
   const yForValue = (value: number) => topPad + chartHeight - (value / chartMax) * chartHeight;
   const linePoints = points.map((point, index) => `${xForIndex(index)},${yForValue(point.value)}`).join(" ");
+  const areaPoints = [
+    `${xForIndex(0)},${topPad + chartHeight}`,
+    ...points.map((point, index) => `${xForIndex(index)},${yForValue(point.value)}`),
+    `${xForIndex(Math.max(points.length - 1, 0))},${topPad + chartHeight}`,
+  ].join(" ");
   const labelStep = points.length > 14 ? Math.ceil(points.length / 12) : 1;
 
   return (
     <svg className="mdc-line-chart" viewBox={`0 0 ${width} ${height}`} aria-hidden>
+      <defs>
+        <linearGradient id="mdcLineFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#271a59" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#271a59" stopOpacity="0" />
+        </linearGradient>
+      </defs>
       {uniqueTicks.map((tick) => {
         const y = yForValue(tick);
         return (
@@ -1743,6 +1754,7 @@ function LineChart({ points }: { points: { label: string; value: number }[] }) {
         );
       })}
 
+      <polygon points={areaPoints} fill="url(#mdcLineFill)" />
       <polyline points={linePoints} className="mdc-line-chart__line" />
 
       {points.map((point, index) => (
@@ -1830,6 +1842,51 @@ function DonutChart({
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function DecisionFunnel({
+  steps,
+}: {
+  steps: { label: string; value: number; tone: "ink" | "mid" | "ok" | "bad" }[];
+}) {
+  const max = Math.max(...steps.map((step) => step.value), 1);
+  return (
+    <div className="mdc-decision-funnel" aria-hidden>
+      {steps.map((step) => (
+        <div key={step.label} className="mdc-decision-funnel__row">
+          <div
+            className={`mdc-decision-funnel__bar mdc-decision-funnel__bar--${step.tone}`}
+            style={{ width: `${36 + (step.value / max) * 64}%` }}
+          >
+            <strong>{step.label}</strong>
+            <em>{step.value}</em>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProductMixBars({ data }: { data: { label: string; value: number }[] }) {
+  const max = Math.max(...data.map((item) => item.value), 1);
+  if (data.length === 0) {
+    return <p style={{ margin: 0, color: "#64748b", fontSize: 13 }}>Sin solicitudes en el rango.</p>;
+  }
+  return (
+    <div className="mdc-mix">
+      {data.map((item) => (
+        <div key={item.label} className="mdc-mix__row">
+          <div className="mdc-mix__meta">
+            <strong>{item.label}</strong>
+            <span>{item.value}</span>
+          </div>
+          <div className="mdc-mix__track">
+            <i style={{ width: `${(item.value / max) * 100}%` }} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -6766,6 +6823,16 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
       .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
       .slice(0, 8);
 
+    const productMix = Object.entries(
+      rangeScopedApps.reduce<Record<string, number>>((acc, app) => {
+        acc[app.product] = (acc[app.product] ?? 0) + 1;
+        return acc;
+      }, {}),
+    )
+      .map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 5);
+
     return {
       total,
       approved,
@@ -6776,6 +6843,8 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
       avgRisk,
       approvalRatio,
       riskDistribution,
+      productMix,
+      manualOrPending,
       recent,
       deltas: {
         total: pctDelta(total, previousTotal),
@@ -7137,7 +7206,7 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
                 </div>
               )}
               <div className="mdc-overview-hero mdc-overview-hero--plain">
-                <h2 className="mdc-overview-hero__title">Tablero</h2>
+                <h2 className="mdc-overview-hero__title">Tablero de visualización</h2>
                 <div className="mdc-kpis">
                   <MdcStatCard
                     title="Solicitudes totales"
@@ -7177,6 +7246,30 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
                 </div>
                 <LineChart points={applicationsTrendPoints} />
               </article>
+
+              <div className="mdc-grid-2">
+                <article className="mdc-card">
+                  <div className="mdc-card__head">
+                    <h3>Embudo de decisión</h3>
+                    <p>Volumen desde ingreso hasta veredicto del motor</p>
+                  </div>
+                  <DecisionFunnel
+                    steps={[
+                      { label: "Recibidas", value: overview.total, tone: "ink" },
+                      { label: "En análisis", value: overview.manualOrPending, tone: "mid" },
+                      { label: "Aprobadas", value: overview.approved, tone: "ok" },
+                      { label: "Rechazadas", value: overview.declined, tone: "bad" },
+                    ]}
+                  />
+                </article>
+                <article className="mdc-card">
+                  <div className="mdc-card__head">
+                    <h3>Mix de productos</h3>
+                    <p>Concentración de originación en el periodo</p>
+                  </div>
+                  <ProductMixBars data={overview.productMix} />
+                </article>
+              </div>
 
               <div className="mdc-grid-2">
                 <article className="mdc-card">
