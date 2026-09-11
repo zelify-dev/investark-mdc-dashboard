@@ -3,18 +3,34 @@
 import { useState } from "react";
 
 import { AppButton } from "@/components/ui/atoms/button/app-button";
+import { AuthError, updateOrganization } from "@/lib/auth-api";
 import { CrmPageHeader } from "@/modules/crm/components/crm-page-header";
 import { DOC_KIND_LABEL } from "@/modules/crm/data/kumaza-crm.seed";
 import type { DocKind } from "@/modules/crm/data/kumaza-crm.types";
 import { useCrmSession } from "@/modules/crm/lib/crm-session";
+import { mapOrganizationToCrm } from "@/modules/crm/lib/map-organization-to-crm";
 
 import "./crm-ops.css";
 
 const DOC_OPTIONS: DocKind[] = ["nomina", "estado_cuenta", "comprobante_domicilio"];
 
+const COUNTRY_CODES: Record<string, string> = {
+  méxico: "MX",
+  mexico: "MX",
+  "estados unidos": "US",
+};
+
+function toCountryCode(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  if (trimmed.length <= 3) return trimmed.toUpperCase();
+  return COUNTRY_CODES[trimmed.toLowerCase()] || trimmed;
+}
+
 export function CrmSettingsScreen() {
-  const { org, process, setOrg, setProcess } = useCrmSession();
+  const { org, orgLoading, orgError, process, setOrg, setProcess } = useCrmSession();
   const [notice, setNotice] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const toggleDoc = (kind: DocKind, field: "requiredDocs" | "validationOrder") => {
     const current = process[field];
@@ -26,16 +42,22 @@ export function CrmSettingsScreen() {
     <div className="crm-ops">
       <CrmPageHeader
         title="Configuración"
-        subtitle={`Parámetros de WhatsApp Business para la organización ${org.orgId}.`}
+        subtitle={
+          orgLoading
+            ? "Cargando datos de la organización en sesión…"
+            : `Parámetros de WhatsApp Business para ${org.tradeName || "la organización logueada"}.`
+        }
       />
+
+      {orgError ? <p className="crm-ops__note">{orgError}</p> : null}
 
       <div className="crm-ops__grid">
         <section className="crm-ops__card">
           <h2>Información de la organización</h2>
-          <p>Datos fiscales y de canal para habilitar la verificación por WhatsApp.</p>
+          <p>Datos fiscales reales de la organización logueada. WhatsApp y WABA se editan aquí para el canal.</p>
           <label>
             Nombre comercial
-            <input value={org.tradeName} onChange={(event) => setOrg({ ...org, tradeName: event.target.value })} />
+            <input disabled={orgLoading} value={org.tradeName} onChange={(event) => setOrg({ ...org, tradeName: event.target.value })} />
           </label>
           <label>
             Nombre legal
@@ -123,8 +145,41 @@ export function CrmSettingsScreen() {
       </div>
 
       <div>
-        <AppButton tone="primary" onClick={() => setNotice("Configuración guardada en la sesión de CRM (módulo quemado).")}>
-          Guardar configuración
+        <AppButton
+          tone="primary"
+          disabled={saving || orgLoading || !org.orgId}
+          onClick={async () => {
+            if (!org.orgId) {
+              setNotice("No hay organizationId en sesión.");
+              return;
+            }
+            setSaving(true);
+            setNotice(null);
+            try {
+              const latest = await updateOrganization(org.orgId, {
+                name: org.tradeName.trim() || undefined,
+                company_legal_name: org.legalName.trim() || org.businessName.trim() || undefined,
+                fiscal_id: org.taxId.trim() || undefined,
+                country: toCountryCode(org.countries) || undefined,
+                website: org.website.trim() || undefined,
+                industry: org.industry.trim() || undefined,
+              });
+              const next = mapOrganizationToCrm(latest);
+              setOrg({
+                ...next,
+                whatsappPhone: org.whatsappPhone,
+                wabaId: org.wabaId,
+              });
+              setNotice("Configuración de la organización actualizada.");
+            } catch (err) {
+              const message = err instanceof AuthError ? err.message : "No fue posible guardar la organización.";
+              setNotice(message);
+            } finally {
+              setSaving(false);
+            }
+          }}
+        >
+          {saving ? "Guardando…" : "Guardar configuración"}
         </AppButton>
         {notice ? <p className="crm-ops__note">{notice}</p> : null}
       </div>

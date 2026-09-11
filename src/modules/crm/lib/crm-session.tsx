@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
+import { getOrganization, getStoredOrganization } from "@/lib/auth-api";
 import {
   DEFAULT_FAQS,
   DEFAULT_LEADS,
-  DEFAULT_ORG,
   DEFAULT_PROCESS,
   DEFAULT_TEMPLATES,
   detectBank,
@@ -22,6 +22,7 @@ import type {
   DocStatus,
   LeadStatus,
 } from "@/modules/crm/data/kumaza-crm.types";
+import { emptyCrmOrg, mapOrganizationToCrm, mapStoredOrgToCrm, processForOrg } from "@/modules/crm/lib/map-organization-to-crm";
 
 function nowIso() {
   return new Date().toISOString();
@@ -49,6 +50,8 @@ function deriveStatus(lead: CrmLead): LeadStatus {
 
 type CrmSession = {
   org: CrmOrgConfig;
+  orgLoading: boolean;
+  orgError: string | null;
   process: CrmProcessConfig;
   leads: CrmLead[];
   templates: CrmTemplate[];
@@ -69,11 +72,64 @@ type CrmSession = {
 const CrmSessionContext = createContext<CrmSession | null>(null);
 
 export function CrmSessionProvider({ children }: { children: ReactNode }) {
-  const [org, setOrg] = useState(DEFAULT_ORG);
+  const [org, setOrg] = useState<CrmOrgConfig>(() => mapStoredOrgToCrm(getStoredOrganization()));
+  const [orgLoading, setOrgLoading] = useState(true);
+  const [orgError, setOrgError] = useState<string | null>(null);
   const [process, setProcess] = useState(DEFAULT_PROCESS);
   const [leads, setLeads] = useState(DEFAULT_LEADS);
   const [templates, setTemplates] = useState(DEFAULT_TEMPLATES);
   const [faqs, setFaqs] = useState(DEFAULT_FAQS);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const hydrateOrg = async () => {
+      const stored = getStoredOrganization();
+      if (!stored?.id) {
+        if (!cancelled) {
+          setOrg(emptyCrmOrg());
+          setOrgLoading(false);
+          setOrgError("No hay organización en sesión.");
+        }
+        return;
+      }
+
+      if (!cancelled) {
+        setOrg((current) => (current.orgId === stored.id ? current : mapStoredOrgToCrm(stored)));
+        setOrgLoading(true);
+        setOrgError(null);
+      }
+
+      try {
+        const details = await getOrganization(stored.id);
+        if (cancelled) return;
+        const next = mapOrganizationToCrm(details);
+        setOrg((current) => ({
+          ...next,
+          whatsappPhone: current.orgId === next.orgId ? current.whatsappPhone : "",
+          wabaId: current.orgId === next.orgId ? current.wabaId : "",
+        }));
+        setProcess((current) => processForOrg(next.tradeName || stored.name, current));
+        setOrgError(null);
+      } catch {
+        if (cancelled) return;
+        setOrg(mapStoredOrgToCrm(stored));
+        setProcess((current) => processForOrg(stored.name, current));
+        setOrgError("No se pudieron cargar todos los datos de la organización. Se muestran los de la sesión.");
+      } finally {
+        if (!cancelled) setOrgLoading(false);
+      }
+    };
+
+    void hydrateOrg();
+    window.addEventListener("authchange", hydrateOrg);
+    window.addEventListener("storage", hydrateOrg);
+    return () => {
+      cancelled = true;
+      window.removeEventListener("authchange", hydrateOrg);
+      window.removeEventListener("storage", hydrateOrg);
+    };
+  }, []);
 
   const updateLead: CrmSession["updateLead"] = (id, patch) => {
     setLeads((current) =>
@@ -181,6 +237,8 @@ export function CrmSessionProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       org,
+      orgLoading,
+      orgError,
       process,
       leads,
       templates,
@@ -197,7 +255,7 @@ export function CrmSessionProvider({ children }: { children: ReactNode }) {
       setTemplates,
       setFaqs,
     }),
-    [faqs, leads, org, process, templates],
+    [faqs, leads, org, orgError, orgLoading, process, templates],
   );
 
   return <CrmSessionContext.Provider value={value}>{children}</CrmSessionContext.Provider>;
