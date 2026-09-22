@@ -49,8 +49,8 @@ export function PldAmlExportPanel() {
 
   const logsMutation = useMutation({
     mutationFn: async () => {
-      const blob = await exportLogs({ type: "aml_screening", organization_id: org?.id });
-      triggerDownload(blob, `pld-bitacora-${org?.id || "org"}.csv`);
+      const blob = await exportLogs();
+      triggerDownload(blob, `pld-bitacora-${org?.id || "org"}.txt`);
     },
   });
   const batchMutation = useMutation({
