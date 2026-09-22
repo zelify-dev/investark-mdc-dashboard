@@ -34,10 +34,13 @@ const MDC_SHORTCUTS: { id: string; labelEs: string; labelEn: string; keywords: s
   { id: "collections", labelEs: "Cobranza", labelEn: "Collections", keywords: ["cobranza", "collections", "cobro"], href: "/mdc?tab=collections" },
   { id: "account", labelEs: "Mi cuenta", labelEn: "My account", keywords: ["cuenta", "account", "perfil", "profile", "password"], href: "/settings?section=profile" },
   { id: "configuration", labelEs: "Configuración", labelEn: "Configuration", keywords: ["configuracion", "configuration", "ajustes", "settings", "usuarios", "roles"], href: "/settings" },
-  { id: "crm-whatsapp", labelEs: "CRM · Canal de WhatsApp", labelEn: "CRM · WhatsApp channel", keywords: ["crm", "whatsapp", "api", "inbox", "canal"], href: "/crm/whatsapp" },
-  { id: "crm-settings", labelEs: "CRM · Configuración", labelEn: "CRM · Settings", keywords: ["crm", "configuracion", "whatsapp", "organizacion"], href: "/crm/configuracion" },
-  { id: "crm-leads", labelEs: "CRM · Leads", labelEn: "CRM · Leads", keywords: ["crm", "leads", "expediente", "precalificacion"], href: "/crm/leads" },
-  { id: "crm-alaiza", labelEs: "CRM · Alaiza", labelEn: "CRM · Alaiza", keywords: ["crm", "alaiza", "ia", "faq", "agente"], href: "/crm/alaiza" },
+  { id: "crm", labelEs: "CRM WhatsApp", labelEn: "CRM WhatsApp", keywords: ["crm", "whatsapp", "chat", "inbox", "prospecto"], href: "/crm" },
+  { id: "pld-aml", labelEs: "PLD/AML", labelEn: "PLD/AML", keywords: ["pld", "aml", "lavado", "sanciones", "listas", "screening"], href: "/pld-aml" },
+  { id: "pld-lists", labelEs: "Listas PLD", labelEn: "PLD lists", keywords: ["listas", "catalogo", "sdn", "ofac", "mexico"], href: "/pld-aml?tab=lists" },
+  { id: "pld-selected", labelEs: "Listas seleccionadas", labelEn: "Selected lists", keywords: ["seleccionadas", "fuentes", "grupo"], href: "/pld-aml?tab=selected" },
+  { id: "pld-internal", labelEs: "Listas internas AML", labelEn: "AML internal lists", keywords: ["listas", "watchlist", "cnbv", "interna", "excel"], href: "/pld-aml?tab=internal" },
+  { id: "pld-screenings", labelEs: "Screenings AML", labelEn: "AML screenings", keywords: ["screening", "sanciones", "ofac", "pep", "validaciones"], href: "/pld-aml?tab=screenings" },
+  { id: "pld-export", labelEs: "Exportación PLD", labelEn: "PLD export", keywords: ["exportar", "informe", "csv", "reporte"], href: "/pld-aml?tab=export" },
 ];
 
 function normalize(value: string): string {

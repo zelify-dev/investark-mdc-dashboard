@@ -59,6 +59,8 @@ export type BankTransactionDTO = {
   amount: number;
   isMatched: boolean;
   matchedUserId?: string;
+  matchedApplicantId?: string;
+  status?: string | null;
   createdAt: string;
 };
 

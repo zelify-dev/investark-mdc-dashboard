@@ -757,9 +757,6 @@ export function MdcConfigurationTab() {
         primaryHex: draft.color_a,
         accentHex: draft.color_b,
         logoUrl: draft.url_log || branding.logoUrl,
-        logoLightUrl: draft.url_log_light ?? null,
-        logoDarkUrl: draft.url_log_dark ?? null,
-        sourceOrgId: orgId,
         displayName: storedOrg?.name || branding.displayName,
       });
     } catch (err) {
@@ -829,7 +826,6 @@ export function MdcConfigurationTab() {
       setBranding({
         ...branding,
         logoUrl: preview || branding.logoUrl,
-        sourceOrgId: orgId || branding.sourceOrgId,
       });
       setPendingLogos({});
       setBrandingFeedback({ type: "success", message: "Logos guardados en modo demo (local)." });
@@ -851,9 +847,6 @@ export function MdcConfigurationTab() {
         primaryHex: draft.color_a,
         accentHex: draft.color_b,
         logoUrl: draft.url_log || branding.logoUrl,
-        logoLightUrl: draft.url_log_light ?? null,
-        logoDarkUrl: draft.url_log_dark ?? null,
-        sourceOrgId: orgId,
         displayName: storedOrg?.name || branding.displayName,
       });
       setBrandingFeedback({ type: "success", message: "Logos actualizados." });

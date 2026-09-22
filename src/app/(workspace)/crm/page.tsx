@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { CrmWhatsappScreen } from "@/modules/crm/screens/crm-whatsapp-screen";
 
-export default function CrmIndexPage() {
-  redirect("/crm/whatsapp");
+export default function CrmPage() {
+  return <CrmWhatsappScreen />;
 }

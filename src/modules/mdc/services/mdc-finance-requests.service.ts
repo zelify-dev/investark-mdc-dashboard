@@ -190,6 +190,11 @@ export type FinanceRequestUser = {
 export type FinanceRequestDetail = {
   id: string;
   orgId: string;
+  product?: string;
+  productId?: string;
+  amount?: number | string;
+  plazo?: number | string;
+  interestRate?: number | string;
   identificationNumber?: string;
   firstName?: string;
   lastName?: string;

@@ -18,13 +18,28 @@ import { DropdownMenu } from "@/components/ui/molecules/dropdown-menu/dropdown-m
 import { NavTab } from "@/components/ui/molecules/nav-tab/nav-tab";
 import { ProfileMenu } from "@/components/ui/molecules/profile-trigger/profile-menu";
 import { TopbarSearchBox } from "@/components/ui/molecules/search-box/topbar-search-box";
-import { resolveOrgNavbarLogoUrl, useBranding } from "@/providers/branding-provider";
+import { useBranding } from "@/providers/branding-provider";
 import { useI18n } from "@/providers/i18n-provider";
-import { getStoredUser } from "@/lib/auth-api";
+import {
+  getOrganization,
+  getOrganizationBranding,
+  getStoredOrganization,
+  getStoredUser,
+  pickOrganizationLogoUrl,
+} from "@/lib/auth-api";
 import { resolveProfilePhotoUrl } from "@/lib/auth-dashboard";
 import type { DropdownMenuItem } from "@/components/ui/molecules/dropdown-menu/dropdown-menu";
 
 import "./zelify-top-navbar.css";
+
+const CREATE_MENU_ITEMS = [
+  { labelKey: "topbar.createMenu.client", href: "/customers" },
+  { labelKey: "topbar.createMenu.organization", href: "/branches" },
+  { labelKey: "topbar.createMenu.group", href: "/groups" },
+  { labelKey: "topbar.createMenu.account", href: "/deposits" },
+  { labelKey: "topbar.createMenu.user", href: "/settings/access" },
+  { labelKey: "topbar.createMenu.communication", href: "/settings/templates" },
+] as const;
 
 const VIEW_MENU_ITEMS = [
   { labelKey: "topbar.viewMenu.overview", href: "/mdc?tab=overview" },
@@ -58,9 +73,13 @@ export function ZelifyTopNavbar({
     label: t(item.labelKey),
     href: item.href,
   }));
+  const createMenuItems: DropdownMenuItem[] = CREATE_MENU_ITEMS.map((item) => ({
+    label: t(item.labelKey),
+    href: item.href,
+  }));
 
   const [isCondensed, setIsCondensed] = useState(false);
-  const [openMenu, setOpenMenu] = useState<null | "view">(null);
+  const [openMenu, setOpenMenu] = useState<null | "view" | "create">(null);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [drawerSection, setDrawerSection] = useState<null | "view">(null);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
@@ -99,6 +118,7 @@ export function ZelifyTopNavbar({
 
   const lastScrollY = useRef(0);
   const viewMenuRef = useRef<HTMLDivElement | null>(null);
+  const createMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,7 +144,7 @@ export function ZelifyTopNavbar({
     const handlePointerDown = (event: MouseEvent) => {
       const target = event.target as Node;
 
-      if (viewMenuRef.current?.contains(target)) {
+      if (viewMenuRef.current?.contains(target) || createMenuRef.current?.contains(target)) {
         return;
       }
 
@@ -160,6 +180,7 @@ export function ZelifyTopNavbar({
   }, [isMobileDrawerOpen]);
 
   return (
+    <>
     <header className={`zelify-topbar-wrapper zelify-topbar-wrapper--mdc${isCondensed ? " is-condensed" : ""}`}>
       {/* Nivel Superior: Marca y Acciones */}
       <div className="zelify-topbar-primary">
@@ -168,7 +189,24 @@ export function ZelifyTopNavbar({
         </div>
 
         <div className="zelify-topbar__actions">
-          {/* Accesos rápidos MDC (antes "Ver") */}
+          <div className="zelify-topbar__menu-anchor zelify-topbar__desktop-only" ref={createMenuRef}>
+            <TopbarActionButton
+              tone="primary"
+              isOpen={openMenu === "create"}
+              onClick={() =>
+                setOpenMenu((current) => (current === "create" ? null : "create"))
+              }
+            >
+              {t("topbar.create")}
+            </TopbarActionButton>
+            {openMenu === "create" ? (
+              <DropdownMenu
+                className="zelify-topbar-dropdown"
+                items={createMenuItems}
+              />
+            ) : null}
+          </div>
+
           <div className="zelify-topbar__menu-anchor zelify-topbar__desktop-only" ref={viewMenuRef}>
             <TopbarActionButton
               tone="secondary"
@@ -267,6 +305,8 @@ export function ZelifyTopNavbar({
         sidebarRef={sidebarRef}
       />
     </header>
+    <div className="zelify-topbar-spacer" aria-hidden="true" />
+    </>
   );
 }
 
@@ -386,35 +426,62 @@ type BrandBlockProps = {
 
 function BrandBlock({ brandAlt }: BrandBlockProps) {
   const { branding } = useBranding();
-  const productLogoUrl = "/mdc-navbar-logo.svg";
-  const productAlt = brandAlt || "Aethereun";
-  const orgLogoUrl = resolveOrgNavbarLogoUrl(branding);
-  const orgAlt =
-    branding.displayName && !/zelify|aethereun/i.test(branding.displayName)
+  const productLogoUrl = "/mdc-navbar-logo-dark.svg";
+  const productLogoAlt =
+    branding.displayName && !/zelify/i.test(branding.displayName)
       ? branding.displayName
-      : "Organización";
-  const usesLightVariant = Boolean(orgLogoUrl && branding.logoLightUrl && orgLogoUrl === branding.logoLightUrl);
+      : brandAlt || "Aethereun";
+
+  const [clientLogoUrl, setClientLogoUrl] = useState<string | null>(null);
+  const [clientLogoAlt, setClientLogoAlt] = useState("Cliente");
+
+  useEffect(() => {
+    const org = getStoredOrganization();
+    if (org?.name) setClientLogoAlt(org.name);
+
+    const fromSession = pickOrganizationLogoUrl(org) || pickOrganizationLogoUrl(branding);
+    setClientLogoUrl(fromSession);
+
+    if (!org?.id) return;
+
+    let cancelled = false;
+    void Promise.allSettled([getOrganizationBranding(org.id), getOrganization(org.id)]).then(
+      ([brandingResult, orgResult]) => {
+        if (cancelled) return;
+        const brandingData = brandingResult.status === "fulfilled" ? brandingResult.value : null;
+        const details = orgResult.status === "fulfilled" ? orgResult.value : null;
+        const next =
+          pickOrganizationLogoUrl(brandingData) ||
+          pickOrganizationLogoUrl(details) ||
+          fromSession;
+        setClientLogoUrl(next);
+        if (details?.name) setClientLogoAlt(details.name);
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [branding.logoUrl, branding.displayName]);
 
   return (
     <div className="zelify-topbar__brand">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={productLogoUrl}
-        alt={productAlt}
+        alt={productLogoAlt}
         className="zelify-topbar__brand-logo"
       />
 
-      {orgLogoUrl ? (
+      {clientLogoUrl ? (
         <>
           <span className="zelify-topbar__brand-divider" aria-hidden="true" />
-          <span className={`zelify-topbar__brand-org${usesLightVariant ? "" : " zelify-topbar__brand-org--chip"}`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={orgLogoUrl}
-              alt={orgAlt}
-              className="zelify-topbar__brand-logo zelify-topbar__brand-logo--org"
-            />
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={clientLogoUrl}
+            alt={clientLogoAlt}
+            className="zelify-topbar__brand-logo zelify-topbar__brand-logo--partner"
+          />
         </>
       ) : null}
     </div>
@@ -452,7 +519,7 @@ function BellIcon() {
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <path
         d="M9 16.25a1.87 1.87 0 0 0 1.83-1.5H7.17A1.87 1.87 0 0 0 9 16.25ZM14.25 13.25H3.75v-.75l1.5-1.5V7.75a3.75 3.75 0 1 1 7.5 0V11l1.5 1.5v.75Z"
-        fill="#F8FAFC"
+        fill="currentColor"
       />
     </svg>
   );

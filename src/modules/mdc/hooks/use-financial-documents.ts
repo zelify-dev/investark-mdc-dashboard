@@ -48,7 +48,7 @@ export function useDocumentProgress(userId: string | null, category: FinancialDo
     enabled: enabled && Boolean(userId),
     refetchInterval: (query) => {
       const data = query.state.data as FinancialDocumentProgress | undefined;
-      if (isStillProcessing(data)) return 3000;
+      if (isStillProcessing(data)) return 2500;
       if (isWaitingKycMatch(data)) return 5000;
       return false;
     },

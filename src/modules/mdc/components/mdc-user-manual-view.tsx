@@ -180,7 +180,7 @@ export function MdcUserManualView() {
           </div>
 
           <header className="mdc-manual-hero">
-            <p>MDC · Tulana Finanzas</p>
+            <p>MDC · Kumaza</p>
             <h2>Manual operativo del Motor MDC</h2>
             <span>
               Recorre el documento completo. El índice de la izquierda se queda fijo y marca la sección en la que estás.

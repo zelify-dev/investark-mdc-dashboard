@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { Eye, Settings2, X } from "lucide-react";
 import { MDC_REQUESTS, type MdcRequest } from "@/modules/mdc/data/mdc-requests-mock";
 import { resolveApplicantDisplayName } from "@/modules/mdc/data/mdc-credit-mock";
-import { getStoredOrganization } from "@/lib/auth-api";
+import { getStoredOrganization, isLegalPersonDisabledOrganization } from "@/lib/auth-api";
 import { FinancialDocumentUploader } from "@/components/upload/FinancialDocumentUploader";
 import { getMdcApiBaseUrl } from "@/modules/mdc/services/mdc-api-client";
+import { useBackdropDismiss } from "@/modules/mdc/lib/backdrop-dismiss";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 }).format(value);
@@ -35,15 +36,23 @@ function RiskBadge({ risk }: { risk: MdcRequest["risk"] }) {
 
 function CreateRequestModal({ onClose }: { onClose: () => void }) {
   const [personType, setPersonType] = useState<"natural" | "moral">("natural");
+  const [legalPersonDisabled, setLegalPersonDisabled] = useState(false);
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [razonSocial, setRazonSocial] = useState("");
   const [email, setEmail] = useState("");
   const [producto, setProducto] = useState("Credito automotriz");
   const [monto, setMonto] = useState("12000");
+  const backdropDismiss = useBackdropDismiss(onClose);
+
+  useEffect(() => {
+    const locked = isLegalPersonDisabledOrganization();
+    setLegalPersonDisabled(locked);
+    if (locked) setPersonType("natural");
+  }, []);
 
   return (
-    <div className="mdc-modal-backdrop" onClick={onClose}>
+    <div className="mdc-modal-backdrop" {...backdropDismiss}>
       <div className="mdc-modal" onClick={e => e.stopPropagation()}>
         <header className="mdc-modal-head">
           <div>
@@ -64,8 +73,13 @@ function CreateRequestModal({ onClose }: { onClose: () => void }) {
               Persona Física
             </button>
             <button
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${personType === "moral" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setPersonType("moral")}
+              type="button"
+              disabled={legalPersonDisabled}
+              title={legalPersonDisabled ? "No disponible para esta organización" : undefined}
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${personType === "moral" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700"} ${legalPersonDisabled ? "opacity-40 cursor-not-allowed" : ""}`}
+              onClick={() => {
+                if (!legalPersonDisabled) setPersonType("moral");
+              }}
             >
               Persona Moral
             </button>

@@ -38,9 +38,26 @@ export type Application = {
   rulesBreakdownStatus?: string;
 };
 
+const PLACEHOLDER_APPLICANT_NAMES = new Set([
+  "desconocido",
+  "sin nombre",
+  "pendiente de kyc",
+  "n/a",
+]);
+
+export function isUsableApplicantName(name?: string | null, email?: string | null): boolean {
+  const trimmed = (name || "").trim();
+  if (!trimmed) return false;
+  if (PLACEHOLDER_APPLICANT_NAMES.has(trimmed.toLowerCase())) return false;
+  if (trimmed.includes("@")) return false;
+  const local = (email || "").split("@")[0]?.trim().toLowerCase();
+  if (local && trimmed.toLowerCase() === local) return false;
+  return true;
+}
+
 /**
- * Nombre para tabla/detalle. Alta natural ya no manda firstName/lastName
- * (los saca Zelify/INE), así que no usar "Desconocido" si hay email o CURP/RFC.
+ * Etiqueta para tabla/título. El alta natural solo pide CURP, email y teléfono;
+ * el nombre real llega con KYC. Nunca usar el prefijo del correo como nombre.
  */
 export function resolveApplicantDisplayName(item: {
   personType?: string | null;
@@ -51,21 +68,25 @@ export function resolveApplicantDisplayName(item: {
   name?: string | null;
   email?: string | null;
   identificationNumber?: string | null;
+  user?: {
+    firstName?: string | null;
+    lastName?: string | null;
+    fullName?: string | null;
+  } | null;
 }): string {
-  const fullFromParts = `${item.firstName || ""} ${item.lastName || ""}`.trim();
-  if (fullFromParts) return fullFromParts;
-  if (item.fullName?.trim()) return item.fullName.trim();
-  if (item.name?.trim()) return item.name.trim();
-  if (item.personType === "moral" && item.businessName?.trim()) return item.businessName.trim();
-  if (item.businessName?.trim()) return item.businessName.trim();
   const email = (item.email || "").trim();
-  if (email && email.toLowerCase() !== "n/a") {
-    const local = email.split("@")[0]?.trim();
-    return local || email;
+  const fullFromParts = `${item.firstName || item.user?.firstName || ""} ${item.lastName || item.user?.lastName || ""}`.trim();
+  if (isUsableApplicantName(fullFromParts, email)) return fullFromParts;
+  if (isUsableApplicantName(item.fullName, email)) return item.fullName!.trim();
+  if (isUsableApplicantName(item.user?.fullName, email)) return item.user!.fullName!.trim();
+  if (isUsableApplicantName(item.name, email)) return item.name!.trim();
+  if (item.personType === "moral") {
+    return item.businessName?.trim() || "Sin razón social";
   }
+  if (item.businessName?.trim()) return item.businessName.trim();
+  if (email && email.toLowerCase() !== "n/a") return email;
   const id = (item.identificationNumber || "").trim();
-  if (id) return id;
-  return "Sin nombre";
+  return id || "—";
 }
 
 export const NATURAL_CREDIT_PRODUCTS = ["Credito automotriz", "Credito personal"] as const;

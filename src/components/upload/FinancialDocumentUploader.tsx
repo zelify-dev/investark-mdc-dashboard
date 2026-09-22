@@ -12,6 +12,8 @@ import {
 } from "@/modules/mdc/services/mdc-finance-requests.service";
 import { useDeleteDocument, useDocumentProgress, useReplaceDocument, useUploadConsolidatedPayroll, useUploadOneDocument, isDocumentAnalyzing } from "@/modules/mdc/hooks/use-financial-documents";
 import { documentMatchBadge } from "@/modules/mdc/lib/document-match-ui";
+import { FileDropZone } from "@/components/upload/file-drop-zone";
+import { DocumentAnalysisProgressBar } from "@/components/upload/document-analysis-progress";
 
 interface FinancialDocumentUploaderProps {
   userId?: string | null;
@@ -32,6 +34,9 @@ type NominaSlot = {
 };
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const PDF_ACCEPT = "application/pdf,.pdf";
+const MAX_INDIVIDUAL_PDF_MB = 10;
+const MAX_INDIVIDUAL_PDF_BYTES = MAX_INDIVIDUAL_PDF_MB * 1024 * 1024;
 
 type FinanceRequestLookup = {
   user?: {
@@ -78,7 +83,7 @@ function statusLabel(status?: string | null, manualDecision?: string | null) {
     case "PROCESSING":
     case "UPLOADED":
     case "SENT_TO_BDA":
-      return "Analizando…";
+      return "Completando…";
     case "MANUAL_REVIEW_REQUIRED":
       return "Revisión manual";
     case "FAILED":
@@ -265,6 +270,14 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
   const extractoProgress = extractoProgressQuery.data || null;
   const addressProgress = addressProgressQuery.data || null;
   const isBootstrapping = isResolvingUser || nominaProgressQuery.isLoading || extractoProgressQuery.isLoading || addressProgressQuery.isLoading;
+  const documentsBusy =
+    uploadMutation.isPending ||
+    replaceMutation.isPending ||
+    deleteMutation.isPending ||
+    consolidatedPayrollMutation.isPending;
+  const dropDisabled = documentsBusy || !resolvedUserId;
+  const rejectNonPdf = () =>
+    setAlert({ message: "El archivo debe estar en formato PDF.", type: "error" });
 
   useEffect(() => {
     let cancelled = false;
@@ -365,8 +378,8 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
-    if (file.size > 3 * 1024 * 1024) {
-      setAlert({ message: `El archivo "${file.name}" supera el límite de 3 MB.`, type: "error" });
+    if (file.size > MAX_INDIVIDUAL_PDF_BYTES) {
+      setAlert({ message: `El archivo "${file.name}" supera el límite de ${MAX_INDIVIDUAL_PDF_MB} MB.`, type: "error" });
       setSelectedUploadTarget(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
       return;
@@ -483,6 +496,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
               <p className="mt-0.5 text-xs font-medium text-slate-500">
                 Flujo documental progresivo para validación de decisión
               </p>
+              <p className="mt-1 text-xs text-slate-500">PDF individuales: máximo {MAX_INDIVIDUAL_PDF_MB} MB.</p>
             </div>
             <button
               onClick={onClose}
@@ -573,7 +587,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                           className="sr-only"
                         />
                         <span className="block text-xs font-bold text-slate-900">PDF consolidado</span>
-                        <span className="mt-0.5 block text-[11px] font-medium text-slate-500">Un PDF con las 5 nóminas.</span>
+                        <span className="mt-0.5 block text-[11px] font-medium text-slate-500">Un PDF con las 5 nóminas; cada una puede ocupar 1 o 2 páginas.</span>
                       </label>
                     </div>
                   </fieldset>
@@ -594,10 +608,29 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                       const isConfirmingDelete = Boolean(deleteTarget && doc?.documentId && deleteTarget.documentId === doc.documentId);
 
                       return (
-                        <article
+                        <FileDropZone
                           key={slot.label}
-                          className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5 rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60"
+                          accept={PDF_ACCEPT}
+                          disabled={dropDisabled || analyzing || (!canUpload && !doc?.documentId)}
+                          onFile={(file) => {
+                            if (doc?.documentId) {
+                              void handleUploadFile(file, {
+                                category: "nomina",
+                                slotIndex: slot.index,
+                                mode: "replace",
+                                documentId: doc.documentId,
+                              });
+                              return;
+                            }
+                            void handleUploadFile(file, { category: "nomina", slotIndex: slot.index, mode: "upload" });
+                          }}
+                          onInvalidFile={rejectNonPdf}
+                          className="rounded-lg"
                         >
+                        <article
+                          className="rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60"
+                        >
+                          <div className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5">
                           <h4 className="w-[108px] shrink-0 text-xs font-bold text-slate-800">{slot.label}</h4>
 
                           {doc ? (
@@ -606,7 +639,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                               <span className="truncate">{doc.fileName || "Archivo sin nombre"}</span>
                             </p>
                           ) : (
-                            <p className="min-w-0 flex-1 text-[11px] font-medium text-slate-400">Pendiente de carga</p>
+                            <p className="min-w-0 flex-1 text-[11px] font-medium text-slate-400">Pendiente · Arrastra un PDF o súbelo</p>
                           )}
 
                           <span className={`inline-flex h-7 w-[150px] shrink-0 items-center justify-center whitespace-nowrap rounded-md px-2 text-center text-[9.5px] font-semibold tracking-wide ${statusClassName(status, doc?.manualDecision)}`}>
@@ -615,13 +648,6 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                           <KycMatchChip match={doc?.documentMatch} />
 
                           <div className="ml-auto flex shrink-0 items-center gap-2">
-                            {analyzing ? (
-                              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                                <Loader2 size={14} className="animate-spin" />
-                                Analizando…
-                              </span>
-                            ) : null}
-
                             {canUpload ? (
                               <button
                                 type="button"
@@ -667,9 +693,16 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                               </DocumentActionsMenu>
                             ) : null}
                           </div>
-
+                          </div>
+                          {doc && (analyzing || status === "COMPLETED" || status === "FAILED" || status === "REJECTED" || status === "MANUAL_REVIEW_REQUIRED") ? (
+                            <DocumentAnalysisProgressBar
+                              trackId={doc.documentId || doc.analysisId || slot.label}
+                              status={status}
+                              manualDecision={doc.manualDecision}
+                            />
+                          ) : null}
                           {isConfirmingDelete ? (
-                            <div className="flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
+                            <div className="mt-2 flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
                               <span className="mr-auto">El documento quedará eliminado del expediente activo.</span>
                               <button type="button" className="appearance-none rounded-md border-0 bg-transparent px-2.5 py-1 font-semibold text-slate-600 shadow-none hover:bg-white" onClick={() => setDeleteTarget(null)} disabled={deleteMutation.isPending}>Cancelar</button>
                               <button type="button" className="appearance-none rounded-md border-0 bg-red-50 px-2.5 py-1 font-semibold text-red-700 shadow-none disabled:opacity-60" onClick={handleDeleteDocument} disabled={deleteMutation.isPending}>
@@ -678,17 +711,27 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                             </div>
                           ) : null}
                         </article>
+                        </FileDropZone>
                       );
                       })}
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-4">
+                      <FileDropZone
+                        accept={PDF_ACCEPT}
+                        disabled={dropDisabled}
+                        onFile={(file) =>
+                          void handleUploadFile(file, { category: "nomina", slotIndex: 0, mode: "consolidated" })
+                        }
+                        onInvalidFile={rejectNonPdf}
+                        className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-4"
+                        activeClassName="border-[#000016] bg-white ring-2 ring-[#000016]/10"
+                      >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div className="min-w-0">
                             <h4 className="text-xs font-bold text-slate-900">PDF consolidado de nómina</h4>
                             <p className="mt-1 text-[11px] font-medium leading-5 text-slate-500">
-                              Sube un PDF con exactamente 5 páginas. Cada página debe contener un recibo completo de nómina del mismo solicitante.
+                              Arrastra un PDF con las 5 nóminas o selecciónalo. Cada recibo puede ocupar 1 o 2 páginas consecutivas (máximo 10 páginas en total).
                             </p>
                             {consolidatedPayrollFile ? (
                               <p className="mt-2 truncate text-[11px] font-semibold text-slate-700">{consolidatedPayrollFile.name}</p>
@@ -720,11 +763,18 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                               disabled={!consolidatedPayrollFile || consolidatedPayrollMutation.isPending || !resolvedUserId}
                             >
                               {consolidatedPayrollMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <UploadCloud size={14} />}
-                              {consolidatedPayrollMutation.isPending ? "Procesando PDF consolidado..." : "Enviar consolidado"}
+                              {consolidatedPayrollMutation.isPending ? "Análisis de Cortex…" : "Enviar consolidado"}
                             </button>
                           </div>
                         </div>
-                      </div>
+                        {consolidatedPayrollMutation.isPending ? (
+                          <DocumentAnalysisProgressBar
+                            trackId={`consolidated-wait-${consolidatedPayrollFile?.name ?? "pdf"}`}
+                            mode="consolidated-wait"
+                            status="PROCESSING"
+                          />
+                        ) : null}
+                      </FileDropZone>
 
                       {(nominaProgress?.documents?.length ?? 0) > 0 ? (
                         <div className="space-y-1.5">
@@ -743,8 +793,9 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                             return (
                               <article
                                 key={`consolidated-${slot.label}`}
-                                className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5 rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60"
+                                className="rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60"
                               >
+                                <div className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5">
                                 <h4 className="w-[108px] shrink-0 text-xs font-bold text-slate-800">{slot.label}</h4>
                                 <p className="flex min-w-0 flex-1 items-center gap-2 text-[11px] font-medium text-slate-500">
                                   <FileIcon size={13} className="shrink-0 text-slate-400" />
@@ -755,12 +806,6 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                                 </span>
                                 <KycMatchChip match={doc.documentMatch} />
                                 <div className="ml-auto flex shrink-0 items-center gap-2">
-                                  {analyzing ? (
-                                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                                      <Loader2 size={14} className="animate-spin" />
-                                      Analizando…
-                                    </span>
-                                  ) : null}
                                   {doc.documentId ? (
                                     <DocumentActionsMenu
                                       open={openDocumentMenuId === doc.documentId}
@@ -791,8 +836,16 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                                     </DocumentActionsMenu>
                                   ) : null}
                                 </div>
+                                </div>
+                                {analyzing || status === "COMPLETED" || status === "FAILED" || status === "REJECTED" || status === "MANUAL_REVIEW_REQUIRED" ? (
+                                  <DocumentAnalysisProgressBar
+                                    trackId={doc.documentId || doc.analysisId || slot.label}
+                                    status={status}
+                                    manualDecision={doc.manualDecision}
+                                  />
+                                ) : null}
                                 {isConfirmingDelete ? (
-                                  <div className="flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
+                                  <div className="mt-2 flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
                                     <span className="mr-auto">El documento quedará eliminado del expediente activo.</span>
                                     <button type="button" className="appearance-none rounded-md border-0 bg-transparent px-2.5 py-1 font-semibold text-slate-600 shadow-none hover:bg-white" onClick={() => setDeleteTarget(null)} disabled={deleteMutation.isPending}>Cancelar</button>
                                     <button type="button" className="appearance-none rounded-md border-0 bg-red-50 px-2.5 py-1 font-semibold text-red-700 shadow-none disabled:opacity-60" onClick={handleDeleteDocument} disabled={deleteMutation.isPending}>
@@ -849,7 +902,26 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
 
                     <InvalidDocumentAttempts attempts={extractoAttempts} />
 
-                    <article className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5 rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60">
+                    <FileDropZone
+                      accept={PDF_ACCEPT}
+                      disabled={dropDisabled || isDocumentAnalyzing(extractoDocument?.status)}
+                      onFile={(file) => {
+                        if (extractoDocument?.documentId) {
+                          void handleUploadFile(file, {
+                            category: "extracto",
+                            slotIndex: 0,
+                            mode: "replace",
+                            documentId: extractoDocument.documentId,
+                          });
+                          return;
+                        }
+                        void handleUploadFile(file, { category: "extracto", slotIndex: 0, mode: "upload" });
+                      }}
+                      onInvalidFile={rejectNonPdf}
+                      className="rounded-lg"
+                    >
+                    <article className="rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60">
+                      <div className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5">
                       <h4 className="w-[108px] shrink-0 text-xs font-bold text-slate-800">Extracto</h4>
 
                       {extractoDocument ? (
@@ -858,7 +930,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                           <span className="truncate">{extractoDocument.fileName || "Archivo sin nombre"}</span>
                         </p>
                       ) : (
-                        <p className="min-w-0 flex-1 text-[11px] font-medium text-slate-400">Pendiente de carga · 1 PDF requerido</p>
+                        <p className="min-w-0 flex-1 text-[11px] font-medium text-slate-400">Pendiente · Arrastra un PDF o súbelo</p>
                       )}
 
                       <span className={`inline-flex h-7 w-[150px] shrink-0 items-center justify-center whitespace-nowrap rounded-md px-2 text-center text-[9.5px] font-semibold tracking-wide ${statusClassName(extractoDocument?.status, extractoDocument?.manualDecision)}`}>
@@ -867,13 +939,6 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                       <KycMatchChip match={extractoDocument?.documentMatch} />
 
                       <div className="ml-auto flex shrink-0 items-center gap-2">
-                        {isDocumentAnalyzing(extractoDocument?.status) ? (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                            <Loader2 size={14} className="animate-spin" />
-                            Analizando…
-                          </span>
-                        ) : null}
-
                         {!extractoDocument && (extractoProgress?.uploaded ?? 0) < (extractoProgress?.required ?? 1) ? (
                           <button
                             type="button"
@@ -918,9 +983,16 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                           </DocumentActionsMenu>
                         ) : null}
                       </div>
-
+                      </div>
+                      {extractoDocument && (isDocumentAnalyzing(extractoDocument.status) || ["COMPLETED", "FAILED", "REJECTED", "MANUAL_REVIEW_REQUIRED"].includes(extractoDocument.status ?? "")) ? (
+                        <DocumentAnalysisProgressBar
+                          trackId={extractoDocument.documentId || extractoDocument.analysisId || "extracto"}
+                          status={extractoDocument.status}
+                          manualDecision={extractoDocument.manualDecision}
+                        />
+                      ) : null}
                       {deleteTarget && extractoDocument?.documentId && deleteTarget.documentId === extractoDocument.documentId ? (
-                        <div className="flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
+                        <div className="mt-2 flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
                           <span className="mr-auto">El documento quedará eliminado del expediente activo.</span>
                           <button type="button" className="appearance-none rounded-md border-0 bg-transparent px-2.5 py-1 font-semibold text-slate-600 shadow-none hover:bg-white" onClick={() => setDeleteTarget(null)} disabled={deleteMutation.isPending}>Cancelar</button>
                           <button type="button" className="appearance-none rounded-md border-0 bg-red-50 px-2.5 py-1 font-semibold text-red-700 shadow-none disabled:opacity-60" onClick={handleDeleteDocument} disabled={deleteMutation.isPending}>
@@ -929,6 +1001,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                         </div>
                       ) : null}
                     </article>
+                    </FileDropZone>
 
                     <div className="mt-3 flex justify-end">
                       <button
@@ -970,7 +1043,26 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
 
                     <InvalidDocumentAttempts attempts={addressAttempts} />
 
-                    <article className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5 rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60">
+                    <FileDropZone
+                      accept={PDF_ACCEPT}
+                      disabled={dropDisabled || isDocumentAnalyzing(addressDocument?.status)}
+                      onFile={(file) => {
+                        if (addressDocument?.documentId) {
+                          void handleUploadFile(file, {
+                            category: "comprobante_domicilio",
+                            slotIndex: 0,
+                            mode: "replace",
+                            documentId: addressDocument.documentId,
+                          });
+                          return;
+                        }
+                        void handleUploadFile(file, { category: "comprobante_domicilio", slotIndex: 0, mode: "upload" });
+                      }}
+                      onInvalidFile={rejectNonPdf}
+                      className="rounded-lg"
+                    >
+                    <article className="rounded-lg bg-slate-100/70 px-3 py-2 transition hover:bg-slate-200/60">
+                      <div className="flex min-h-[44px] flex-nowrap items-center gap-x-3 gap-y-1.5">
                       <h4 className="w-[108px] shrink-0 text-xs font-bold text-slate-800">Domicilio</h4>
 
                       {addressDocument ? (
@@ -979,7 +1071,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                           <span className="truncate">{addressDocument.fileName || "Archivo sin nombre"}</span>
                         </p>
                       ) : (
-                        <p className="min-w-0 flex-1 text-[11px] font-medium text-slate-400">Pendiente de carga · 1 PDF requerido</p>
+                        <p className="min-w-0 flex-1 text-[11px] font-medium text-slate-400">Pendiente · Arrastra un PDF o súbelo</p>
                       )}
 
                       <span className={`inline-flex h-7 w-[150px] shrink-0 items-center justify-center whitespace-nowrap rounded-md px-2 text-center text-[9.5px] font-semibold tracking-wide ${statusClassName(addressDocument?.status, addressDocument?.manualDecision)}`}>
@@ -988,13 +1080,6 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                       <KycMatchChip match={addressDocument?.documentMatch} />
 
                       <div className="ml-auto flex shrink-0 items-center gap-2">
-                        {isDocumentAnalyzing(addressDocument?.status) ? (
-                          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
-                            <Loader2 size={14} className="animate-spin" />
-                            Analizando…
-                          </span>
-                        ) : null}
-
                         {!addressDocument && (addressProgress?.uploaded ?? 0) < (addressProgress?.required ?? 1) ? (
                           <button
                             type="button"
@@ -1043,9 +1128,16 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                           </DocumentActionsMenu>
                         ) : null}
                       </div>
-
+                      </div>
+                      {addressDocument && (isDocumentAnalyzing(addressDocument.status) || ["COMPLETED", "FAILED", "REJECTED", "MANUAL_REVIEW_REQUIRED"].includes(addressDocument.status ?? "")) ? (
+                        <DocumentAnalysisProgressBar
+                          trackId={addressDocument.documentId || addressDocument.analysisId || "domicilio"}
+                          status={addressDocument.status}
+                          manualDecision={addressDocument.manualDecision}
+                        />
+                      ) : null}
                       {deleteTarget && addressDocument?.documentId && deleteTarget.documentId === addressDocument.documentId ? (
-                        <div className="flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
+                        <div className="mt-2 flex w-full items-center justify-end gap-2 border-t border-slate-200 pt-2 text-[11px] text-slate-600">
                           <span className="mr-auto">El documento quedará eliminado del expediente activo.</span>
                           <button type="button" className="appearance-none rounded-md border-0 bg-transparent px-2.5 py-1 font-semibold text-slate-600 shadow-none hover:bg-white" onClick={() => setDeleteTarget(null)} disabled={deleteMutation.isPending}>Cancelar</button>
                           <button type="button" className="appearance-none rounded-md border-0 bg-red-50 px-2.5 py-1 font-semibold text-red-700 shadow-none disabled:opacity-60" onClick={handleDeleteDocument} disabled={deleteMutation.isPending}>
@@ -1054,6 +1146,7 @@ export function FinancialDocumentUploader({ userId, financeRequestId, onClose }:
                         </div>
                       ) : null}
                     </article>
+                    </FileDropZone>
 
                     <div className="mt-3 flex justify-end">
                       <button

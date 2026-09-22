@@ -8,6 +8,7 @@ import type { CreditRuleRow, RuleProduct } from "@/modules/mdc/data/mdc-rules-mo
 import { MdcFormPage } from "@/modules/mdc/components/mdc-form-page";
 import { readApplicationDetailSession } from "@/modules/mdc/lib/mdc-form-session";
 import { AppDetailModal } from "@/modules/mdc/screens/mdc-screen";
+import "./mdc-application-detail.css";
 
 type ApplicationDetailSession = {
   app: Application;
@@ -27,7 +28,7 @@ export function MdcApplicationDetailScreen() {
 
   if (!app) {
     return (
-      <MdcFormPage title="Solicitud" subtitle="No se encontró el detalle en esta sesión." backHref={backHref} backLabel="Volver a solicitudes">
+      <MdcFormPage flush title="Solicitud" subtitle="No se encontró el detalle en esta sesión." backHref={backHref} backLabel="Volver a solicitudes">
         <p>Abre el detalle desde la tabla de solicitudes para conservar el estado y los documentos asociados.</p>
       </MdcFormPage>
     );
@@ -36,12 +37,7 @@ export function MdcApplicationDetailScreen() {
   const rules = (session.rules || []).filter((rule) => rule.products.includes(app.product as RuleProduct));
 
   return (
-    <MdcFormPage
-      title={app.applicantName}
-      subtitle={`${app.appNo} · ${app.product} · seguimiento, documentos y decisión.`}
-      backHref={backHref}
-      backLabel="Volver a solicitudes"
-    >
+    <MdcFormPage flush backHref={backHref} backLabel="Volver a solicitudes">
       <AppDetailModal
         app={app}
         rules={rules}

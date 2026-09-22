@@ -14,12 +14,6 @@ export type TopNavDropdownEntry =
   | { kind: "separator" };
 
 const topNavDropdownsByNavId: Record<string, TopNavDropdownSourceEntry[]> = {
-  crm: [
-    { kind: "item", labelKey: "nav.dropdowns.crm.whatsapp", href: "/crm/whatsapp" },
-    { kind: "item", labelKey: "nav.dropdowns.crm.settings", href: "/crm/configuracion" },
-    { kind: "item", labelKey: "nav.dropdowns.crm.leads", href: "/crm/leads" },
-    { kind: "item", labelKey: "nav.dropdowns.crm.alaiza", href: "/crm/alaiza" },
-  ],
   accounting: [
     { kind: "item", labelKey: "nav.dropdowns.accounting.balanceSheet", href: "/accounting/balance-sheet" },
     {
@@ -27,6 +21,13 @@ const topNavDropdownsByNavId: Record<string, TopNavDropdownSourceEntry[]> = {
       labelKey: "nav.dropdowns.accounting.interestAccrualBreakdown",
       href: "/accounting/interest-accrual-breakdown",
     },
+  ],
+  "pld-aml": [
+    { kind: "item", labelKey: "nav.dropdowns.pldAml.lists", href: "/pld-aml?tab=lists" },
+    { kind: "item", labelKey: "nav.dropdowns.pldAml.selected", href: "/pld-aml?tab=selected" },
+    { kind: "item", labelKey: "nav.dropdowns.pldAml.internal", href: "/pld-aml?tab=internal" },
+    { kind: "item", labelKey: "nav.dropdowns.pldAml.screenings", href: "/pld-aml?tab=screenings" },
+    { kind: "item", labelKey: "nav.dropdowns.pldAml.export", href: "/pld-aml?tab=export" },
   ],
 };
 

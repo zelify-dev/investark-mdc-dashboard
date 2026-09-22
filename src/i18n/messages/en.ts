@@ -81,8 +81,9 @@ export const en = {
       accounting: "Accounting",
       administration: "Configuration",
       mdc: "MDC",
-      kyb: "KYB",
       crm: "CRM",
+      pldAml: "PLD/AML",
+      kyb: "KYB",
     },
     admin: {
       generalSetup: "General Setup",
@@ -145,12 +146,6 @@ export const en = {
         outreach: "Outreach",
         risk: "Risk",
       },
-      crm: {
-        whatsapp: "WhatsApp channel",
-        settings: "Settings",
-        leads: "Leads",
-        alaiza: "Alaiza",
-      },
       accounting: {
         balanceSheet: "Balance Sheet",
         profitLoss: "Profit & Loss",
@@ -159,6 +154,13 @@ export const en = {
         interestAccrualBreakdown: "Interest Accrual Breakdown",
         chartOfAccounts: "Chart of Accounts",
         closures: "Closures",
+      },
+      pldAml: {
+        lists: "Lists",
+        selected: "Selected lists",
+        internal: "Internal lists",
+        screenings: "Screenings",
+        export: "Export",
       },
     },
     generalSetup: {

@@ -4,6 +4,7 @@ import { FormEvent, useRef, useState } from "react";
 import { FileText, Plus, Trash2, UserCheck } from "lucide-react";
 import { useOnboarding } from "@/modules/kyb/components/onboarding-provider";
 import { isOwnerKybComplete } from "@/modules/kyb/lib/aml-screening";
+import { FileDropZone } from "@/components/upload/file-drop-zone";
 
 export function OwnersKybPanel() {
   const {
@@ -223,6 +224,13 @@ export function OwnersKybPanel() {
                         if (file) handleIneUpload(owner.id, file);
                       }}
                     />
+                    <FileDropZone
+                      accept=".pdf,.jpg,.jpeg,.png,image/jpeg,image/png"
+                      disabled={isDisabled}
+                      onFile={(file) => handleIneUpload(owner.id, file)}
+                      className="flex min-w-0 flex-1 items-center gap-2 rounded-lg"
+                      activeClassName="ring-2 ring-[#000016]/15 bg-white"
+                    >
                     <button
                       type="button"
                       disabled={isDisabled}
@@ -230,13 +238,14 @@ export function OwnersKybPanel() {
                       className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[10px] font-semibold uppercase text-slate-700 hover:bg-slate-100 disabled:opacity-50"
                     >
                       <FileText size={12} />
-                      {owner.ineDocument ? "Reemplazar INE" : "Adjuntar INE"}
+                      {owner.ineDocument ? "Reemplazar INE" : "Adjuntar o arrastrar INE"}
                     </button>
                     {owner.ineDocument && (
                       <span className="truncate text-[10px] font-mono text-slate-600">
                         {owner.ineDocument}
                       </span>
                     )}
+                    </FileDropZone>
                   </div>
                 </div>
               </div>
