@@ -10,7 +10,17 @@ type RouteContext = { params: Promise<{ path?: string[] }> };
 function upstreamUrl(request: NextRequest, path: string[] | undefined): string {
   const base = getAmlUpstreamBaseUrl();
   const pathname = `/${(path ?? []).join("/")}`.replace(/\/+/g, "/");
-  return `${base}${pathname === "/" ? "/" : pathname}${request.nextUrl.search}`;
+  const search = new URLSearchParams(request.nextUrl.searchParams);
+
+  // /logs/export obtiene el tenant desde x-org-id. Las versiones anteriores
+  // enviaban estos valores como query params y el upstream los rechaza.
+  if (pathname === "/logs/export") {
+    search.delete("type");
+    search.delete("organization_id");
+  }
+
+  const query = search.toString();
+  return `${base}${pathname === "/" ? "/" : pathname}${query ? `?${query}` : ""}`;
 }
 
 function forwardRequestHeaders(request: NextRequest): Headers {
@@ -19,6 +29,13 @@ function forwardRequestHeaders(request: NextRequest): Headers {
     const value = request.headers.get(key);
     if (value) headers.set(key, value);
   });
+
+  // Compatibilidad con clientes antiguos: si aún mandan organization_id en
+  // la URL, convertirlo al header obligatorio antes de llamar al upstream.
+  if (!headers.has("x-org-id")) {
+    const organizationId = request.nextUrl.searchParams.get("organization_id")?.trim();
+    if (organizationId) headers.set("x-org-id", organizationId);
+  }
   return headers;
 }
 

@@ -87,7 +87,10 @@ export async function amlFetch(path: string, init: RequestInit = {}): Promise<Re
   const orgId = getStoredOrganization()?.id || "";
   const headers = new Headers(init.headers);
 
-  if (orgId) headers.set("x-org-id", orgId);
+  // El API PLD/AML identifica el tenant exclusivamente con este header.
+  // Mantener un valor enviado explícitamente permite que cada operación
+  // use la organización seleccionada, sin depender de una lectura implícita.
+  if (!headers.has("x-org-id") && orgId) headers.set("x-org-id", orgId);
   headers.delete("authorization");
   headers.delete("Authorization");
   if (!headers.has("Content-Type") && init.body && typeof init.body === "string") {
