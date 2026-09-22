@@ -484,11 +484,13 @@ export function createOperationLog(payload: unknown) {
   return amlRequest<unknown>("/logs", json(payload));
 }
 
-export function exportLogs(params: { type?: "aml_screening" | "operations"; organization_id?: string } = {}) {
-  return amlBlob(`/logs/export${toQuery({
-    type: params.type,
-    organization_id: params.organization_id || getStoredOrganization()?.id,
-  })}`);
+/**
+ * El API de bitácora identifica el tenant exclusivamente mediante `x-org-id`.
+ * No añadir filtros a la URL: el despliegue vigente rechaza `type` y
+ * `organization_id` como parámetros de consulta.
+ */
+export function exportLogs() {
+  return amlBlob("/logs/export", { headers: { Accept: "text/plain" } });
 }
 
 export function fetchLog(id: string) {
