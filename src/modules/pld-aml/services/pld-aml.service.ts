@@ -489,8 +489,18 @@ export function createOperationLog(payload: unknown) {
  * No añadir filtros a la URL: el despliegue vigente rechaza `type` y
  * `organization_id` como parámetros de consulta.
  */
-export function exportLogs() {
-  return amlBlob("/logs/export", { headers: { Accept: "text/plain" } });
+export function exportLogs(organizationId = getStoredOrganization()?.id) {
+  const orgId = organizationId?.trim();
+  if (!orgId) {
+    throw new Error("No hay una organización activa para exportar la bitácora PLD.");
+  }
+
+  return amlBlob("/logs/export", {
+    headers: {
+      Accept: "text/plain",
+      "x-org-id": orgId,
+    },
+  });
 }
 
 export function fetchLog(id: string) {

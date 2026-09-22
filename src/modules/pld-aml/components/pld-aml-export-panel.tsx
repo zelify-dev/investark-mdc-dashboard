@@ -49,7 +49,8 @@ export function PldAmlExportPanel() {
 
   const logsMutation = useMutation({
     mutationFn: async () => {
-      const blob = await exportLogs();
+      const organizationId = getStoredOrganization()?.id || org?.id;
+      const blob = await exportLogs(organizationId);
       triggerDownload(blob, `pld-bitacora-${org?.id || "org"}.txt`);
     },
   });
