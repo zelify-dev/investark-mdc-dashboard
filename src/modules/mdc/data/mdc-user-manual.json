@@ -1,6 +1,6 @@
 {
   "title": "Manual de usuario",
-  "subtitle": "Motor MDC · Tulana Finanzas",
+  "subtitle": "Motor MDC · Kumaza",
   "source": "docs/manuales/mdc-usuario/Manual_Usuario_MDC_Testafin.pdf",
   "sections": [
     {
@@ -21,7 +21,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "El Motor MDC centraliza el registro y seguimiento de solicitudes de crédito, la verificación de identidad del solicitante y la gestión documental requerida para el análisis de la solicitud. URL de producción​ URL: tulana.aethereun.com/login"
+          "text": "El Motor MDC centraliza el registro y seguimiento de solicitudes de crédito, la verificación de identidad del solicitante y la gestión documental requerida para el análisis de la solicitud. URL de producción​ URL: kumaza.aethereun.com/login"
         }
       ]
     },
@@ -152,7 +152,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Finalizadas las verificaciones de correo y teléfono, complete el registro con la información requerida por Tulana. En el flujo observado se incluyen contraseña, CURP/INE, fecha de nacimiento, estado civil, información de cónyuge o pareja cuando corresponda, grado máximo de estudios y demás datos del perfil mostrados por la plataforma."
+          "text": "Finalizadas las verificaciones de correo y teléfono, complete el registro con la información requerida por Kumaza. En el flujo observado se incluyen contraseña, CURP/INE, fecha de nacimiento, estado civil, información de cónyuge o pareja cuando corresponda, grado máximo de estudios y demás datos del perfil mostrados por la plataforma."
         },
         {
           "type": "step",

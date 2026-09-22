@@ -13,14 +13,21 @@ import {
   clearAuthSession,
   clearSessionExpiredFlash,
   getAccessToken,
-  getMe,
   getStoredRoles,
+  getStoredUser,
   markSessionExpiredFlash,
   peekSessionExpiredFlash,
+  syncMe,
 } from "@/lib/auth-api";
 import { getDefaultDashboardPath } from "@/lib/dashboard-routing";
+import { MustChangePasswordModal } from "@/components/auth/must-change-password-modal";
 
 import "./auth-guard.css";
+
+function readMustChangePassword(): boolean {
+  if (typeof window === "undefined") return false;
+  return getStoredUser()?.must_change_password === true;
+}
 
 const DEMO_BYPASS_STORAGE_KEY = "zelify_demo_bypass";
 
@@ -56,6 +63,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
   const [isMounted, setIsMounted] = useState(() => {
     if (typeof window === "undefined") return false;
     return isPublicPath(window.location.pathname);
@@ -80,6 +88,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       if (isValidatingRef.current) return;
       if (isDemoBypassSession()) {
         setIsAuthenticated(true);
+        setMustChangePassword(false);
         setIsMounted(true);
         return;
       }
@@ -88,6 +97,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       const token = getAccessToken();
       if (auth !== "true" || !token) {
         setIsAuthenticated(false);
+        setMustChangePassword(false);
         setIsMounted(true);
         const p = pathname || window.location.pathname;
         if (!isPublicPath(p)) {
@@ -101,6 +111,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // Flag local inmediato (p. ej. tras login con must_change_password: true)
+      setMustChangePassword(readMustChangePassword());
+
       const now = Date.now();
       if (!force && now - lastValidationRef.current < 30_000) {
         return;
@@ -108,20 +121,23 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
       isValidatingRef.current = true;
       try {
-        await getMe();
+        await syncMe();
         lastValidationRef.current = now;
         setIsAuthenticated(true);
+        setMustChangePassword(readMustChangePassword());
         setIsMounted(true);
       } catch (err) {
         if (err instanceof AuthError && (err.statusCode === 401 || err.statusCode === 403)) {
           markSessionExpiredFlash();
           clearAuthSession();
           setIsAuthenticated(false);
+          setMustChangePassword(false);
           setIsMounted(true);
           router.replace("/login?reason=session_expired");
           return;
         }
         setIsAuthenticated(true);
+        setMustChangePassword(readMustChangePassword());
         setIsMounted(true);
       } finally {
         isValidatingRef.current = false;
@@ -146,6 +162,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
       if ((auth === "true" && token) || demoBypass) {
         setIsAuthenticated(true);
+        setMustChangePassword(demoBypass ? false : readMustChangePassword());
         setIsMounted(true);
 
         const path = pathname || window.location.pathname;
@@ -156,6 +173,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         }
       } else {
         setIsAuthenticated(false);
+        setMustChangePassword(false);
         setIsMounted(true);
 
         const path = pathname || window.location.pathname;
@@ -172,7 +190,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     checkAuth();
 
-    const handleAuthChange = () => checkAuth();
+    const handleAuthChange = () => {
+      setMustChangePassword(readMustChangePassword());
+      checkAuth();
+    };
 
     const handleWindowFocus = () => {
       const path = pathname || (typeof window !== "undefined" ? window.location.pathname : "");
@@ -214,6 +235,16 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (isAuthenticated === null) {
     return <Spinner />;
+  }
+
+  if (mustChangePassword) {
+    return (
+      <MustChangePasswordModal
+        onSuccess={() => {
+          setMustChangePassword(false);
+        }}
+      />
+    );
   }
 
   return <>{children}</>;

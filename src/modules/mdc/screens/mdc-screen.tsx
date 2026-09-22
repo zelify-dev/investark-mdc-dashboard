@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Eye, Plus, Settings, Trash2, AlertTriangle, Copy, ExternalLink } from "lucide-react";
+import { Eye, Plus, Settings, Trash2, AlertTriangle, LayoutGrid, Box, FilePenLine, Target, Fingerprint, Monitor, Banknote, FileBarChart, type LucideIcon } from "lucide-react";
 import { seedScotiaCreditStorage, useCreditDemoStore } from "@/modules/cortex/hooks/use-credit-demo-store";
 import { AppCheckbox } from "@/components/ui/atoms/checkbox/app-checkbox";
 import { ZelifyTopNavbar } from "@/components/ui/organisms/topbar/zelify-top-navbar";
@@ -27,7 +27,7 @@ import {
   type RiskLevel,
 } from "@/modules/mdc/data/mdc-credit-mock";
 import { CREDIT_RULES_BY_MODE, type CreditRuleRow, type RuleDataType, type RuleOperator, type RuleProduct, type RuleSeverity } from "@/modules/mdc/data/mdc-rules-mock";
-import { evaluateDecisionRule, fetchRules, fetchFinanceProducts, fetchUserRules, createRule, updateRule, deleteRule } from "@/modules/mdc/services/mdc-rules.service";
+import { evaluateDecisionRule, fetchRules, fetchFinanceProductById, fetchFinanceProducts, fetchUserRules, createRule, updateRule, deleteRule } from "@/modules/mdc/services/mdc-rules.service";
 import { createTraceabilityLog, fetchTraceabilityLogs } from "@/modules/mdc/services/mdc-traceability.service";
 import { getMdcApiBaseUrl } from "@/modules/mdc/services/mdc-api-client";
 
@@ -48,34 +48,29 @@ import {
   type MdcApiError,
 } from "@/modules/mdc/services/mdc-finance-requests.service";
 import {
-  createZelifyKycOnboardingSession,
   fetchZelifyKycOnboardingSession,
-  formatEducation,
-  formatHousingType,
-  formatIneMatched,
-  formatKycIdentitySummary,
-  formatMaritalStatus,
-  formatMdcUserAddressLines,
-  formatRelation,
-  formatSexLabel,
-  formatKycPercent,
   isCurpLike,
   kycError,
   kycLog,
-  kycWarn,
-  kycScoreTone,
   kycStatusLabel,
   normalizeMxPhone10,
-  type ZelifyKycSessionStatus,
 } from "@/modules/mdc/services/zelify-kyc-onboarding.service";
-import { getStoredOrganization, getStoredUser } from "@/lib/auth-api";
+import {
+  advisorKycMarkerUrl,
+  createAdvisorKycCase,
+  isAdvisorKycCaseId,
+} from "@/modules/mdc/services/advisor-kyc.service";
+import { AdvisorKycPanel } from "@/modules/mdc/components/advisor-kyc-panel";
+import { getStoredOrganization, getStoredUser, isLegalPersonDisabledOrganization } from "@/lib/auth-api";
 import { writeApplicationDetailSession, writeRuleFormSession } from "@/modules/mdc/lib/mdc-form-session";
+import { useBackdropDismiss } from "@/modules/mdc/lib/backdrop-dismiss";
 import { MdcProductsTab } from "@/modules/mdc/components/mdc-products-tab";
 import { MdcRequestsTab } from "@/modules/mdc/components/mdc-requests-tab";
 
 
 import { MdcCollectionsTab } from "@/modules/mdc/components/mdc-collections-tab";
 import { MdcPaymentsTab } from "@/modules/mdc/components/mdc-payments-tab";
+import { fetchPaymentByApplicant } from "@/modules/mdc/services/mdc-payments.service";
 import { MdcConfigurationTab } from "@/modules/mdc/components/mdc-configuration-tab";
 import { MdcReportsTab } from "@/modules/mdc/components/mdc-reports-tab";
 import {
@@ -92,6 +87,7 @@ import "@/components/ui/templates/workspace-page.css";
 import "@/modules/cortex/components/credit-quote-result-panel.css";
 import "./mdc-screen.css";
 import { FinancialDocumentUploader } from "@/components/upload/FinancialDocumentUploader";
+import { DocumentAnalysisProgressBar } from "@/components/upload/document-analysis-progress";
 import {
   useAnalysisExtraction,
   useManualReviewAnalysis,
@@ -166,8 +162,8 @@ const RANGE_DAYS: Record<RangePreset, number> = {
 };
 
 const PERSONA_OPTIONS: { id: MdcApplicantMode; label: string }[] = [
-  { id: "natural", label: "Persona Física" },
-  { id: "moral", label: "Persona Moral" },
+  { id: "natural", label: "Persona Natural" },
+  { id: "moral", label: "Persona Jurídica" },
 ];
 
 const MODE_STORAGE_KEYS: Record<MdcApplicantMode, { applications: string; rules: string; products: string }> = {
@@ -399,15 +395,15 @@ const MORAL_TRACEABILITY: MdcTraceabilityEntry[] = [
   },
 ];
 
-const TABS: { id: MdcTab; label: string; moralOnly?: boolean }[] = [
-  { id: "overview", label: "Tablero" },
-  { id: "products", label: "Productos" },
-  { id: "applications", label: "Solicitudes" },
-  { id: "rules", label: "Reglas" },
-  { id: "traceability", label: "Trazabilidad" },
-  { id: "payments", label: "Pagos" },
-  { id: "collections", label: "Cobranza" },
-  { id: "reports", label: "Informes", moralOnly: true },
+const TABS: { id: MdcTab; label: string; icon: LucideIcon; moralOnly?: boolean }[] = [
+  { id: "overview", label: "Tablero", icon: LayoutGrid },
+  { id: "products", label: "Productos", icon: Box },
+  { id: "applications", label: "Solicitudes", icon: FilePenLine },
+  { id: "rules", label: "Reglas", icon: Target },
+  { id: "traceability", label: "Trazabilidad", icon: Fingerprint },
+  { id: "payments", label: "Pagos", icon: Monitor },
+  { id: "collections", label: "Cobranza", icon: Banknote },
+  { id: "reports", label: "Informes", icon: FileBarChart, moralOnly: true },
 ];
 
 const STATUS_OPTIONS: (ApplicationStatus | "all")[] = [
@@ -638,6 +634,16 @@ function money(v: number) {
   }).format(v);
 }
 
+function moneyWithOptionalCents(v: number) {
+  const hasCents = Math.round(Math.abs(v) * 100) % 100 !== 0;
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: hasCents ? 2 : 0,
+  }).format(v);
+}
+
 function getConfiguredTimezone() {
   if (typeof window === "undefined") return undefined;
   try {
@@ -656,6 +662,15 @@ function shortDate(v: string) {
   return new Intl.DateTimeFormat("es-MX", {
     dateStyle: "short",
     timeStyle: "short",
+    timeZone: getConfiguredTimezone(),
+  }).format(new Date(v));
+}
+
+function fileDate(v: string) {
+  return new Intl.DateTimeFormat("es-MX", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
     timeZone: getConfiguredTimezone(),
   }).format(new Date(v));
 }
@@ -1450,7 +1465,7 @@ function ApprovedCrossSellPanel({
   const potentialCrossBps = quote.discountsPotential.reduce((sum, discount) => sum + discount.bps, 0);
 
   return (
-    <section className="mdc-detail-card">
+    <section className="mdc-detail-card mdc-ficha-section mdc-ficha-section--rules">
       <div className="cortex-quote-result__section">
         <h4>Cross-sell disponible</h4>
         <p className="cortex-quote-result__hint">Productos complementarios para mejorar tasa y relación comercial.</p>
@@ -1727,21 +1742,10 @@ function LineChart({ points }: { points: { label: string; value: number }[] }) {
   const xForIndex = (index: number) => leftPad + (chartWidth * index) / Math.max(points.length - 1, 1);
   const yForValue = (value: number) => topPad + chartHeight - (value / chartMax) * chartHeight;
   const linePoints = points.map((point, index) => `${xForIndex(index)},${yForValue(point.value)}`).join(" ");
-  const areaPoints = [
-    `${xForIndex(0)},${topPad + chartHeight}`,
-    ...points.map((point, index) => `${xForIndex(index)},${yForValue(point.value)}`),
-    `${xForIndex(Math.max(points.length - 1, 0))},${topPad + chartHeight}`,
-  ].join(" ");
   const labelStep = points.length > 14 ? Math.ceil(points.length / 12) : 1;
 
   return (
     <svg className="mdc-line-chart" viewBox={`0 0 ${width} ${height}`} aria-hidden>
-      <defs>
-        <linearGradient id="mdcLineFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#271a59" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="#271a59" stopOpacity="0" />
-        </linearGradient>
-      </defs>
       {uniqueTicks.map((tick) => {
         const y = yForValue(tick);
         return (
@@ -1754,7 +1758,6 @@ function LineChart({ points }: { points: { label: string; value: number }[] }) {
         );
       })}
 
-      <polygon points={areaPoints} fill="url(#mdcLineFill)" />
       <polyline points={linePoints} className="mdc-line-chart__line" />
 
       {points.map((point, index) => (
@@ -1842,51 +1845,6 @@ function DonutChart({
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-function DecisionFunnel({
-  steps,
-}: {
-  steps: { label: string; value: number; tone: "ink" | "mid" | "ok" | "bad" }[];
-}) {
-  const max = Math.max(...steps.map((step) => step.value), 1);
-  return (
-    <div className="mdc-decision-funnel" aria-hidden>
-      {steps.map((step) => (
-        <div key={step.label} className="mdc-decision-funnel__row">
-          <div
-            className={`mdc-decision-funnel__bar mdc-decision-funnel__bar--${step.tone}`}
-            style={{ width: `${36 + (step.value / max) * 64}%` }}
-          >
-            <strong>{step.label}</strong>
-            <em>{step.value}</em>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ProductMixBars({ data }: { data: { label: string; value: number }[] }) {
-  const max = Math.max(...data.map((item) => item.value), 1);
-  if (data.length === 0) {
-    return <p style={{ margin: 0, color: "#64748b", fontSize: 13 }}>Sin solicitudes en el rango.</p>;
-  }
-  return (
-    <div className="mdc-mix">
-      {data.map((item) => (
-        <div key={item.label} className="mdc-mix__row">
-          <div className="mdc-mix__meta">
-            <strong>{item.label}</strong>
-            <span>{item.value}</span>
-          </div>
-          <div className="mdc-mix__track">
-            <i style={{ width: `${(item.value / max) * 100}%` }} />
-          </div>
-        </div>
-      ))}
     </div>
   );
 }
@@ -2093,15 +2051,49 @@ export function MoralApplicantDetailModal({
     }`;
 
   return (
-    <div className={layout === "page" ? "mdc-modal mdc-modal--page" : "mdc-modal-backdrop"} onClick={layout === "page" ? undefined : onClose}>
+    <div
+      className={layout === "page" ? "mdc-modal mdc-modal--page mdc-expediente" : "mdc-modal-backdrop"}
+      style={layout === "page" ? ({ ["--expediente-date" as string]: `"${fileDate(app.submittedAt)}"` } as React.CSSProperties) : undefined}
+      onClick={layout === "page" ? undefined : onClose}
+    >
       <div className="mdc-modal mdc-modal--detail" onClick={(e) => e.stopPropagation()}>
+        {layout === "page" ? (
+          <>
+            <header className="mdc-expediente__mast">
+              <div>
+                <p>Expediente {app.appNo}</p>
+                <h3>{app.applicantName}</h3>
+              </div>
+              <div className="mdc-expediente__flags">
+                <span className={classForStatus(app.status)}>{STATUS_LABELS[app.status]}</span>
+                <span className={classForRisk(appRiskLevel)}>{RISK_LABELS[appRiskLevel]}</span>
+              </div>
+            </header>
+            <dl className="mdc-expediente__facts">
+              <div>
+                <dt>Fecha de ingreso</dt>
+                <dd>{fileDate(app.submittedAt)}</dd>
+              </div>
+              <div>
+                <dt>Producto</dt>
+                <dd>{app.product}</dd>
+              </div>
+              <div>
+                <dt>Monto solicitado</dt>
+                <dd>{money(app.requestedAmount)}</dd>
+              </div>
+              <div>
+                <dt>Segmento</dt>
+                <dd>{profile.segment}</dd>
+              </div>
+            </dl>
+          </>
+        ) : (
         <header className="mdc-detail-head">
           <div className="mdc-detail-head__title">
-            {layout === "page" ? null : (
             <button type="button" className="mdc-link-btn" onClick={onClose}>
               ← Volver a solicitudes
             </button>
-            )}
             <div className="mdc-detail-head__line">
               <h3>Detalle de empresa</h3>
               <span className={classForStatus(app.status)}>{STATUS_LABELS[app.status]}</span>
@@ -2112,6 +2104,7 @@ export function MoralApplicantDetailModal({
             </p>
           </div>
         </header>
+        )}
 
         {feedback ? <p className="mdc-detail-feedback">{feedback}</p> : null}
 
@@ -2482,7 +2475,7 @@ function bdaStatusLabel(status?: string | null, manualDecision?: string | null, 
     case "PROCESSING":
     case "UPLOADED":
     case "SENT_TO_BDA":
-      return "Analizando…";
+      return "Completando…";
     case "MANUAL_REVIEW_REQUIRED": return "Revisión manual";
     case "FAILED": return "Fallido";
     case "REJECTED": return "Rechazado";
@@ -2508,7 +2501,7 @@ function bdaResultLabel(status?: string | null, extraction?: FinancialDocumentEx
     case "PROCESSING":
     case "UPLOADED":
     case "SENT_TO_BDA":
-      return "Analizando con Bedrock…";
+      return "Completando análisis…";
     default:
       return "Pendiente";
   }
@@ -2646,9 +2639,6 @@ function DocumentCategoryPanel({
                 )}
                 <span className="mdc-document-row__result">{bdaResultLabel(doc.status, extractionPreview, doc.manualDecision)}</span>
                 <div className="mdc-document-row__actions">
-                  {analyzing ? (
-                    <span className="mdc-document-row__analyzing">Analizando documento…</span>
-                  ) : null}
                   {canReprocess ? (
                     <button
                       type="button"
@@ -2671,6 +2661,14 @@ function DocumentCategoryPanel({
                 </div>
                 {doc.errorMessage ? (
                   <p className="mdc-document-row__error">{doc.errorMessage}</p>
+                ) : null}
+                {analyzing || doc.status === "COMPLETED" || doc.status === "FAILED" || doc.status === "REJECTED" || doc.status === "MANUAL_REVIEW_REQUIRED" ? (
+                  <DocumentAnalysisProgressBar
+                    variant="mdc"
+                    trackId={doc.documentId || doc.analysisId || rowKey}
+                    status={doc.status}
+                    manualDecision={doc.manualDecision}
+                  />
                 ) : null}
                 {rowError ? (
                   <details className="mdc-document-row__error">
@@ -3340,12 +3338,29 @@ export function AppDetailModal({
     category: "nomina" | "extracto" | "comprobante_domicilio";
     status?: string | null;
   } | null>(null);
+  const [fichaTab, setFichaTab] = useState<"ficha" | "documentos" | "reglas" | "kyc" | "decision">("ficha");
+  const showFichaTab = (tab: typeof fichaTab) => layout !== "page" || fichaTab === tab;
 
   const suppliedUserId = app.userId && isUuidLike(app.userId) ? app.userId : null;
   const financeRequestDetailQuery = useQuery({
     queryKey: ["finance-request", app.id],
     queryFn: () => fetchFinanceRequestById(app.id),
     enabled: !isMoralApplicant && !isDemoOrganization,
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
+  const financeProductId = financeRequestDetailQuery.data?.productId || null;
+  const financeProductQuery = useQuery({
+    queryKey: ["finance-product", financeProductId],
+    queryFn: () => fetchFinanceProductById(financeProductId!),
+    enabled: !isMoralApplicant && !isDemoOrganization && Boolean(financeProductId),
+    staleTime: 0,
+    refetchOnMount: "always",
+  });
+  const paymentCalendarQuery = useQuery({
+    queryKey: ["payment-calendar", app.id],
+    queryFn: () => fetchPaymentByApplicant(app.id),
+    enabled: !isMoralApplicant && !isDemoOrganization && Boolean(app.id),
     staleTime: 0,
     refetchOnMount: "always",
   });
@@ -3511,7 +3526,6 @@ export function AppDetailModal({
       financeRequestDetailQuery.data?.user?.zelifyUserId ||
       null,
   );
-  const [kycResending, setKycResending] = useState(false);
   const syncedZelifyUserIdRef = useRef<string | null>(
     app.zelifyUserId ||
       financeRequestDetailQuery.data?.zelifyUserId ||
@@ -3544,7 +3558,7 @@ export function AppDetailModal({
       kycLog("detalle · poll GET Auth /sessions", { kycSessionId: mdcKycSessionId, appId: app.id });
       return fetchZelifyKycOnboardingSession(mdcKycSessionId as string);
     },
-    enabled: Boolean(mdcKycSessionId) && !isMoralApplicant && !isDemoOrganization,
+    enabled: Boolean(mdcKycSessionId) && !isAdvisorKycCaseId(mdcKycSessionId) && !isMoralApplicant && !isDemoOrganization,
     refetchInterval: (query) => {
       const status = query.state.data?.status;
       if (status === "completed" || status === "rejected" || status === "failed" || status === "expired") {
@@ -3621,61 +3635,39 @@ export function AppDetailModal({
     };
   }, [app.id, kycSessionQuery.data?.userId, kycSessionQuery.data?.status, mdcKycSessionId, mdcKycWebviewUrl, mdcZelifyUserId]);
 
-  const handleResendKyc = async () => {
-    const curp =
-      (app.rawPayload?.identificationNumber as string | undefined) ||
-      financeRequestDetailQuery.data?.identificationNumber ||
-      "";
-    const email = app.applicantEmail;
-    const phoneRaw = (app.rawPayload?.phone as string | undefined) || "";
-    kycLog("reenviar · inicio", { appId: app.id, curp, email, phoneRaw });
-    if (!isCurpLike(curp) || !email || email === "N/A") {
-      kycWarn("reenviar · abortado: faltan CURP/email", { curp, email, fixOwner: "Front/datos solicitud" });
-      setFeedback("Faltan CURP/email para reenviar la verificación.");
-      return;
-    }
-    setKycResending(true);
-    try {
-      const phone10 = phoneRaw ? normalizeMxPhone10(phoneRaw) : "";
-      const session = await createZelifyKycOnboardingSession({
-        email,
-        curp: curp.replace(/\s+/g, "").toUpperCase(),
-        ...(phone10.length === 10 ? { phone: phone10 } : {}),
-      });
-      await attachFinanceRequestKyc(app.id, {
-        kycSessionId: session.sessionId,
-        kycWebviewUrl: session.webviewUrl,
-      });
-      setMdcKycSessionId(session.sessionId);
-      setMdcKycWebviewUrl(session.webviewUrl);
-      syncedZelifyUserIdRef.current = null;
-      setMdcZelifyUserId(null);
-      kycLog("reenviar · OK (overwrite MDC)", {
-        appId: app.id,
-        kycSessionId: session.sessionId,
-        note: "zelifyUserId quedó null a propósito",
-      });
-      setFeedback("Nuevo link KYC generado (válido ~24h).");
-    } catch (err) {
-      kycError("reenviar · falló", err, { appId: app.id, curp, email });
-      setFeedback(err instanceof Error ? err.message : "No se pudo reenviar KYC.");
-    } finally {
-      setKycResending(false);
-    }
-  };
-
-
   if (isMoralApplicant) {
     return <MoralApplicantDetailModal app={app} rules={rules} onClose={onClose} layout={layout} />;
   }
-  const isAutomotriz = app.product === "Credito automotriz";
-  const interestRate = isAutomotriz ? 13.8 : 21.2;
-  const termMonths = isAutomotriz ? 48 : 24;
-  const downPayment = isAutomotriz ? Math.round(app.requestedAmount * 0.15) : 0;
-  const financedAmount = Math.max(app.requestedAmount - downPayment, 0);
-  const totalWithInterest = financedAmount * (1 + (interestRate / 100) * (termMonths / 12));
-  const monthlyEstimate = Math.round(totalWithInterest / Math.max(termMonths, 1));
-  const dti = Math.min(0.62, Math.max(0.19, app.requestedAmount / (isAutomotriz ? 8_500_000 : 2_100_000)));
+  const financeProduct = financeProductQuery.data;
+  const detailProduct = financeProduct?.financialProduct?.trim() || financeRequestDetailQuery.data?.product?.trim() || app.product;
+  const detailAmount = Number(financeRequestDetailQuery.data?.amount);
+  const detailTermMonths = Number(financeRequestDetailQuery.data?.plazo);
+  const detailInterestRate = Number(financeRequestDetailQuery.data?.interestRate);
+  const productDueDatesCount = Number(financeProduct?.dueDatesCount);
+  const productCreditRate = Number(financeProduct?.creditRate);
+  const requestedAmount = Number.isFinite(detailAmount) && detailAmount > 0 ? detailAmount : app.requestedAmount;
+  const isAutomotriz = detailProduct === "Credito automotriz";
+  const interestRate = Number.isFinite(productCreditRate) && productCreditRate >= 0
+    ? productCreditRate
+    : Number.isFinite(detailInterestRate) && detailInterestRate >= 0
+      ? detailInterestRate
+    : isAutomotriz ? 13.8 : 21.2;
+  const termMonths = Number.isFinite(detailTermMonths) && detailTermMonths > 0
+    ? detailTermMonths
+    : isAutomotriz ? 48 : 24;
+  const productTerm = Number.isFinite(productDueDatesCount) && productDueDatesCount > 0
+    ? `${productDueDatesCount} pagos${financeProduct?.paymentPeriod ? ` · ${financeProduct.paymentPeriod}` : ""}`
+    : `${termMonths} meses`;
+  const paymentScheme = financeProduct?.paymentScheme || financeProduct?.scheme || "No disponible";
+  const contractType = financeProduct?.contractType || "No disponible";
+  const calendarInstallment = paymentCalendarQuery.data?.installments?.find(
+    (installment) => Number(installment.amount) > 0,
+  );
+  const calendarMonthlyAmount = Number(calendarInstallment?.amount);
+  const monthlyEstimate = Number.isFinite(calendarMonthlyAmount) && calendarMonthlyAmount > 0
+    ? calendarMonthlyAmount
+    : null;
+  const dti = Math.min(0.62, Math.max(0.19, requestedAmount / (isAutomotriz ? 8_500_000 : 2_100_000)));
   const backendDti = financeRequestDetailQuery.data?.dti;
   const parsedBackendDti = typeof backendDti === "number"
     ? backendDti
@@ -3747,7 +3739,7 @@ export function AppDetailModal({
   const creditHistoryMonths = Math.max(3, Math.round(96 - app.riskScore + (quickHash(`${app.id}-hist`) % 36)));
   const employmentMonths = Math.max(1, Math.round(12 + (quickHash(`${app.id}-employment`) % 36)));
   const hasDocumentAlerts = docs.filter((doc) => doc.automated === "Revision").length >= 2;
-  const hasCapacityPressure = monthlyEstimate > estimatedIncomeMonthly * 0.45;
+  const hasCapacityPressure = monthlyEstimate !== null && monthlyEstimate > estimatedIncomeMonthly * 0.45;
   const metricByField: Partial<Record<CreditRuleRow["field"], number>> = {
     "income.monthlyNet": estimatedIncomeMonthly,
     "ratios.dti": dti,
@@ -3938,7 +3930,7 @@ export function AppDetailModal({
       `Antiguedad laboral estimada (${employmentMonths} meses) por debajo del minimo requerido.`,
     );
   }
-  if (hasCapacityPressure) {
+  if (hasCapacityPressure && monthlyEstimate !== null) {
     declinedReasonsFromPolicy.push(
       `La cuota mensual estimada (${money(monthlyEstimate)}) compromete la capacidad de pago frente al ingreso estimado.`,
     );
@@ -4169,15 +4161,75 @@ export function AppDetailModal({
   };
 
   return (
-    <div className={layout === "page" ? "mdc-modal mdc-modal--page" : "mdc-modal-backdrop"} onClick={layout === "page" ? undefined : onClose}>
+    <div
+      className={layout === "page" ? `mdc-modal mdc-modal--page mdc-expediente mdc-ficha mdc-ficha--${fichaTab}` : "mdc-modal-backdrop"}
+      style={layout === "page" ? ({ ["--expediente-date" as string]: `"${fileDate(app.submittedAt)}"` } as React.CSSProperties) : undefined}
+      onClick={layout === "page" ? undefined : onClose}
+    >
       <div className="mdc-modal mdc-modal--detail" onClick={(e) => e.stopPropagation()}>
+        {layout === "page" ? (
+          <aside className="mdc-ficha__rail">
+            <p>Ficha</p>
+            <strong>{app.appNo}</strong>
+            <nav className="mdc-ficha__tabs" role="tablist" aria-label="Secciones de la ficha">
+              {([
+                ["ficha", "01", "Ficha", "Solicitante y producto"],
+                ["documentos", "02", "Documentos", "Nómina y domicilio"],
+                ["reglas", "03", "Reglas", "Motor de crédito"],
+                ["kyc", "04", "KYC", "Identidad"],
+                ["decision", "05", "Decisión", "Dictamen"],
+              ] as const).map(([id, index, label, hint]) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={fichaTab === id}
+                  className={`mdc-ficha__tab${fichaTab === id ? " is-active" : ""}`}
+                  onClick={() => setFichaTab(id)}
+                >
+                  <span>{index}</span>
+                  <b>{label}</b>
+                  <em>{hint}</em>
+                </button>
+              ))}
+            </nav>
+          </aside>
+        ) : null}
+        <div className={layout === "page" ? "mdc-ficha__sheet" : undefined}>
+        {layout === "page" ? (
+          <>
+            <header className="mdc-expediente__mast">
+              <div>
+                <p>Expediente {app.appNo}</p>
+                <h3>{app.applicantName}</h3>
+              </div>
+              <span className={classForStatus(app.status)}>{STATUS_LABELS[app.status]}</span>
+            </header>
+            <dl className="mdc-expediente__facts">
+              <div>
+                <dt>Fecha de ingreso</dt>
+                <dd>{fileDate(app.submittedAt)}</dd>
+              </div>
+              <div>
+                <dt>Producto</dt>
+                <dd>{detailProduct}</dd>
+              </div>
+              <div>
+                <dt>Monto solicitado</dt>
+                <dd>{money(requestedAmount)}</dd>
+              </div>
+              <div>
+                <dt>Referencia</dt>
+                <dd>{app.id.slice(0, 8).toUpperCase()}</dd>
+              </div>
+            </dl>
+          </>
+        ) : (
         <header className="mdc-detail-head">
           <div className="mdc-detail-head__title">
-            {layout === "page" ? null : (
             <button type="button" className="mdc-link-btn" onClick={onClose}>
               ← Volver a solicitudes
             </button>
-            )}
             <div className="mdc-detail-head__line">
               <h3>Detalle de solicitud</h3>
               <span className={classForStatus(app.status)}>{STATUS_LABELS[app.status]}</span>
@@ -4187,97 +4239,91 @@ export function AppDetailModal({
             </p>
           </div>
         </header>
+        )}
 
         {feedback ? <p className="mdc-detail-feedback">{feedback}</p> : null}
 
-        <div className="mdc-detail-progress">
-          {stages.map((stage) => (
-            <div key={stage.id} className="mdc-stage-card">
-              <span className={`mdc-stage-dot mdc-stage-dot--${stage.state}`} />
-              <strong>{stage.label}</strong>
-              {stage.id === "docs" ? (
-                documentLoading ? <em>Cargando documentación...</em> : documentError ? <em>No disponible</em> : (
-                  <div className="mdc-stage-document-lines">
-                    <span>
-                      <b>Nómina</b>
-                      <em>{documentProgress?.uploaded ?? 0}/{documentProgress?.required ?? 5}</em>
-                      <small>{documentProgress?.completed ?? 0} {(documentProgress?.completed ?? 0) === 1 ? "procesado" : "procesados"}</small>
-                    </span>
-                    <span>
-                      <b>Extracto</b>
-                      <em>{bankStatementProgress?.uploaded ?? 0}/{bankStatementProgress?.required ?? 1}</em>
-                      <small>{bankStatementProgress?.completed ?? 0} {(bankStatementProgress?.completed ?? 0) === 1 ? "procesado" : "procesados"}</small>
-                    </span>
-                    <span>
-                      <b>Domicilio</b>
-                      <em>{addressProgress?.uploaded ?? 0}/{addressProgress?.required ?? 1}</em>
-                      <small>{addressProgress?.completed ?? 0} {(addressProgress?.completed ?? 0) === 1 ? "procesado" : "procesados"}</small>
-                    </span>
-                  </div>
-                )
-              ) : (
-                <em>{"description" in stage ? stage.description : stage.state === "done" ? "Completado" : stage.state === "current" ? "En proceso" : "Con observacion"}</em>
-              )}
-            </div>
-          ))}
-        </div>
+        <section className="mdc-ficha-section mdc-ficha-section--flow" hidden={!showFichaTab("ficha")}>
+          <h4>Etapas del expediente</h4>
+          <div className="mdc-detail-progress">
+            {stages.map((stage) => (
+              <div key={stage.id} className="mdc-stage-card">
+                <span className={`mdc-stage-dot mdc-stage-dot--${stage.state}`} />
+                <strong>{stage.label}</strong>
+                {stage.id === "docs" ? (
+                  documentLoading ? <em>Cargando documentación...</em> : documentError ? <em>No disponible</em> : (
+                    <div className="mdc-stage-document-lines">
+                      <span>
+                        <b>Nómina</b>
+                        <em>{documentProgress?.uploaded ?? 0}/{documentProgress?.required ?? 5}</em>
+                        <small>{documentProgress?.completed ?? 0} {(documentProgress?.completed ?? 0) === 1 ? "procesado" : "procesados"}</small>
+                      </span>
+                      <span>
+                        <b>Extracto</b>
+                        <em>{bankStatementProgress?.uploaded ?? 0}/{bankStatementProgress?.required ?? 1}</em>
+                        <small>{bankStatementProgress?.completed ?? 0} {(bankStatementProgress?.completed ?? 0) === 1 ? "procesado" : "procesados"}</small>
+                      </span>
+                      <span>
+                        <b>Domicilio</b>
+                        <em>{addressProgress?.uploaded ?? 0}/{addressProgress?.required ?? 1}</em>
+                        <small>{addressProgress?.completed ?? 0} {(addressProgress?.completed ?? 0) === 1 ? "procesado" : "procesados"}</small>
+                      </span>
+                    </div>
+                  )
+                ) : (
+                  <em>{"description" in stage ? stage.description : stage.state === "done" ? "Completado" : stage.state === "current" ? "En proceso" : "Con observacion"}</em>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="mdc-detail-layout">
           <div className="mdc-detail-main">
-            <section className="mdc-detail-card mdc-detail-card--summary">
+            <section className="mdc-detail-card mdc-detail-card--summary mdc-ficha-section mdc-ficha-section--identity" hidden={!showFichaTab("ficha")}>
               <h4>{isMoralApplicant ? "Empresa solicitante" : "Solicitante"}</h4>
               <dl className="mdc-detail-dl mdc-detail-dl--compact">
                 <div>
-                  <dt>Nombre</dt>
+                  <dt>{isMoralApplicant ? "RFC" : "CURP"}</dt>
                   <dd>
-                    {(() => {
-                      const mdcUser = financeRequestDetailQuery.data?.user;
-                      const mdcKycDone =
-                        String(mdcUser?.kycStatus || "").toLowerCase() === "completed";
-                      const fromMdc =
-                        mdcKycDone
-                          ? (mdcUser?.fullName?.trim() ||
-                              [mdcUser?.firstName, mdcUser?.lastName].filter(Boolean).join(" ").trim())
-                          : "";
-                      if (fromMdc) return fromMdc;
-
-                      const identity = kycSessionQuery.data?.identity;
-                      const fromKyc = identity
-                        ? [identity.firstNames, identity.lastNames].filter(Boolean).join(" ").trim()
-                        : "";
-                      if (fromKyc) return fromKyc;
-                      if (app.applicantName && app.applicantName !== "Desconocido" && app.applicantName !== "Sin nombre") {
-                        return app.applicantName;
-                      }
-                      return resolveApplicantDisplayName({
-                        email: app.applicantEmail,
-                        identificationNumber: app.rawPayload?.identificationNumber,
-                        firstName: app.rawPayload?.firstName,
-                        lastName: app.rawPayload?.lastName,
-                        businessName: app.rawPayload?.businessName,
-                        personType: mode,
-                      });
-                    })()}
+                    {(
+                      (app.rawPayload?.identificationNumber as string | undefined) ||
+                      financeRequestDetailQuery.data?.identificationNumber ||
+                      ""
+                    )
+                      .replace(/\s+/g, "")
+                      .toUpperCase() || "—"}
                   </dd>
                 </div>
-                <div><dt>Email</dt><dd>{app.applicantEmail}</dd></div>
-                <div><dt>Fecha de envío</dt><dd>{shortDate(app.submittedAt)}</dd></div>
+                <div><dt>Email</dt><dd>{app.applicantEmail || "—"}</dd></div>
+                <div>
+                  <dt>Teléfono</dt>
+                  <dd>{(app.rawPayload?.phone as string | undefined)?.trim() || "—"}</dd>
+                </div>
               </dl>
             </section>
 
-            <section className="mdc-detail-card mdc-detail-card--summary">
+            <section className="mdc-detail-card mdc-detail-card--summary mdc-ficha-section mdc-ficha-section--product" hidden={!showFichaTab("ficha")}>
               <h4>Producto y condiciones</h4>
               <dl className="mdc-detail-dl mdc-detail-dl--compact">
-                <div><dt>Producto</dt><dd>{app.product}</dd></div>
-                <div><dt>Monto solicitado</dt><dd>{money(app.requestedAmount)}</dd></div>
+                <div><dt>Producto</dt><dd>{detailProduct}</dd></div>
+                <div><dt>Monto solicitado</dt><dd>{money(requestedAmount)}</dd></div>
                 <div><dt>Tasa anual estimada</dt><dd>{interestRate.toFixed(1)}%</dd></div>
-                <div><dt>Plazo</dt><dd>{termMonths} meses</dd></div>
-                <div><dt>Enganche</dt><dd>{money(downPayment)}</dd></div>
-                <div><dt>Cuota mensual estimada</dt><dd>{money(monthlyEstimate)}</dd></div>
+                <div><dt>Plazo</dt><dd>{productTerm}</dd></div>
+                <div><dt>Esquema de pago</dt><dd>{paymentScheme}</dd></div>
+                <div><dt>Tipo de contrato</dt><dd>{contractType}</dd></div>
+                <div>
+                  <dt>Cuota mensual estimada</dt>
+                  <dd>
+                    {paymentCalendarQuery.isLoading ? (
+                      <span className="mdc-payment-calendar-loading"><i />Calculando cuota</span>
+                    ) : monthlyEstimate !== null ? moneyWithOptionalCents(monthlyEstimate) : "No disponible"}
+                  </dd>
+                </div>
               </dl>
             </section>
 
-            <section className="mdc-detail-card">
+            <section className="mdc-detail-card mdc-ficha-section mdc-ficha-section--docs" hidden={!showFichaTab("documentos")}>
               <div className="mdc-detail-card__head">
                 <h4>Validación documental</h4>
                 <div className="mdc-document-card-actions">
@@ -4338,7 +4384,7 @@ export function AppDetailModal({
               />
             </section>
 
-            <section className="mdc-detail-card">
+            <section className="mdc-detail-card mdc-ficha-section mdc-ficha-section--rules" hidden={!showFichaTab("reglas")}>
               <div className="mdc-detail-card__head">
                 <h4>Desglose de reglas</h4>
                 <div className="mdc-document-card-actions">
@@ -4411,13 +4457,13 @@ export function AppDetailModal({
               </div>
             </section>
 
-            {app.status === "approved" && (
+            {app.status === "approved" && showFichaTab("reglas") && (
               <ApprovedCrossSellPanel app={app} creditStore={creditStore} />
             )}
           </div>
 
           <aside className="mdc-detail-side">
-            <section className="mdc-detail-card">
+            <section className="mdc-detail-card mdc-ficha-section mdc-ficha-section--engine" hidden={!showFichaTab("ficha") && !showFichaTab("decision")}>
               <h4>Resumen del motor</h4>
               <div className="mdc-detail-score-grid">
                 <div>
@@ -4444,354 +4490,36 @@ export function AppDetailModal({
               ) : null}
             </section>
 
-            <section className="mdc-detail-card mdc-kyc-panel">
-              <h4>KYC</h4>
-              {(() => {
-                const session = kycSessionQuery.data;
-                const status: ZelifyKycSessionStatus | null = session?.status ?? null;
-                const hasLink = Boolean(mdcKycWebviewUrl);
-                const pendingVisual =
-                  status === "pending" ||
-                  status === "in_progress" ||
-                  (!status && hasLink && mdcZelifyUserId == null);
-                const showContinue =
-                  status === "pending" ||
-                  status === "in_progress" ||
-                  (!status && hasLink);
-                const showResend = status === "expired" || status === "rejected" || status === "failed";
-                const identity = session?.identity ?? null;
-                const onboarding = session?.onboarding ?? null;
-                const mdcUser = financeRequestDetailQuery.data?.user;
-                const ocrConfidence = mdcUser?.ocrConfidence ?? identity?.ocrConfidence ?? null;
-                const faceMatchScore = mdcUser?.faceMatchScore ?? identity?.faceMatchScore ?? null;
-                const contact = onboarding?.contact ?? null;
-                const personal = onboarding?.personal ?? null;
-                const references = onboarding?.references ?? null;
-                const mdcAddress = mdcUser?.address ?? null;
-                const mdcAddressLines = formatMdcUserAddressLines(mdcAddress);
-                const ineMatched = identity?.ineMatched ?? null;
-                const ineLabel = formatIneMatched(ineMatched);
-                const identitySummary = formatKycIdentitySummary(identity);
-                const housingLabel = formatHousingType(personal?.housingType ?? null, personal?.housingTypeOther);
-                const showExpediente =
-                  identity != null ||
-                  contact != null ||
-                  personal != null ||
-                  mdcAddress != null ||
-                  (references != null && references.length > 0) ||
-                  Boolean(mdcUser);
-
-                if (!mdcKycSessionId && !hasLink) {
-                  return <p className="mdc-kyc-empty">Sin sesión KYC vinculada.</p>;
-                }
-
-                const copyKycLink = async () => {
-                  if (!mdcKycWebviewUrl) return;
-                  try {
-                    await navigator.clipboard.writeText(mdcKycWebviewUrl);
-                    setFeedback("Link KYC copiado al portapapeles.");
-                  } catch {
-                    setFeedback("No se pudo copiar el link KYC.");
-                  }
-                };
-
-                const dash = <span className="mdc-kyc-muted">—</span>;
-
-                return (
-                  <div className="mdc-kyc-stack">
-                    <div className="mdc-kyc-status-row">
-                      <span className="mdc-kyc-label">Estado</span>
-                      <span
-                        className={
-                          status === "completed"
-                            ? "mdc-badge mdc-badge--ok"
-                            : status === "rejected" || status === "failed" || status === "expired"
-                              ? "mdc-badge mdc-badge--bad"
-                              : "mdc-badge mdc-badge--warn"
-                        }
-                      >
-                        {kycSessionQuery.isLoading && !session
-                          ? "Consultando…"
-                          : kycStatusLabel(status || (pendingVisual ? "pending" : undefined))}
-                      </span>
-                      {session?.completedAt ? (
-                        <small className="mdc-kyc-meta">Completado: {new Date(session.completedAt).toLocaleString("es-MX")}</small>
-                      ) : null}
-                    </div>
-
-                    {hasLink ? (
-                      <div className="mdc-kyc-link-block">
-                        <span className="mdc-kyc-label">Link de verificación</span>
-                        <div className="mdc-kyc-link-row">
-                          <input
-                            className="mdc-kyc-link-input"
-                            type="text"
-                            readOnly
-                            value={mdcKycWebviewUrl || ""}
-                            aria-label="Link KYC"
-                            onFocus={(e) => e.currentTarget.select()}
-                          />
-                          <button
-                            type="button"
-                            className="mdc-kyc-icon-btn"
-                            title="Copiar link"
-                            aria-label="Copiar link KYC"
-                            onClick={copyKycLink}
-                          >
-                            <Copy size={16} />
-                          </button>
-                          {showContinue ? (
-                            <a
-                              className="mdc-kyc-icon-btn mdc-kyc-icon-btn--primary"
-                              href={mdcKycWebviewUrl || "#"}
-                              target="_blank"
-                              rel="noreferrer"
-                              title="Abrir verificación"
-                              aria-label="Abrir verificación KYC"
-                            >
-                              <ExternalLink size={16} />
-                            </a>
-                          ) : null}
-                        </div>
-                        <small className="mdc-kyc-meta">Link operable de MDC (con token). Válido ~24h.</small>
-                      </div>
-                    ) : null}
-
-                    {showExpediente ? (
-                      <div className="mdc-kyc-sections">
-                        <div className="mdc-kyc-section">
-                          <h5>Identidad / INE</h5>
-                          {identity == null && ocrConfidence == null && faceMatchScore == null ? (
-                            dash
-                          ) : identity == null ? (
-                            <dl className="mdc-kyc-dl">
-                              <div>
-                                <dt>OCR</dt>
-                                <dd>
-                                  {formatKycPercent(ocrConfidence) ? (
-                                    <span className={`mdc-badge mdc-badge--${kycScoreTone(ocrConfidence)}`}>
-                                      {formatKycPercent(ocrConfidence)}
-                                    </span>
-                                  ) : (
-                                    dash
-                                  )}
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>Face match</dt>
-                                <dd>
-                                  {formatKycPercent(faceMatchScore) ? (
-                                    <span className={`mdc-badge mdc-badge--${kycScoreTone(faceMatchScore)}`}>
-                                      {formatKycPercent(faceMatchScore)}
-                                    </span>
-                                  ) : (
-                                    dash
-                                  )}
-                                </dd>
-                              </div>
-                            </dl>
-                          ) : (
-                            <dl className="mdc-kyc-dl">
-                              <div>
-                                <dt>INE / liveness</dt>
-                                <dd>
-                                  {ineLabel ? (
-                                    <span
-                                      className={
-                                        ineMatched === false
-                                          ? "mdc-badge mdc-badge--bad"
-                                          : ineMatched === true
-                                            ? "mdc-badge mdc-badge--ok"
-                                            : "mdc-badge mdc-badge--neutral"
-                                      }
-                                    >
-                                      {ineLabel}
-                                    </span>
-                                  ) : (
-                                    dash
-                                  )}
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>Nombre</dt>
-                                <dd>{[identity.firstNames, identity.lastNames].filter(Boolean).join(" ") || dash}</dd>
-                              </div>
-                              <div>
-                                <dt>CURP</dt>
-                                <dd>{identity.curp || dash}</dd>
-                              </div>
-                              <div>
-                                <dt>Sexo</dt>
-                                <dd>{formatSexLabel(identity.sex) || dash}</dd>
-                              </div>
-                              <div>
-                                <dt>Nacimiento</dt>
-                                <dd>{identity.birthDate || dash}</dd>
-                              </div>
-                              <div>
-                                <dt>OCR</dt>
-                                <dd>
-                                  {formatKycPercent(ocrConfidence) ? (
-                                    <span className={`mdc-badge mdc-badge--${kycScoreTone(ocrConfidence)}`}>
-                                      {formatKycPercent(ocrConfidence)}
-                                    </span>
-                                  ) : (
-                                    dash
-                                  )}
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>Face match</dt>
-                                <dd>
-                                  {formatKycPercent(faceMatchScore) ? (
-                                    <span className={`mdc-badge mdc-badge--${kycScoreTone(faceMatchScore)}`}>
-                                      {formatKycPercent(faceMatchScore)}
-                                    </span>
-                                  ) : (
-                                    dash
-                                  )}
-                                </dd>
-                              </div>
-                              {!identitySummary && !ineLabel ? <div><dt /><dd>{dash}</dd></div> : null}
-                            </dl>
-                          )}
-                        </div>
-
-                        <div className="mdc-kyc-section">
-                          <h5>Contacto</h5>
-                          {contact == null ? (
-                            dash
-                          ) : (
-                            <dl className="mdc-kyc-dl">
-                              <div>
-                                <dt>Email</dt>
-                                <dd className="mdc-kyc-inline">
-                                  <span>{contact.email || dash}</span>
-                                  {contact.emailVerified === true ? <span className="mdc-badge mdc-badge--ok">Verificado</span> : null}
-                                  {contact.emailVerified === false ? <span className="mdc-badge mdc-badge--warn">No verificado</span> : null}
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>Teléfono</dt>
-                                <dd className="mdc-kyc-inline">
-                                  <span>{contact.phone || dash}</span>
-                                  {contact.phoneVerified === true ? <span className="mdc-badge mdc-badge--ok">Verificado</span> : null}
-                                  {contact.phoneVerified === false ? <span className="mdc-badge mdc-badge--warn">No verificado</span> : null}
-                                </dd>
-                              </div>
-                            </dl>
-                          )}
-                        </div>
-
-                        <div className="mdc-kyc-section">
-                          <h5>Situación</h5>
-                          {personal == null ? (
-                            dash
-                          ) : (
-                            <dl className="mdc-kyc-dl">
-                              <div>
-                                <dt>Estado civil</dt>
-                                <dd>{formatMaritalStatus(personal.maritalStatus, personal.maritalStatusOther) || dash}</dd>
-                              </div>
-                              <div>
-                                <dt>Escolaridad</dt>
-                                <dd>{formatEducation(personal.education, personal.educationOther) || dash}</dd>
-                              </div>
-                              {personal.hasSpouse === true || personal.spouse ? (
-                                <>
-                                  <div>
-                                    <dt>Cónyuge</dt>
-                                    <dd>{personal.spouse?.fullName || dash}</dd>
-                                  </div>
-                                  <div>
-                                    <dt>Tel. cónyuge</dt>
-                                    <dd>{personal.spouse?.phone || dash}</dd>
-                                  </div>
-                                </>
-                              ) : null}
-                              <div>
-                                <dt>Tipo de vivienda</dt>
-                                <dd>{housingLabel || dash}</dd>
-                              </div>
-                              <div>
-                                <dt>Referencia / landmark</dt>
-                                <dd>{personal.landmark || dash}</dd>
-                              </div>
-                            </dl>
-                          )}
-                        </div>
-
-                        <div className="mdc-kyc-section">
-                          <h5>Domicilio</h5>
-                          {mdcAddress == null ? (
-                            <p className="mdc-kyc-muted">Pendiente de comprobante</p>
-                          ) : mdcAddressLines.length > 0 ? (
-                            <div className="mdc-kyc-address">
-                              {mdcAddressLines.map((line) => (
-                                <span key={line}>{line}</span>
-                              ))}
-                            </div>
-                          ) : (
-                            <p className="mdc-kyc-muted">Pendiente de comprobante</p>
-                          )}
-                        </div>
-
-                        <div className="mdc-kyc-section">
-                          <h5>Referencias</h5>
-                          {references == null || references.length === 0 ? (
-                            dash
-                          ) : (
-                            <ul className="mdc-kyc-refs">
-                              {references.map((ref, idx) => (
-                                <li key={`${ref.fullName || "ref"}-${idx}`}>
-                                  <strong>{ref.fullName || "Sin nombre"}</strong>
-                                  <span>{formatRelation(ref.relation, ref.relationOther) || "—"}</span>
-                                  <span>{ref.phone || "—"}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      </div>
-                    ) : null}
-
-                    {kycSessionQuery.isError ? (
-                      <p className="mdc-kyc-warn">
-                        No se pudo consultar Auth KYC. Se muestra el link de MDC si existe.
-                      </p>
-                    ) : null}
-
-                    {showContinue || showResend ? (
-                      <div className="mdc-kyc-actions">
-                        {showContinue && mdcKycWebviewUrl ? (
-                          <a
-                            className="mdc-btn mdc-btn--primary"
-                            href={mdcKycWebviewUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ textDecoration: "none" }}
-                          >
-                            Continuar verificación
-                          </a>
-                        ) : null}
-                        {showResend ? (
-                          <button
-                            type="button"
-                            className="mdc-btn mdc-btn--primary"
-                            disabled={kycResending}
-                            onClick={handleResendKyc}
-                          >
-                            {kycResending ? "Reenviando…" : "Reenviar verificación"}
-                          </button>
-                        ) : null}
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })()}
+            <section className="mdc-detail-card mdc-kyc-panel mdc-ficha-section mdc-ficha-section--kyc" hidden={!showFichaTab("kyc")}>
+              <h4>KYC asistido</h4>
+              <AdvisorKycPanel
+                financeRequestId={app.id}
+                caseId={mdcKycSessionId}
+                isDemo={isDemoOrganization}
+                applicant={{
+                  email: app.applicantEmail !== "N/A" ? app.applicantEmail : "",
+                  phone: (app.rawPayload?.phone as string | undefined) || "",
+                  curp:
+                    (app.rawPayload?.identificationNumber as string | undefined) ||
+                    financeRequestDetailQuery.data?.identificationNumber ||
+                    "",
+                  firstName: financeRequestDetailQuery.data?.firstName || "",
+                  lastName: financeRequestDetailQuery.data?.lastName || "",
+                }}
+                onFeedback={setFeedback}
+                onCaseLinked={(nextCaseId) => {
+                  setMdcKycSessionId(nextCaseId);
+                  void queryClient.invalidateQueries({ queryKey: ["finance-request", app.id] });
+                }}
+                onUserLinked={(userId) => {
+                  setMdcZelifyUserId(userId);
+                  void queryClient.invalidateQueries({ queryKey: ["finance-request", app.id] });
+                  void queryClient.invalidateQueries({ queryKey: ["financial-documents"] });
+                }}
+              />
             </section>
 
-            <section className="mdc-detail-card">
+            <section className="mdc-detail-card mdc-ficha-section mdc-ficha-section--decision" hidden={!showFichaTab("decision")}>
               <h4>Override manual</h4>
               <label className="mdc-detail-field">
                 <span>Nueva decision</span>
@@ -4871,12 +4599,18 @@ export function AppDetailModal({
                       <strong>Datos extraídos y normalizados</strong>
                     </div>
                     {extractionIsAnalyzing ? (
-                      <span className="mdc-badge mdc-badge--info">Analizando con Bedrock…</span>
+                      <span className="mdc-badge mdc-badge--info">Completando análisis…</span>
                     ) : null}
                   </div>
 
                   {extractionIsAnalyzing ? (
-                    <div className="mdc-extraction-skeleton">Analizando documento… Bedrock todavía está trabajando. No es necesario procesar manualmente.</div>
+                    <div className="mdc-extraction-skeleton mdc-extraction-skeleton--progress">
+                      <DocumentAnalysisProgressBar
+                        variant="mdc"
+                        trackId={extractionSelection.analysisId || extractionSelection.documentId || "extraction"}
+                        status={extractionDocStatus}
+                      />
+                    </div>
                   ) : extractionQuery.isLoading ? (
                     <div className="mdc-extraction-skeleton">Cargando extracción BDA...</div>
                   ) : extractionQuery.error ? (
@@ -5089,6 +4823,7 @@ export function AppDetailModal({
             </div>
           </div>
         ) : null}
+        </div>
       </div>
     </div>
   );
@@ -5558,7 +5293,6 @@ function AddApplicationModal({
     amount: number;
     plazo?: number;
     phone?: string;
-    bank?: string;
     businessName?: string;
   }) => void | Promise<void>;
 }) {
@@ -5582,7 +5316,6 @@ function AddApplicationModal({
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [bank, setBank] = useState("");
   const [product, setProduct] = useState<string>(products[0] ?? NATURAL_CREDIT_PRODUCTS[0]);
   const [amount, setAmount] = useState("12000");
   const [plazo, setPlazo] = useState("12");
@@ -5658,12 +5391,18 @@ function AddApplicationModal({
     setBusinessName("");
     setEmail("");
     setPhone("");
-    setBank("");
     setProduct(displayProducts[0] ?? NATURAL_CREDIT_PRODUCTS[0]);
     setAmount("12000");
     setPlazo(String(buildPlazoOptions(apiProducts[0])[0] ?? 12));
     setSubmitting(false);
   };
+
+  const dismissModal = () => {
+    reset();
+    onClose();
+  };
+
+  const backdropDismiss = useBackdropDismiss(dismissModal);
 
   useEffect(() => {
     if (!displayProducts.includes(product)) {
@@ -5682,24 +5421,50 @@ function AddApplicationModal({
 
   return (
     <>
-      <div className="mdc-modal-backdrop" onClick={() => { reset(); onClose(); }}>
+      <div className="mdc-modal-backdrop" {...backdropDismiss}>
         <div className="mdc-modal" onClick={(e) => e.stopPropagation()}>
           <header className="mdc-modal-head">
             <div>
               <p>Nueva solicitud</p>
               <h3>Alta manual</h3>
             </div>
-            <button type="button" className="mdc-icon-btn" onClick={() => { reset(); onClose(); }}>×</button>
+            <button type="button" className="mdc-icon-btn" onClick={dismissModal}>×</button>
           </header>
           <div className="mdc-form-grid">
             <label>
-              <span>{isMoral ? "RFC *" : "ID (CURP) *"}</span>
+              <span>{isMoral ? "RFC *" : "CURP *"}</span>
               <input
                 value={identificationNumber}
                 onChange={(e) => setIdentificationNumber(e.target.value.replace(/[^A-Za-z0-9]/g, "").toUpperCase())}
                 maxLength={isMoral ? 13 : 18}
+                placeholder={isMoral ? "12 o 13 caracteres" : "18 caracteres"}
                 required
-              />
+                className={
+                  isMoral
+                    ? undefined
+                    : isCurpLike(identificationNumber)
+                      ? "mdc-input--valid"
+                      : identificationNumber.length > 0
+                        ? "mdc-input--invalid"
+                        : undefined
+                }
+              aria-invalid={!isMoral && identificationNumber.length > 0 && !isCurpLike(identificationNumber)}
+            />
+              {!isMoral ? (
+                isCurpLike(identificationNumber) ? (
+                  <small className="mdc-field-status mdc-field-status--valid">CURP válida · 18/18</small>
+                ) : identificationNumber.length === 18 ? (
+                  <small className="mdc-field-status mdc-field-status--invalid">
+                    La CURP no tiene el formato oficial (fecha, sexo, estado y dígito verificador).
+                  </small>
+                ) : identificationNumber.length > 0 ? (
+                  <small className="mdc-field-status mdc-field-status--invalid">
+                    Faltan {18 - identificationNumber.length} caracteres · {identificationNumber.length}/18. Debe ser CURP, no RFC.
+                  </small>
+                ) : (
+                  <small className="mdc-field-status">Persona física: CURP oficial de 18 para generar el link KYC</small>
+                )
+              ) : null}
             </label>
             {isMoral ? (
               <label>
@@ -5724,13 +5489,29 @@ function AddApplicationModal({
                   type="tel"
                   inputMode="numeric"
                   placeholder="5512345678"
+                  maxLength={10}
+                  className={
+                    phone.length === 10
+                      ? "mdc-input--valid"
+                      : phone.length > 0
+                        ? "mdc-input--invalid"
+                        : undefined
+                  }
+                  aria-invalid={phone.length > 0 && phone.length !== 10}
                 />
+                {phone.length === 10 ? (
+                  <small className="mdc-field-status mdc-field-status--valid">
+                    Teléfono válido · 10/10
+                  </small>
+                ) : phone.length > 0 ? (
+                  <small className="mdc-field-status mdc-field-status--invalid">
+                    Faltan {10 - phone.length} dígitos · {phone.length}/10
+                  </small>
+                ) : (
+                  <small className="mdc-field-status">Solo números, sin +52</small>
+                )}
               </label>
             ) : null}
-            <label>
-              <span>Banco</span>
-              <input value={bank} onChange={(e) => setBank(e.target.value)} />
-            </label>
             <label>
               <span>Producto *</span>
               <select value={product} onChange={(e) => setProduct(e.target.value)}>
@@ -5772,7 +5553,7 @@ function AddApplicationModal({
             </p>
           </div>
           <footer className="mdc-modal-actions">
-            <button type="button" className="mdc-btn mdc-btn--ghost" onClick={() => { reset(); onClose(); }}>Cancelar</button>
+            <button type="button" className="mdc-btn mdc-btn--ghost" onClick={dismissModal}>Cancelar</button>
             <button
               type="button"
               className="mdc-btn mdc-btn--primary"
@@ -5780,6 +5561,13 @@ function AddApplicationModal({
               onClick={async () => {
                 if (!identificationNumber.trim() || !email.trim() || !product) {
                   setAlertMsg({ message: "Completa identificación, email y producto.", type: "error" });
+                  return;
+                }
+                if (!isMoral && !isCurpLike(identificationNumber)) {
+                  setAlertMsg({
+                    message: "Para persona física se necesita una CURP oficial de 18 caracteres. Un RFC o 18 números no generan el link KYC.",
+                    type: "error",
+                  });
                   return;
                 }
                 if (isMoral && !businessName.trim()) {
@@ -5814,7 +5602,6 @@ function AddApplicationModal({
                     amount: amountNum,
                     plazo: Number(plazo) || undefined,
                     phone: !isMoral && phone ? phone : undefined,
-                    bank: bank.trim() || undefined,
                     businessName: isMoral ? businessName.trim() : undefined,
                   });
                   reset();
@@ -6394,11 +6181,12 @@ type MdcScreenVariant = "full" | "panel" | "config";
 export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) {
   const lockedTab: MdcTab | null = variant === "panel" ? "overview" : variant === "config" ? "configuration" : null;
   const [globalAlert, setGlobalAlert] = useState<{ message: string, type: "error" | "success" } | null>(null);
-  const [kycPrompt, setKycPrompt] = useState<{ requestId: string; webviewUrl: string; expiresAt?: string } | null>(null);
+  const [kycPrompt, setKycPrompt] = useState<{ requestId: string; caseId: string } | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const creditStore = useCreditDemoStore();
   const [applicantMode, setApplicantMode] = useState<MdcApplicantMode>("natural");
+  const [legalPersonDisabled, setLegalPersonDisabled] = useState(false);
   const [activeTab, setActiveTabState] = useState<MdcTab>(lockedTab ?? "overview");
   const syncMdcQuery = (tab: MdcTab, mode: MdcApplicantMode) => {
     if (lockedTab || variant !== "full") return;
@@ -6417,16 +6205,26 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
     syncMdcQuery(tab, applicantMode);
   };
   const setApplicantModeAndQuery = (mode: MdcApplicantMode) => {
+    if (legalPersonDisabled && mode === "moral") return;
     setApplicantMode(mode);
     if (!lockedTab) syncMdcQuery(activeTab, mode);
   };
 
   useEffect(() => {
-    if (lockedTab) return;
+    const legalPersonLocked = isLegalPersonDisabledOrganization();
+    setLegalPersonDisabled(legalPersonLocked);
+    if (lockedTab) {
+      if (legalPersonLocked) setApplicantMode("natural");
+      return;
+    }
     const tab = searchParams.get("tab") as MdcTab | null;
     const mode = searchParams.get("mode") as MdcApplicantMode | null;
-    if (tab && (TABS.some((item) => item.id === tab) || tab === "configuration")) {
-      setActiveTabState(tab);
+    const nextTab = tab && (TABS.some((item) => item.id === tab) || tab === "configuration") ? tab : null;
+    if (nextTab) setActiveTabState(nextTab);
+    if (legalPersonLocked) {
+      setApplicantMode("natural");
+      if (mode === "moral") syncMdcQuery(nextTab ?? activeTab, "natural");
+      return;
     }
     if (mode === "natural" || mode === "moral") {
       setApplicantMode(mode);
@@ -6823,16 +6621,6 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
       .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
       .slice(0, 8);
 
-    const productMix = Object.entries(
-      rangeScopedApps.reduce<Record<string, number>>((acc, app) => {
-        acc[app.product] = (acc[app.product] ?? 0) + 1;
-        return acc;
-      }, {}),
-    )
-      .map(([label, value]) => ({ label, value }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 5);
-
     return {
       total,
       approved,
@@ -6843,8 +6631,6 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
       avgRisk,
       approvalRatio,
       riskDistribution,
-      productMix,
-      manualOrPending,
       recent,
       deltas: {
         total: pctDelta(total, previousTotal),
@@ -7135,67 +6921,55 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
   };
 
   return (
-    <div className={`zelify-workspace-page mdc-workspace${variant !== "full" ? " mdc-workspace--solo" : ""}`}>
+    <div className={`zelify-workspace-page mdc-workspace${variant === "config" ? " mdc-workspace--solo" : ""}`}>
       <ZelifyTopNavbar variant="mdc" />
       <div className="zelify-workspace-page__scroll mdc-workspace__body">
         {variant === "full" ? (
         <aside className="mdc-sidebar" aria-label="Navegación MDC">
-          <div className="mdc-tabs" role="tablist" aria-label="MDC tabs">
-            {visibleTabs.map((tab) => (
+          <div className="mdc-sidebar__brand">
+            <h1 className="mdc-sidebar__title">MDC</h1>
+            <p className="mdc-sidebar__sub">Motor de Decisión de Crédito</p>
+          </div>
+          <div className="mdc-persona-switch" role="tablist" aria-label="Tipo de solicitante">
+            {PERSONA_OPTIONS.map((option) => {
+              const disabled = option.id === "moral" && legalPersonDisabled;
+              return (
               <button
-                key={tab.id}
+                key={option.id}
                 type="button"
-                role="tab"
-                aria-selected={activeTab === tab.id}
-                className={`mdc-tab${activeTab === tab.id ? " mdc-tab--active" : ""}`}
-                onClick={() => setActiveTab(tab.id)}
+                disabled={disabled}
+                title={disabled ? "No disponible para esta organización" : undefined}
+                aria-disabled={disabled || undefined}
+                className={`mdc-persona-switch__btn${applicantMode === option.id ? " mdc-persona-switch__btn--active" : ""}${disabled ? " mdc-persona-switch__btn--disabled" : ""}`}
+                onClick={() => setApplicantModeAndQuery(option.id)}
               >
-                {tab.label}
+                {option.label}
               </button>
-            ))}
+              );
+            })}
+          </div>
+          <div className="mdc-tabs" role="tablist" aria-label="MDC tabs">
+            {visibleTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab.id}
+                  className={`mdc-tab${activeTab === tab.id ? " mdc-tab--active" : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </aside>
         ) : null}
         <div className="mdc-workspace__main">
         <div className={`mdc-root${activeTab === "configuration" || variant === "config" ? " mdc-root--fluid" : ""}`}>
-          {variant !== "config" ? (
-          <header className="mdc-header">
-            <div className="mdc-header__row">
-              <div>
-                <p className="mdc-header__eyebrow">Core Module</p>
-                <h1>{MODE_COPY[applicantMode].title}</h1>
-                <p className="mdc-header__sub">{MODE_COPY[applicantMode].subtitle}</p>
-              </div>
-              <div className="mdc-persona-switch" role="tablist" aria-label="Tipo de solicitante">
-                {PERSONA_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`mdc-persona-switch__btn${applicantMode === option.id ? " mdc-persona-switch__btn--active" : ""}`}
-                    onClick={() => setApplicantModeAndQuery(option.id)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              <div className="mdc-header__date">
-                <label htmlFor="mdc-range">Rango</label>
-                <select
-                  id="mdc-range"
-                  value={rangeFilter}
-                  onChange={(e) => {
-                    setRangeFilter(e.target.value as RangePreset);
-                    setPage(0);
-                  }}
-                >
-                  <option value="7d">Últimos 7 días</option>
-                  <option value="30d">Últimos 30 días</option>
-                  <option value="90d">Últimos 90 días</option>
-                </select>
-              </div>
-            </div>
-          </header>
-          ) : null}
 
           {activeTab === "overview" && (
             <section className="mdc-section">
@@ -7206,7 +6980,24 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
                 </div>
               )}
               <div className="mdc-overview-hero mdc-overview-hero--plain">
-                <h2 className="mdc-overview-hero__title">Tablero de visualización</h2>
+                <div className="mdc-overview-hero__head">
+                  <h2 className="mdc-overview-hero__title">Tablero</h2>
+                  <div className="mdc-header__date">
+                    <label htmlFor="mdc-range">Rango</label>
+                    <select
+                      id="mdc-range"
+                      value={rangeFilter}
+                      onChange={(e) => {
+                        setRangeFilter(e.target.value as RangePreset);
+                        setPage(0);
+                      }}
+                    >
+                      <option value="7d">Últimos 7 días</option>
+                      <option value="30d">Últimos 30 días</option>
+                      <option value="90d">Últimos 90 días</option>
+                    </select>
+                  </div>
+                </div>
                 <div className="mdc-kpis">
                   <MdcStatCard
                     title="Solicitudes totales"
@@ -7246,30 +7037,6 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
                 </div>
                 <LineChart points={applicationsTrendPoints} />
               </article>
-
-              <div className="mdc-grid-2">
-                <article className="mdc-card">
-                  <div className="mdc-card__head">
-                    <h3>Embudo de decisión</h3>
-                    <p>Volumen desde ingreso hasta veredicto del motor</p>
-                  </div>
-                  <DecisionFunnel
-                    steps={[
-                      { label: "Recibidas", value: overview.total, tone: "ink" },
-                      { label: "En análisis", value: overview.manualOrPending, tone: "mid" },
-                      { label: "Aprobadas", value: overview.approved, tone: "ok" },
-                      { label: "Rechazadas", value: overview.declined, tone: "bad" },
-                    ]}
-                  />
-                </article>
-                <article className="mdc-card">
-                  <div className="mdc-card__head">
-                    <h3>Mix de productos</h3>
-                    <p>Concentración de originación en el periodo</p>
-                  </div>
-                  <ProductMixBars data={overview.productMix} />
-                </article>
-              </div>
 
               <div className="mdc-grid-2">
                 <article className="mdc-card">
@@ -8005,7 +7772,6 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
           identificationNumber,
           email,
           phone,
-          bank,
           product,
           amount,
           plazo,
@@ -8021,7 +7787,6 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
               product,
               amount: Number(amount),
               phone: phone || null,
-              bank: bank || null,
               businessName: businessName || null,
             });
             const createPayload = {
@@ -8035,7 +7800,6 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
               plazo: Number(plazo) || undefined,
               status: "Pendiente" as const,
               ...(phone ? { phone: normalizeMxPhone10(phone) } : {}),
-              ...(bank ? { bank } : {}),
               ...(applicantMode === "moral" && businessName ? { businessName } : {}),
             };
 
@@ -8070,65 +7834,44 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
             let kycSessionId: string | null = item.kycSessionId || null;
             let kycWebviewUrl: string | null = item.kycWebviewUrl || null;
 
-            // KYC Zelify solo natural + CURP (18). Moral / RFC: no llamar.
-            const shouldStartKyc = applicantMode === "natural" && Boolean(item.id) && isCurpLike(identificationNumber);
+            const shouldStartAdvisorKyc = applicantMode === "natural" && Boolean(item.id);
             kycLog("create · decisión post-MDC", {
               financeRequestId: item.id,
               personType: applicantMode,
               identificationNumber,
-              isCurp18: isCurpLike(identificationNumber),
-              shouldStartKyc,
-              skipReason: shouldStartKyc
-                ? null
-                : applicantMode !== "natural"
-                  ? "moral → no KYC"
-                  : !item.id
-                    ? "sin id de solicitud MDC"
-                    : "RFC/ID ≠ CURP 18 → no KYC",
+              shouldStartAdvisorKyc,
+              skipReason: shouldStartAdvisorKyc ? null : applicantMode !== "natural" ? "moral → KYB" : "sin id de solicitud MDC",
             });
 
-            if (shouldStartKyc) {
+            if (shouldStartAdvisorKyc) {
               try {
                 const phone10 = phone ? normalizeMxPhone10(phone) : "";
-                kycLog("create · paso 1/2 Auth POST /sessions", {
+                const curp = identificationNumber.replace(/\s+/g, "").toUpperCase();
+                const kycCase = await createAdvisorKycCase({
                   email,
-                  curp: identificationNumber.replace(/\s+/g, "").toUpperCase(),
-                  phone: phone10 || null,
-                });
-                const kycSession = await createZelifyKycOnboardingSession({
-                  email,
-                  curp: identificationNumber.replace(/\s+/g, "").toUpperCase(),
                   ...(phone10.length === 10 ? { phone: phone10 } : {}),
+                  ...(isCurpLike(curp) ? { curp } : {}),
+                  notes: `Solicitud ${item.id}`,
+                  profile: { financeRequestId: item.id, product, amount: Number(amount) },
                 });
-                kycLog("create · paso 2/2 MDC POST …/kyc", {
-                  financeRequestId: item.id,
-                  kycSessionId: kycSession.sessionId,
-                });
+                const markerUrl = kycCase.liveness.livenessUrl || advisorKycMarkerUrl(kycCase.caseId);
                 await attachFinanceRequestKyc(item.id, {
-                  kycSessionId: kycSession.sessionId,
-                  kycWebviewUrl: kycSession.webviewUrl,
+                  kycSessionId: kycCase.caseId,
+                  kycWebviewUrl: markerUrl,
+                  ...(kycCase.userId ? { zelifyUserId: kycCase.userId } : {}),
                 });
-                kycSessionId = kycSession.sessionId;
-                kycWebviewUrl = kycSession.webviewUrl;
-                setKycPrompt({
-                  requestId: item.id,
-                  webviewUrl: kycSession.webviewUrl,
-                  expiresAt: kycSession.expiresAt,
-                });
-                kycLog("create · KYC OK", {
-                  financeRequestId: item.id,
-                  kycSessionId,
-                  expiresAt: kycSession.expiresAt,
-                });
+                kycSessionId = kycCase.caseId;
+                kycWebviewUrl = markerUrl;
+                setKycPrompt({ requestId: item.id, caseId: kycCase.caseId });
+                kycLog("create · advisor-kyc OK", { financeRequestId: item.id, caseId: kycCase.caseId });
               } catch (kycErr: any) {
-                kycError("create · KYC falló (solicitud MDC ya existe)", kycErr, {
+                kycError("create · advisor-kyc falló (solicitud MDC ya existe)", kycErr, {
                   financeRequestId: item.id,
                   identificationNumber,
                   email,
-                  note: "Si teamHint=Auth → bug en zelify-core-products. Si MDC → credit-decision-engine.",
                 });
                 setGlobalAlert({
-                  message: kycErr?.message || "Solicitud creada, pero no se pudo iniciar KYC Zelify.",
+                  message: kycErr?.message || "Solicitud creada, pero no se pudo abrir la ficha KYC asistido.",
                   type: "error",
                 });
               }
@@ -8182,41 +7925,36 @@ export function MdcScreen({ variant = "full" }: { variant?: MdcScreenVariant }) 
           <div className="mdc-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 480 }}>
             <header className="mdc-modal-head">
               <div>
-                <p>Verificación KYC</p>
-                <h3>Continuar verificación</h3>
+                <p>KYC asistido</p>
+                <h3>Ficha de prospecto lista</h3>
               </div>
               <button type="button" className="mdc-icon-btn" onClick={() => setKycPrompt(null)}>×</button>
             </header>
             <p style={{ margin: "0 0 12px", color: "#475569", fontSize: 14 }}>
-              El enlace de verificación dura 24 horas. Ábrelo en una pestaña o cópialo para enviárselo al cliente.
+              El operador completa identidad, OTP, INE y liveness en la solicitud. No se envía el link self-serve.
             </p>
-            {kycPrompt.expiresAt ? (
-              <p style={{ margin: "0 0 12px", fontSize: 12, color: "#64748b" }}>Expira: {new Date(kycPrompt.expiresAt).toLocaleString("es-MX")}</p>
-            ) : null}
+            <p style={{ margin: "0 0 12px", fontSize: 12, color: "#64748b" }}>Expediente {kycPrompt.caseId}</p>
             <footer className="mdc-modal-actions">
+              <button type="button" className="mdc-btn mdc-btn--ghost" onClick={() => setKycPrompt(null)}>
+                Seguir en el listado
+              </button>
               <button
                 type="button"
-                className="mdc-btn mdc-btn--ghost"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(kycPrompt.webviewUrl);
-                    setGlobalAlert({ message: "Link KYC copiado al portapapeles.", type: "success" });
-                  } catch {
-                    setGlobalAlert({ message: "No se pudo copiar el link.", type: "error" });
-                  }
+                className="mdc-btn mdc-btn--primary"
+                onClick={() => {
+                  const created = apps.find((item) => item.id === kycPrompt.requestId);
+                  setKycPrompt(null);
+                  if (!created) return;
+                  writeApplicationDetailSession({
+                    app: created,
+                    mode: applicantMode,
+                    rules: normalizedRules.filter((rule) => rule.products.includes(created.product as RuleProduct)),
+                  });
+                  router.push(`/mdc/applications/${created.id}?mode=${applicantMode}`);
                 }}
               >
-                Copiar link
+                Abrir expediente
               </button>
-              <a
-                className="mdc-btn mdc-btn--primary"
-                href={kycPrompt.webviewUrl}
-                target="_blank"
-                rel="noreferrer"
-                style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
-              >
-                Continuar verificación
-              </a>
             </footer>
           </div>
         </div>

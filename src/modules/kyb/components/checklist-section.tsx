@@ -9,6 +9,7 @@ import {
   OnboardingModuleKey,
 } from "@/modules/kyb/lib/onboarding-config";
 import { FileText, X, Paperclip, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
+import { FileDropZone } from "@/components/upload/file-drop-zone";
 
 type ChecklistSectionProps = {
   section: ChecklistSection;
@@ -286,22 +287,23 @@ function ChecklistItemRow({ item, value, onChange, disabled }: ChecklistItemRowP
     );
   }, [item.kind, value]);
 
+  const uploadSelectedFile = async (file: File) => {
+    setErrorMessage(null);
+    setIsUploading(true);
+
+    try {
+      await uploadFileAnswer(item.code, file);
+      onChange(file.name);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al subir el archivo.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      
-      // Resetear error y activar carga visual
-      setErrorMessage(null);
-      setIsUploading(true);
-
-      try {
-        await uploadFileAnswer(item.code, file);
-        onChange(file.name); // Guardar nombre de forma local en answers
-      } catch (err) {
-        setErrorMessage(err instanceof Error ? err.message : "Error al subir el archivo.");
-      } finally {
-        setIsUploading(false);
-      }
+      await uploadSelectedFile(e.target.files[0]);
     }
   };
 
@@ -589,7 +591,13 @@ function ChecklistItemRow({ item, value, onChange, disabled }: ChecklistItemRowP
                   disabled={isUploading}
                 />
                 
-                <div className="flex items-center gap-2">
+                <FileDropZone
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.zip,.rar"
+                  disabled={isUploading || disabled}
+                  onFile={(file) => void uploadSelectedFile(file)}
+                  className="flex items-center gap-2 rounded-lg"
+                  activeClassName="ring-2 ring-[#000016]/15 bg-white"
+                >
                   {isUploading ? (
                     <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200/50">
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -631,10 +639,10 @@ function ChecklistItemRow({ item, value, onChange, disabled }: ChecklistItemRowP
                       ].join(" ")}
                     >
                       <Paperclip className="h-3.5 w-3.5 text-slate-400" />
-                      Adjuntar archivo
+                      Adjuntar o arrastrar archivo
                     </button>
                   )}
-                </div>
+                </FileDropZone>
 
                 {errorMessage && (
                   <p className="text-[10px] font-bold uppercase tracking-wider text-rose-500">{errorMessage}</p>

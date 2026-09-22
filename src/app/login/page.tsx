@@ -5,7 +5,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import InputGroup from "@/components/form-elements/input-group";
-import { login, verifyDashboardOtp, persistAuthSession, AuthError, syncMe, type AuthSuccessResponse } from "@/lib/auth-api";
+import {
+  login,
+  verifyDashboardOtp,
+  persistAuthSession,
+  AuthError,
+  syncMe,
+  getLastOrganization,
+  getOrganizationBranding,
+  getStoredOrganization,
+  pickOrganizationLogoUrl,
+  type AuthSuccessResponse,
+} from "@/lib/auth-api";
 import { getLoginAuthErrorDisplay } from "@/lib/auth-error-messages";
 import { getDefaultDashboardPath } from "@/lib/dashboard-routing";
 import { resetScopedDemoExperienceStorage } from "@/lib/demo-storage";
@@ -18,6 +29,7 @@ import "./login-page.css";
 const DEMO_BYPASS_EMAIL = "demo@zwippe.com";
 const DEMO_BYPASS_PASSWORD = "image.png";
 const DEMO_BYPASS_STORAGE_KEY = "zelify_demo_bypass";
+const CLIENT_LOGO_SRC = "/logo-kumaza.svg";
 const PRODUCT_LOGO_DARK = "/mdc-navbar-logo-dark.svg";
 
 function AnimatedHalftoneBackdrop() {
@@ -205,6 +217,7 @@ export default function LoginPage() {
     if (typeof window === "undefined") return false;
     return new URLSearchParams(window.location.search).get("reason") === "session_expired";
   });
+  const [orgLogo, setOrgLogo] = useState<{ src: string; alt: string } | null>(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -229,6 +242,25 @@ export default function LoginPage() {
     }
     return "";
   };
+
+  useEffect(() => {
+    const org = getStoredOrganization() || getLastOrganization();
+    if (!org?.id) return;
+
+    let cancelled = false;
+    void getOrganizationBranding(org.id)
+      .then((data) => {
+        if (cancelled) return;
+        const src = pickOrganizationLogoUrl(data);
+        if (!src) return;
+        setOrgLogo({ src, alt: org.name || "Organización" });
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -439,6 +471,10 @@ export default function LoginPage() {
     }
   };
 
+  const brandingLogo = pickOrganizationLogoUrl(branding);
+  const clientLogoSrc = orgLogo?.src || brandingLogo || CLIENT_LOGO_SRC;
+  const clientLogoAlt = orgLogo?.alt || (brandingLogo ? branding.displayName || "Cliente" : "Kumaza");
+  const isClientLogo = clientLogoSrc !== CLIENT_LOGO_SRC;
   const showLoginMessage =
     step === 1 &&
     Boolean(branding.loginMessage) &&
@@ -477,6 +513,13 @@ export default function LoginPage() {
               src={PRODUCT_LOGO_DARK}
               alt="Aethereun"
               className="zelify-login__logo zelify-login__logo--product"
+            />
+            <span className="zelify-login__brand-divider" aria-hidden="true" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={clientLogoSrc}
+              alt={clientLogoAlt}
+              className={`zelify-login__logo zelify-login__logo--client${isClientLogo ? " zelify-login__logo--ink" : ""}`}
             />
           </div>
 

@@ -225,7 +225,7 @@ def main() -> int:
     sections = build_sections(lines, images_by_page)
     payload = {
         "title": "Manual de usuario",
-        "subtitle": "Motor MDC · Tulana Finanzas",
+        "subtitle": "Motor MDC · Kumaza",
         "source": "docs/manuales/mdc-usuario/Manual_Usuario_MDC_Testafin.pdf",
         "sections": sections,
     }

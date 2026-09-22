@@ -127,6 +127,9 @@ export type AuthOrganization = {
   id: string;
   name: string;
   status: string;
+  url_log?: string | null;
+  url_log_dark?: string | null;
+  url_log_light?: string | null;
 };
 
 /** Respuesta de GET /api/organizations/:id/branding (público). Campos de branding; cualquiera puede ser null. */
@@ -574,6 +577,7 @@ export function persistAuthSession(response: AuthSuccessResponse): void {
   if (refreshToken) sessionStorage.setItem(k.REFRESH_TOKEN, refreshToken);
   sessionStorage.setItem(k.USER, JSON.stringify(response.user));
   sessionStorage.setItem(k.ORGANIZATION, JSON.stringify(response.organization));
+  rememberLastOrganization(response.organization);
   sessionStorage.setItem(k.ROLES, JSON.stringify(normalizeRoleCodes(response.roles ?? [])));
   sessionStorage.setItem(k.IS_AUTHENTICATED, "true");
   sessionStorage.setItem(k.USER_EMAIL, response.user.email);
@@ -607,6 +611,49 @@ export function getStoredUser(): AuthUser | null {
   }
 }
 
+const LAST_ORGANIZATION_KEY = "zelify-last-organization";
+
+/** Logo de cliente desde branding/org. Ignora solo logos de producto (Aethereun/Zelify). */
+export function pickOrganizationLogoUrl(
+  source?: {
+    url_log?: string | null;
+    url_log_light?: string | null;
+    url_log_dark?: string | null;
+    logoUrl?: string | null;
+  } | null,
+): string | null {
+  const candidate =
+    source?.url_log_light ||
+    source?.url_log ||
+    source?.url_log_dark ||
+    source?.logoUrl ||
+    null;
+  if (!candidate || /mdc-navbar-logo|zelifyLogo/i.test(candidate)) return null;
+  return candidate;
+}
+
+/** Persiste la última org para que login pueda pedir el branding público. */
+export function rememberLastOrganization(org?: { id?: string; name?: string } | null): void {
+  if (typeof window === "undefined" || !org?.id) return;
+  window.localStorage.setItem(
+    LAST_ORGANIZATION_KEY,
+    JSON.stringify({ id: org.id, name: org.name ?? "" }),
+  );
+}
+
+export function getLastOrganization(): { id: string; name: string } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(LAST_ORGANIZATION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { id?: string; name?: string };
+    if (!parsed.id) return null;
+    return { id: parsed.id, name: parsed.name ?? "" };
+  } catch {
+    return null;
+  }
+}
+
 /** Organización guardada (id = Client ID / Organization ID en Zelify Keys). */
 export function getStoredOrganization(): AuthOrganization | null {
   if (typeof window === "undefined") return null;
@@ -617,6 +664,19 @@ export function getStoredOrganization(): AuthOrganization | null {
   } catch {
     return null;
   }
+}
+
+const ORGS_WITHOUT_LEGAL_PERSON = new Set([
+  "fa90c82c-12d8-4039-980a-9d1a258fcb66",
+  "68c7e605-203e-4b1a-af0e-ab70f556262b", // INVESTARK
+]);
+
+/** Organizaciones que no operan persona jurídica en MDC. */
+export function isLegalPersonDisabledOrganization(
+  org: AuthOrganization | null = getStoredOrganization(),
+): boolean {
+  const id = org?.id?.trim().toLowerCase();
+  return Boolean(id && ORGS_WITHOUT_LEGAL_PERSON.has(id));
 }
 
 /** Roles del usuario actual (ej: ["ORG_ADMIN"], ["BUSINESS"], ["DEVELOPER"]). */
@@ -892,7 +952,10 @@ export async function syncMe(): Promise<void> {
   const organization = me.organization;
 
   if (user && user.id) sessionStorage.setItem(k.USER, JSON.stringify(user));
-  if (organization) sessionStorage.setItem(k.ORGANIZATION, JSON.stringify(organization));
+  if (organization) {
+    sessionStorage.setItem(k.ORGANIZATION, JSON.stringify(organization));
+    rememberLastOrganization(organization);
+  }
 
   const topRoles = (me as { roles?: unknown }).roles;
   const userRoles = (user as { roles?: unknown })?.roles;

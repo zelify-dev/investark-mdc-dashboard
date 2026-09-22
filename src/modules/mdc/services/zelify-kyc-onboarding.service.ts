@@ -625,10 +625,60 @@ export async function fetchZelifyKycOnboardingSessionByCurp(
   return mapSessionDetail(data);
 }
 
-/** CURP mexicana: 18 caracteres alfanuméricos (sin espacios). */
+/** Entidades federativas del instructivo CURP (DOF), más NE = nacido en el extranjero. */
+const CURP_ENTITIES =
+  "AS|BC|BS|CC|CL|CM|CS|CH|DF|DG|GT|GR|HG|JC|MC|MN|MS|NT|NL|OC|PL|QT|QR|SP|SL|SR|TC|TS|TL|VZ|YN|ZS|NE";
+
+/**
+ * Estructura oficial de 18 posiciones:
+ * 1-4 nombre, 5-10 fecha AAMMDD, 11 sexo H/M/X, 12-13 entidad,
+ * 14-16 consonantes, 17 homonimia/siglo 0-9 o A-J, 18 dígito verificador.
+ */
+const CURP_STRUCTURE = new RegExp(
+  `^[A-Z][AEIOUX][A-Z]{2}\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])[HMX](?:${CURP_ENTITIES})[B-DF-HJ-NP-TV-Z]{3}[0-9A-J]\\d$`,
+);
+
+const CURP_CHAR_VALUES: Record<string, number> = {};
+"0123456789".split("").forEach((char, index) => {
+  CURP_CHAR_VALUES[char] = index;
+});
+"ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("").forEach((char, index) => {
+  CURP_CHAR_VALUES[char] = 10 + index;
+});
+
+function curpCheckDigit(body17: string): string {
+  let sum = 0;
+  for (let index = 0; index < 17; index += 1) {
+    sum += (CURP_CHAR_VALUES[body17[index]] ?? 0) * (18 - index);
+  }
+  const residue = sum % 10;
+  return residue === 0 ? "0" : String(10 - residue);
+}
+
+function isRealCurpDate(curp: string): boolean {
+  const year = Number(curp.slice(4, 6));
+  const month = Number(curp.slice(6, 8));
+  const day = Number(curp.slice(8, 10));
+  const century = /[A-J]/.test(curp[16]) ? 2000 : 1900;
+  const fullYear = century + year;
+  const date = new Date(Date.UTC(fullYear, month - 1, day));
+  return (
+    date.getUTCFullYear() === fullYear &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
+}
+
+/** CURP mexicana: estructura RENAPO/DOF, no solo 18 caracteres. */
 export function isCurpLike(identificationNumber: string): boolean {
   const cleaned = identificationNumber.replace(/\s+/g, "").toUpperCase();
-  return cleaned.length === 18 && /^[A-Z0-9]{18}$/.test(cleaned);
+  if (!CURP_STRUCTURE.test(cleaned)) {
+    return false;
+  }
+  if (!isRealCurpDate(cleaned)) {
+    return false;
+  }
+  return curpCheckDigit(cleaned.slice(0, 17)) === cleaned[17];
 }
 
 /** Normaliza teléfono a 10 dígitos (sin +52). */

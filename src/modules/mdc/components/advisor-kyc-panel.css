@@ -1,0 +1,108 @@
+.advisor-kyc {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.advisor-kyc__flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.advisor-kyc__password {
+  padding: 10px 12px;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  background: #fffbeb;
+}
+
+.advisor-kyc__password strong,
+.advisor-kyc__password p {
+  margin: 0;
+}
+
+.advisor-kyc__password p {
+  margin: 4px 0 8px;
+  color: #92400e;
+  font-size: 12px;
+}
+
+.advisor-kyc__password code {
+  flex: 1;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.advisor-kyc__block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid #eef2f7;
+}
+
+.advisor-kyc__block h5 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.advisor-kyc__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.advisor-kyc__otp {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.advisor-kyc__inline,
+.advisor-kyc__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advisor-kyc__row {
+  flex-wrap: wrap;
+}
+
+.advisor-kyc__row input {
+  width: 96px;
+  min-width: 0;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.advisor-kyc__files,
+.advisor-kyc__file {
+  display: grid;
+  gap: 8px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.advisor-kyc__files {
+  grid-template-columns: 1fr 1fr;
+}
+
+.advisor-kyc__wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .advisor-kyc__grid,
+  .advisor-kyc__files {
+    grid-template-columns: 1fr;
+  }
+}

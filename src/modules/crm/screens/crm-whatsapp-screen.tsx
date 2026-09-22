@@ -1,369 +1,312 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-
-import { AppButton } from "@/components/ui/atoms/button/app-button";
-import { CrmPageHeader } from "@/modules/crm/components/crm-page-header";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Check, CheckCheck, Paperclip, Search, Send, Smile, UserPlus } from "lucide-react";
+import { ZelifyTopNavbar } from "@/components/ui/organisms/topbar/zelify-top-navbar";
+import { getStoredUser } from "@/lib/auth-api";
+import { CrmProspectPanel } from "@/modules/crm/components/crm-prospect-panel";
 import {
-  INTENT_LABEL,
-  WHATSAPP_API,
-  WHATSAPP_THREADS,
-  formatWhen,
-  moneyMxn,
-  type WhatsappIntent,
-  type WhatsappMessage,
-  type WhatsappThread,
-} from "@/modules/crm/data/crm.seed";
+  fetchWapiChannel,
+  fetchWapiConversations,
+  fetchWapiHistory,
+  markWapiConversationRead,
+  mediaDownloadUrl,
+  normalizePhone,
+  replyWapiConversation,
+  simulateWapiInbound,
+  type WapiMessage,
+} from "@/modules/crm/services/wapi-client";
+import "@/components/ui/templates/workspace-page.css";
+import "./crm-whatsapp-screen.css";
 
-import "./crm-workspace.css";
-
-type InboxFilter = "all" | WhatsappIntent | "unread";
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
+function initials(name: string | null, phone: string) {
+  const source = (name || phone).trim();
+  const parts = source.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+  return source.slice(0, 2).toUpperCase();
 }
 
-function lastInbound(thread: WhatsappThread) {
-  return [...thread.messages].reverse().find((message) => message.from === "in")?.text ?? thread.lastMessage;
+function formatClock(value: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
 }
 
-function buildAiReply(thread: WhatsappThread) {
-  const question = lastInbound(thread).toLowerCase();
-  const product = thread.product.toLowerCase();
-
-  if (thread.intent === "cobranza" || /pagu|atras|mora|oxxo|spei|reflej/.test(question)) {
-    if (/ya pagu|pagu[eé]|oxxo|spei|reflej/.test(question)) {
-      return `Hola ${thread.name.split(" ")[0]}, si pagaste en OXXO o SPEI puede tardar hasta 24 horas en reflejarse. En cuanto entre, tu atraso se limpia y no reportamos a buró. Te aviso aquí mismo.`;
-    }
-    if (/solo intereses|mínimo|minimo/.test(question)) {
-      return `Sí puedes cubrir el pago mínimo o intereses de ${thread.amountDue ? moneyMxn(thread.amountDue) : "tu línea"} para no romper el convenio. El capital pendiente se recorre al siguiente corte.`;
-    }
-    const days = thread.overdueDays ?? 0;
-    const due = thread.amountDue ? moneyMxn(thread.amountDue) : "tu saldo";
-    return `Hola ${thread.name.split(" ")[0]}, tu ${product} tiene ${due} ${days > 0 ? `con ${days} día(s) de atraso` : `con vencimiento ${thread.dueDate ?? "próximo"}`}. Paga hoy por SPEI CLABE 646180100012345678 o el enlace Kumaza Pay. Si ya liquidaste, mándame el comprobante.`;
-  }
-
-  if (/monto máximo|maximo|cuánto me|cuanto me|preaprob/.test(question)) {
-    return `Para ${thread.product}, el rango preaprobado va de $60,000 a $120,000 según score e ingresos. Con tu perfil actual te puedo dejar una precalificación de $90,000 a 18 meses. ¿Lo pasamos a MDC?`;
-  }
-  if (/tasa|iva|cat|interés|interes/.test(question)) {
-    return `La tasa de ${thread.product} es fija. El 18.4% anual es sin IVA; el CAT estimado es 22.1%. En la oferta MDC te llega el desglose de comisión y seguro.`;
-  }
-  if (/ine|comprobante|documento|estados de cuenta/.test(question)) {
-    return `Para continuar: INE vigente, comprobante de domicilio menor a 3 meses y, si es persona moral, estados de cuenta. Con eso el motor MDC puede resolver en minutos.`;
-  }
-  if (/enganche/.test(question)) {
-    return `En automotriz el enganche mínimo es 20%. Sobre $320,000 serían $64,000 y el resto a 48 meses. ¿Quieres que te arme la tabla de amortización?`;
-  }
-  if (/buró|buro|atraso 3/.test(question)) {
-    return `Un atraso de 1 a 3 días no se reporta si regularizas antes del corte. A partir del día 4 sí puede marcarse. Te conviene pagar el viernes y avisar aquí.`;
-  }
-  if (/mensualidad|reestruct|bajar/.test(question)) {
-    return `Sí se puede evaluar reestructura: alargar plazo y bajar mensualidad, sujeto a que no haya mora mayor a 15 días. ¿Quieres que lo mande a análisis MDC?`;
-  }
-  if (/desembolso/.test(question)) {
-    return `El desembolso queda agendado. El lunes se libera a la CLABE registrada. Te mando comprobante en cuanto el banco lo confirme.`;
-  }
-
-  return `Hola ${thread.name.split(" ")[0]}, soy Kumaza IA. Puedo resolver dudas de monto, tasa, documentos o mandarte un recordatorio de cobranza. ¿Qué necesitas?`;
+function formatDay(value: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const today = new Date();
+  if (date.toDateString() === today.toDateString()) return formatClock(value);
+  return date.toLocaleDateString("es-MX", { day: "2-digit", month: "short" });
 }
 
-function buildCollectionReminder(thread: WhatsappThread) {
-  const first = thread.name.split(" ")[0];
-  const due = thread.amountDue ? moneyMxn(thread.amountDue) : "tu pago";
-  const days = thread.overdueDays ?? 0;
-  if (days >= 8) {
-    return `${first}, tu crédito Kumaza lleva ${days} días de atraso. Saldo ${due}. Regularízalo hoy para evitar cobranza extrajudicial y reporte a buró. Paga en Kumaza Pay o SPEI.`;
-  }
-  if (days > 0) {
-    return `${first}, recordatorio de cobranza: ${due} vencido desde el ${thread.dueDate ?? "corte"}. Tienes ${days} día(s) de atraso. Paga hoy y te confirmo en este chat.`;
-  }
-  return `${first}, tu próximo pago de ${due} vence el ${thread.dueDate ?? "próximo corte"}. Te dejo el recordatorio para que no se pase.`;
-}
-
-function appendMessage(thread: WhatsappThread, message: WhatsappMessage): WhatsappThread {
-  return {
-    ...thread,
-    lastMessage: message.text,
-    lastAt: message.at,
-    unread: message.from === "in" ? thread.unread : 0,
-    messages: [...thread.messages, message],
-  };
+function StatusTicks({ status }: { status: WapiMessage["status"] }) {
+  if (status === "read") return <CheckCheck size={14} className="crm-wa__ticks crm-wa__ticks--read" />;
+  if (status === "delivered") return <CheckCheck size={14} className="crm-wa__ticks" />;
+  if (status === "failed") return <span className="crm-wa__ticks crm-wa__ticks--fail">!</span>;
+  return <Check size={14} className="crm-wa__ticks" />;
 }
 
 export function CrmWhatsappScreen() {
-  const [threads, setThreads] = useState<WhatsappThread[]>(WHATSAPP_THREADS);
-  const [activeId, setActiveId] = useState(WHATSAPP_THREADS[0]?.id ?? "");
-  const [draft, setDraft] = useState("");
+  const queryClient = useQueryClient();
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<InboxFilter>("all");
-  const [notice, setNotice] = useState<string | null>(null);
-  const [aiBusy, setAiBusy] = useState(false);
-  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const [activePhone, setActivePhone] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
+  const [simulateOpen, setSimulateOpen] = useState(false);
+  const [simulateFrom, setSimulateFrom] = useState("");
+  const [simulateName, setSimulateName] = useState("");
+  const [simulateText, setSimulateText] = useState("Hola, quiero información de mi crédito");
+  const threadRef = useRef<HTMLDivElement>(null);
+  const agentId = getStoredUser()?.id || "crm-operator";
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return threads
-      .filter((thread) => {
-        if (filter === "unread") return thread.unread > 0;
-        if (filter !== "all") return thread.intent === filter;
-        return true;
-      })
-      .filter((thread) => {
-        if (!q) return true;
-        return `${thread.name} ${thread.phone} ${thread.product} ${thread.lastMessage}`.toLowerCase().includes(q);
-      })
-      .sort((a, b) => new Date(b.lastAt).getTime() - new Date(a.lastAt).getTime());
-  }, [filter, query, threads]);
+  const channelQuery = useQuery({
+    queryKey: ["wapi-channel"],
+    queryFn: fetchWapiChannel,
+    staleTime: 60_000,
+  });
 
+  const inboxQuery = useQuery({
+    queryKey: ["wapi-conversations", query],
+    queryFn: () => fetchWapiConversations(query),
+    refetchInterval: 4000,
+  });
+
+  const conversations = inboxQuery.data?.items ?? [];
   const active = useMemo(
-    () => threads.find((thread) => thread.id === activeId) ?? filtered[0] ?? threads[0],
-    [activeId, filtered, threads],
+    () => conversations.find((item) => item.phone === activePhone) || null,
+    [conversations, activePhone],
   );
 
-  const unreadCount = threads.filter((thread) => thread.unread > 0).length;
-  const collectionCount = threads.filter((thread) => thread.intent === "cobranza").length;
-  const questionCount = threads.filter((thread) => thread.intent === "duda").length;
+  const historyQuery = useQuery({
+    queryKey: ["wapi-history", activePhone],
+    queryFn: () => fetchWapiHistory(activePhone as string),
+    enabled: Boolean(activePhone),
+    refetchInterval: activePhone ? 3000 : false,
+  });
+
+  const messages = useMemo(() => {
+    const items = [...(historyQuery.data?.items ?? [])];
+    return items.sort((a, b) => new Date(a.occurredAt || 0).getTime() - new Date(b.occurredAt || 0).getTime());
+  }, [historyQuery.data]);
 
   useEffect(() => {
-    const node = bodyRef.current;
-    if (node) node.scrollTop = node.scrollHeight;
-  }, [active?.id, active?.messages.length]);
+    if (!activePhone && conversations[0]) setActivePhone(conversations[0].phone);
+  }, [activePhone, conversations]);
 
-  const pushToActive = (message: WhatsappMessage, extra?: Partial<WhatsappThread>) => {
-    if (!active) return;
-    setThreads((current) =>
-      current.map((thread) => (thread.id === active.id ? { ...appendMessage(thread, message), ...extra } : thread)),
-    );
-  };
+  useEffect(() => {
+    const node = threadRef.current;
+    if (!node) return;
+    node.scrollTop = node.scrollHeight;
+  }, [messages.length, activePhone]);
 
-  const send = (text = draft) => {
-    const value = text.trim();
-    if (!active || !value) return;
-    pushToActive({ from: "out", text: value, at: new Date().toISOString() });
-    setDraft("");
-    setNotice("Mensaje enviado por WhatsApp Cloud API.");
-  };
+  useEffect(() => {
+    if (!activePhone) return;
+    void markWapiConversationRead(activePhone, agentId).then(() => {
+      void queryClient.invalidateQueries({ queryKey: ["wapi-conversations"] });
+    });
+  }, [activePhone, agentId, queryClient]);
 
-  const runAi = (mode: "reply" | "reminder") => {
-    if (!active || aiBusy) return;
-    setAiBusy(true);
-    const text = mode === "reminder" ? buildCollectionReminder(active) : buildAiReply(active);
-    window.setTimeout(() => {
-      pushToActive({ from: "ai", text, at: new Date().toISOString() });
-      setAiBusy(false);
-      setNotice(
-        mode === "reminder"
-          ? `Recordatorio de cobranza enviado a ${active.name}.`
-          : `Kumaza IA resolvió la duda de ${active.name}.`,
-      );
-    }, 450);
-  };
+  const sendMutation = useMutation({
+    mutationFn: async (text: string) => {
+      if (!activePhone) throw new Error("Selecciona una conversación.");
+      return replyWapiConversation(activePhone, text, agentId);
+    },
+    onSuccess: () => {
+      setDraft("");
+      void queryClient.invalidateQueries({ queryKey: ["wapi-history", activePhone] });
+      void queryClient.invalidateQueries({ queryKey: ["wapi-conversations"] });
+    },
+  });
 
-  const sendCollectionSweep = () => {
-    const now = new Date().toISOString();
-    setThreads((current) =>
-      current.map((thread) => {
-        if (thread.intent !== "cobranza") return thread;
-        return appendMessage(thread, {
-          from: "ai",
-          text: buildCollectionReminder(thread),
-          at: now,
-        });
+  const simulateMutation = useMutation({
+    mutationFn: () =>
+      simulateWapiInbound({
+        from: simulateFrom,
+        contact_name: simulateName || undefined,
+        text: simulateText,
       }),
-    );
-    setNotice(`IA envió recordatorios de cobranza a ${collectionCount} acreditados.`);
+    onSuccess: async () => {
+      const phone = normalizePhone(simulateFrom);
+      setSimulateOpen(false);
+      await queryClient.invalidateQueries({ queryKey: ["wapi-conversations"] });
+      setActivePhone(phone);
+    },
+  });
+
+  const onSend = (event: FormEvent) => {
+    event.preventDefault();
+    const text = draft.trim();
+    if (!text || sendMutation.isPending) return;
+    sendMutation.mutate(text);
   };
+
+  const channelName =
+    channelQuery.data?.displayName ||
+    channelQuery.data?.verifiedName ||
+    channelQuery.data?.verified_name ||
+    "Sandbox Public";
+  const channelPhone = channelQuery.data?.displayPhone || channelQuery.data?.display_phone_number || "15550001111";
 
   return (
-    <div className="crm-page">
-      <CrmPageHeader
-        title="WhatsApp crédito"
-        subtitle="Bandeja con más acreditados, Kumaza IA para dudas y recordatorios automáticos de cobranza."
-      />
-
-      <div className="crm-kpis">
-        <article className="crm-kpi">
-          <span>Chats activos</span>
-          <strong>{threads.length}</strong>
-          <small>{unreadCount} sin leer</small>
-        </article>
-        <article className="crm-kpi">
-          <span>Dudas abiertas</span>
-          <strong>{questionCount}</strong>
-          <small>IA lista para resolver</small>
-        </article>
-        <article className="crm-kpi">
-          <span>Cobranza</span>
-          <strong>{collectionCount}</strong>
-          <small>Recordatorios pendientes</small>
-        </article>
-        <article className="crm-kpi">
-          <span>Canal</span>
-          <strong>Cloud API</strong>
-          <small>{WHATSAPP_API.phone}</small>
-        </article>
-      </div>
-
-      <div className="crm-wa crm-wa--inbox">
-        <aside className="crm-wa-list" aria-label="Conversaciones WhatsApp">
-          <div className="crm-wa-list__tools">
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar acreditado, producto o duda"
-            />
-            <div className="crm-wa-chips">
-              {(
-                [
-                  ["all", "Todos"],
-                  ["unread", "No leídos"],
-                  ["duda", "Dudas"],
-                  ["cobranza", "Cobranza"],
-                  ["documentos", "Docs"],
-                ] as const
-              ).map(([value, label]) => (
+    <div className="zelify-workspace-page crm-workspace">
+      <ZelifyTopNavbar activeNavId="crm" />
+      <div className="zelify-workspace-page__scroll crm-workspace__body">
+        <div className="crm-wa">
+          <aside className="crm-wa__inbox">
+            <header className="crm-wa__inbox-head">
+              <div>
+                <p>CRM</p>
+                <h2>WhatsApp</h2>
+                <small>
+                  {channelName} · {channelPhone}
+                </small>
+              </div>
+              <button
+                type="button"
+                className="crm-btn crm-btn--ghost crm-btn--sm"
+                onClick={() => setSimulateOpen((open) => !open)}
+              >
+                <UserPlus size={15} />
+                {simulateOpen ? "Cerrar" : "Inbound"}
+              </button>
+            </header>
+            {simulateOpen ? (
+              <form
+                className="crm-wa__simulate"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (normalizePhone(simulateFrom)) simulateMutation.mutate();
+                }}
+              >
+                <input value={simulateFrom} onChange={(e) => setSimulateFrom(e.target.value)} placeholder="Teléfono 593998592724" />
+                <input value={simulateName} onChange={(e) => setSimulateName(e.target.value)} placeholder="Nombre" />
+                <input value={simulateText} onChange={(e) => setSimulateText(e.target.value)} placeholder="Mensaje del cliente" />
+                <button type="submit" className="crm-btn crm-btn--primary" disabled={simulateMutation.isPending}>
+                  {simulateMutation.isPending ? "Simulando…" : "Simular cliente"}
+                </button>
+              </form>
+            ) : null}
+            <label className="crm-wa__search">
+              <Search size={15} />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar o empezar un chat" />
+            </label>
+            <div className="crm-wa__scroll crm-wa__people">
+              {inboxQuery.isLoading ? <p className="crm-wa__muted">Cargando conversaciones…</p> : null}
+              {inboxQuery.isError ? (
+                <p className="crm-wa__warn">
+                  {inboxQuery.error instanceof Error ? inboxQuery.error.message : "No se pudo leer el inbox."}
+                </p>
+              ) : null}
+              {conversations.map((item) => (
                 <button
-                  key={value}
+                  key={item.id || item.phone}
                   type="button"
-                  className={filter === value ? "is-on" : ""}
-                  onClick={() => setFilter(value)}
+                  className={`crm-wa__person${item.phone === activePhone ? " is-active" : ""}`}
+                  onClick={() => setActivePhone(item.phone)}
                 >
-                  {label}
+                  <span className="crm-wa__avatar">{initials(item.contactName, item.phone)}</span>
+                  <span className="crm-wa__person-body">
+                    <strong>{item.contactName || item.phone}</strong>
+                    <em>{item.lastMessage || "Sin mensajes"}</em>
+                  </span>
+                  <span className="crm-wa__person-meta">
+                    <time>{formatDay(item.lastMessageAt)}</time>
+                    {item.unreadCount > 0 ? <b>{item.unreadCount}</b> : null}
+                  </span>
                 </button>
               ))}
             </div>
-          </div>
-          <div className="crm-wa-list__scroll">
-            {filtered.map((thread) => (
-              <button
-                key={thread.id}
-                type="button"
-                className={thread.id === active?.id ? "is-active" : ""}
-                onClick={() => {
-                  setActiveId(thread.id);
-                  setThreads((current) =>
-                    current.map((item) => (item.id === thread.id ? { ...item, unread: 0 } : item)),
-                  );
-                }}
-              >
-                <span className={`crm-wa-avatar crm-wa-avatar--${thread.intent}`}>{initials(thread.name)}</span>
-                <span className="crm-wa-list__copy">
-                  <strong>
-                    {thread.name}
-                    {thread.unread ? <em>{thread.unread}</em> : null}
-                  </strong>
-                  <span>{thread.lastMessage}</span>
-                  <small>
-                    {INTENT_LABEL[thread.intent]} · {thread.product} · {formatWhen(thread.lastAt)}
-                  </small>
-                </span>
-              </button>
-            ))}
-          </div>
-        </aside>
+          </aside>
 
-        <section className="crm-wa-thread">
-          {active ? (
-            <>
-              <div className="crm-wa-thread__head">
-                <div>
-                  <h3>{active.name}</h3>
-                  <p className="zelify-accounting-page-header__meta">
-                    {active.phone} · {active.city} · {active.product}
-                    {active.amountDue ? ` · saldo ${moneyMxn(active.amountDue)}` : ""}
-                    {active.overdueDays ? ` · ${active.overdueDays}d atraso` : ""}
-                  </p>
+          <section className="crm-wa__chat">
+            {active ? (
+              <>
+                <header className="crm-wa__chat-head">
+                  <span className="crm-wa__avatar">{initials(active.contactName, active.phone)}</span>
+                  <div>
+                    <strong>{active.contactName || active.phone}</strong>
+                    <small>{active.phone}</small>
+                  </div>
+                </header>
+                <div className="crm-wa__scroll crm-wa__thread" ref={threadRef}>
+                  {messages.map((message) => (
+                    <article
+                      key={message.id}
+                      className={`crm-wa__bubble crm-wa__bubble--${message.direction === "outbound" ? "out" : "in"}`}
+                    >
+                      <MessageBody message={message} />
+                      <footer>
+                        <time>{formatClock(message.occurredAt)}</time>
+                        {message.direction === "outbound" ? <StatusTicks status={message.status} /> : null}
+                      </footer>
+                    </article>
+                  ))}
+                  {historyQuery.isLoading && messages.length === 0 ? <p className="crm-wa__muted">Cargando mensajes…</p> : null}
                 </div>
-                <span className={`crm-badge ${active.intent === "cobranza" ? "crm-badge--bad" : "crm-badge--info"}`}>
-                  {INTENT_LABEL[active.intent]}
-                </span>
+                <form className="crm-wa__composer" onSubmit={onSend}>
+                  <button type="button" className="crm-btn crm-btn--icon" aria-label="Emoji" disabled>
+                    <Smile size={20} />
+                  </button>
+                  <button type="button" className="crm-btn crm-btn--icon" aria-label="Adjuntar" disabled>
+                    <Paperclip size={20} />
+                  </button>
+                  <input
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder="Escribe un mensaje"
+                    maxLength={4096}
+                  />
+                  <button
+                    type="submit"
+                    className="crm-btn crm-btn--send"
+                    disabled={!draft.trim() || sendMutation.isPending}
+                    aria-label="Enviar"
+                  >
+                    <Send size={18} />
+                  </button>
+                </form>
+                {sendMutation.isError ? (
+                  <p className="crm-wa__warn">
+                    {sendMutation.error instanceof Error ? sendMutation.error.message : "No se pudo enviar."}
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <div className="crm-wa__empty">
+                <h3>WhatsApp Business</h3>
+                <p>Elige un usuario a la izquierda para hablar one to one y llenar su ficha a la derecha.</p>
               </div>
-              <div className="crm-wa-thread__body" ref={bodyRef}>
-                {active.messages.map((message, index) => (
-                  <div key={`${active.id}-${index}`} className={`crm-bubble crm-bubble--${message.from}`}>
-                    {message.from === "ai" ? <small>Kumaza IA</small> : null}
-                    {message.text}
-                    <time>{formatWhen(message.at)}</time>
-                  </div>
-                ))}
-              </div>
-              <div className="crm-wa-suggest">
-                <button type="button" onClick={() => setDraft(buildAiReply(active))}>
-                  Usar respuesta IA
-                </button>
-                <button type="button" onClick={() => setDraft(buildCollectionReminder(active))}>
-                  Armar recordatorio
-                </button>
-              </div>
-              <div className="crm-wa-thread__composer">
-                <input
-                  value={draft}
-                  onChange={(event) => setDraft(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") send();
-                  }}
-                  placeholder="Escribe o deja que la IA responda…"
-                />
-                <AppButton tone="primary" onClick={() => send()}>
-                  Enviar
-                </AppButton>
-              </div>
-            </>
-          ) : null}
-        </section>
+            )}
+          </section>
 
-        <aside className="crm-wa-api">
-          <header>
-            <h3>Kumaza IA</h3>
-            <p className="zelify-accounting-page-header__meta">Resuelve dudas de crédito y dispara cobranza.</p>
-          </header>
-          <dl>
-            <div>
-              <dt>Sugerencia</dt>
-              <dd>{active ? buildAiReply(active) : "—"}</dd>
-            </div>
-            {active?.amountDue ? (
-              <div>
-                <dt>Saldo / atraso</dt>
-                <dd>
-                  {moneyMxn(active.amountDue)}
-                  {active.overdueDays ? ` · ${active.overdueDays} días` : ""}
-                </dd>
-              </div>
-            ) : null}
-            <div>
-              <dt>Plantillas</dt>
-              <dd>
-                {WHATSAPP_API.templates.map((template) => (
-                  <div key={template.name}>
-                    {template.name} · {template.status}
-                  </div>
-                ))}
-              </dd>
-            </div>
-          </dl>
-          <div className="crm-actions" style={{ padding: "0 16px" }}>
-            <AppButton tone="primary" disabled={aiBusy} onClick={() => runAi("reply")}>
-              {aiBusy ? "IA escribiendo…" : "Resolver duda con IA"}
-            </AppButton>
-            <AppButton disabled={aiBusy} onClick={() => runAi("reminder")}>
-              Recordatorio de cobranza
-            </AppButton>
-            <AppButton onClick={sendCollectionSweep}>Cobranza masiva IA</AppButton>
-          </div>
-          {notice ? (
-            <p className="crm-note" style={{ padding: "12px 16px 0" }}>
-              {notice}
-            </p>
-          ) : null}
-        </aside>
+          {active ? (
+            <CrmProspectPanel phone={active.phone} contactName={active.contactName} />
+          ) : (
+            <aside className="crm-wa__prospect crm-wa__prospect--idle">
+              <p>Selecciona un chat para abrir la ficha.</p>
+            </aside>
+          )}
+        </div>
       </div>
     </div>
   );
+}
+
+function MessageBody({ message }: { message: WapiMessage }) {
+  if (message.type === "image" && (message.mediaId || message.mediaLink)) {
+    const src = message.mediaLink || (message.mediaId ? mediaDownloadUrl(message.mediaId) : "");
+    return (
+      <>
+        {src ? <img src={src} alt={message.caption || "Imagen"} /> : null}
+        {message.caption || message.text ? <p>{message.caption || message.text}</p> : null}
+      </>
+    );
+  }
+  if (message.type === "document") {
+    return <p>{message.filename || message.caption || message.text || "Documento"}</p>;
+  }
+  return <p>{message.text || message.caption || message.templateName || message.type}</p>;
 }

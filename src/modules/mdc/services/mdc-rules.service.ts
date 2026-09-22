@@ -44,6 +44,32 @@ function extractFinanceProductsPayload(payload: unknown): Record<string, unknown
   return [];
 }
 
+export type FinanceProductDetail = {
+  id: string;
+  financialProduct?: string | null;
+  creditRate?: number | string | null;
+  dueDatesCount?: number | string | null;
+  paymentScheme?: string | null;
+  paymentPeriod?: string | null;
+  paymentFrequency?: string | null;
+  scheme?: string | null;
+  contractType?: string | null;
+};
+
+export const fetchFinanceProductById = async (productId: string): Promise<FinanceProductDetail | null> => {
+  if (!productId) return null;
+  const response = await customFetch(`${getBaseUrl()}/finance-products/${encodeURIComponent(productId)}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!response.ok) return null;
+  const payload: unknown = await response.json().catch(() => null);
+  if (!payload || typeof payload !== "object") return null;
+  const record = payload as Record<string, unknown>;
+  const product = record.data && typeof record.data === "object" ? record.data : record;
+  return product as FinanceProductDetail;
+};
+
 export const fetchFinanceProducts = async (orgId: string): Promise<Record<string, unknown>[]> => {
   if (orgId === "demo-bypass-org") {
     console.log("[MDC][products] fetchFinanceProducts demo-bypass-org → []");

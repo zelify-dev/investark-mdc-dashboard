@@ -4,7 +4,15 @@ import { Plus, X, Upload, FileSpreadsheet, CheckCircle2, AlertCircle } from "luc
 import { useCallback, useMemo, useState, useEffect } from "react";
 import type { MdcApplicantMode } from "@/modules/mdc/data/mdc-credit-mock";
 import { getStoredOrganization } from "@/lib/auth-api";
-import { fetchPaymentByApplicant, fetchPayments, uploadPaymentsFile, type PaymentSession, type PaymentUploadResult } from "@/modules/mdc/services/mdc-payments.service";
+import {
+  fetchBankTransactions,
+  fetchPaymentByApplicant,
+  fetchPayments,
+  uploadPaymentsFile,
+  type BankTransactionDTO,
+  type PaymentSession,
+  type PaymentUploadResult,
+} from "@/modules/mdc/services/mdc-payments.service";
 
 export type Session = PaymentSession;
 
@@ -71,6 +79,7 @@ function rangeLabel(days: number) {
 
 export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPaymentsTabProps) {
   const [sessions, setSessions] = useState<PaymentSession[]>([]);
+  const [importedPayments, setImportedPayments] = useState<BankTransactionDTO[]>([]);
   const [selectedPayment, setSelectedPayment] = useState<Session | null>(null);
   const [paymentDetail, setPaymentDetail] = useState<PaymentSession | null>(null);
   const [isPaymentDetailLoading, setIsPaymentDetailLoading] = useState(false);
@@ -90,7 +99,11 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
     try {
       const currentOrg = getStoredOrganization();
       const orgId = currentOrg?.id || "ORG-001";
-      const realSessions = await fetchPayments(mode);
+      const [realSessions, transactions] = await Promise.all([
+        fetchPayments(mode),
+        fetchBankTransactions(orgId),
+      ]);
+      setImportedPayments(transactions);
       if (realSessions.length > 0 || useLiveData || orgId !== "demo-bypass-org") {
         setSessions(realSessions);
         return;
@@ -99,6 +112,7 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
       const saved = localStorage.getItem(`mdc:payments:${mode}`);
       setSessions(saved ? JSON.parse(saved) : fallbackSessions);
     } catch {
+      setImportedPayments([]);
       setSessions(fallbackSessions);
     }
   }, [fallbackSessions, mode, useLiveData]);
@@ -170,9 +184,9 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
     }
   };
 
-  const { filteredSessions, startMs } = useMemo(() => {
+  const { filteredSessions } = useMemo(() => {
     if (hydratedSessions.length === 0) {
-      return { filteredSessions: [] as Session[], startMs: 0 };
+      return { filteredSessions: [] as Session[] };
     }
 
     const latestDayMs = hydratedSessions.reduce(
@@ -186,7 +200,7 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
       return dayMs >= rangeStart && dayMs <= rangeEnd;
     });
 
-    return { filteredSessions: filtered, startMs: rangeStart };
+    return { filteredSessions: filtered };
   }, [hydratedSessions, rangeDays]);
 
   const paidSessions = useMemo(
@@ -231,12 +245,38 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
     };
   }, [filteredSessions]);
 
+  const importedTrendPayments = useMemo(() => {
+    const applicantIds = new Set(
+      hydratedSessions.map((session) => session.applicantId).filter(Boolean),
+    );
+
+    return importedPayments.filter((payment) => {
+      const status = String(payment.status || "").toUpperCase();
+      const wasApplied = status === "CAPTURADO" || status === "PARCIAL" || status === "SALDO_A_FAVOR";
+      return Boolean(payment.isMatched && wasApplied && payment.matchedApplicantId && applicantIds.has(payment.matchedApplicantId));
+    });
+  }, [hydratedSessions, importedPayments]);
+
   const trendPoints = useMemo(() => {
+    const importedDataAvailable = importedPayments.length > 0;
+    const source = importedDataAvailable
+      ? importedTrendPayments.map((payment) => ({ amount: payment.amount, createdAt: payment.createdAt }))
+      : filteredSessions
+          .filter((session) => session.status === "CAPTURADO" || session.status === "Aprobado")
+          .map((session) => ({ amount: session.amount, createdAt: session.createdAt }));
+
+    const rangeSource = importedDataAvailable ? importedPayments : source;
+    const latestDayMs = rangeSource.reduce(
+      (latest, payment) => Math.max(latest, sessionDayStartMs(payment.createdAt ?? "")),
+      0,
+    );
+    const trendEndMs = latestDayMs || sessionDayStartMs(new Date().toISOString());
+    const trendStartMs = trendEndMs - (rangeDays - 1) * DAY_MS;
     const byDate = new Map<number, number>();
-    for (const session of filteredSessions) {
-      if (session.status !== "CAPTURADO" && session.status !== "Aprobado") continue;
-      const dayMs = sessionDayStartMs(session.createdAt ?? "");
-      byDate.set(dayMs, (byDate.get(dayMs) ?? 0) + (Number(session.amount) || 0));
+    for (const payment of source) {
+      const dayMs = sessionDayStartMs(payment.createdAt ?? "");
+      if (dayMs < trendStartMs || dayMs > trendEndMs) continue;
+      byDate.set(dayMs, (byDate.get(dayMs) ?? 0) + (Number(payment.amount) || 0));
     }
 
     const targetPoints = rangeDays <= 7 ? 7 : rangeDays <= 30 ? 15 : 13;
@@ -244,7 +284,7 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
     const bucketCount = Math.ceil(rangeDays / bucketSizeDays);
 
     const bucketPoints = Array.from({ length: bucketCount }, (_, bucketIndex) => {
-      const bucketStart = startMs + bucketIndex * bucketSizeDays * DAY_MS;
+      const bucketStart = trendStartMs + bucketIndex * bucketSizeDays * DAY_MS;
       const remainingDays = Math.max(rangeDays - bucketIndex * bucketSizeDays, 0);
       const daysInBucket = Math.max(0, Math.min(bucketSizeDays, remainingDays));
 
@@ -260,16 +300,12 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
       };
     });
 
-    const firstPositiveIndex = bucketPoints.findIndex((point) => point.value > 0);
-    if (firstPositiveIndex <= 0) return bucketPoints;
-
-    const minVisiblePoints = Math.min(
-      bucketPoints.length,
-      rangeDays <= 7 ? 7 : rangeDays <= 30 ? 10 : 8,
-    );
-    const contextStart = Math.max(0, firstPositiveIndex - (minVisiblePoints - 1));
-    return bucketPoints.slice(contextStart);
-  }, [filteredSessions, rangeDays, startMs]);
+    let accumulated = 0;
+    return bucketPoints.map((point) => {
+      accumulated += point.value;
+      return { ...point, value: accumulated };
+    });
+  }, [filteredSessions, importedPayments, importedTrendPayments, rangeDays]);
 
   return (
     <>
@@ -301,7 +337,7 @@ export function MdcPaymentsTab({ mode = "natural", range, onRangeChange }: MdcPa
         <article className="mdc-card">
           <div className="mdc-card__head">
             <h3>Tendencia de pago</h3>
-            <p>Monto capturado por periodo según rango seleccionado</p>
+            <p>Monto acumulado de pagos importados según rango seleccionado</p>
           </div>
           <PaymentTrendChart points={trendPoints} />
         </article>

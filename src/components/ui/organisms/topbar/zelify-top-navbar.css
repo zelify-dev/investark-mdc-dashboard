@@ -2,12 +2,25 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
   /* Por encima del contenido del workspace (cards, tablas) para que sticky + overlays no queden tapados */
   z-index: 100;
   transition: min-height 180ms ease;
-  box-shadow: 0 4px 24px rgba(6, 14, 28, 0.04);
+  box-shadow: none;
+}
+
+.zelify-topbar-spacer {
+  flex-shrink: 0;
+  height: 108px;
+  background: #ffffff;
+}
+
+.zelify-topbar-wrapper.is-condensed + .zelify-topbar-spacer {
+  height: 100px;
 }
 
 .zelify-topbar-primary {
@@ -16,7 +29,7 @@
   justify-content: space-between;
   gap: 14px;
   padding: 8px 20px;
-  background: #271a59;
+  background: #ffffff;
   min-height: 52px;
   transition:
     min-height 180ms ease,
@@ -38,7 +51,7 @@
   width: 100%;
   padding: 0 20px;
   background: #ffffff;
-  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+  border-bottom: 1px solid #eceae4;
   position: relative;
   z-index: 2;
 }
@@ -68,8 +81,8 @@
   align-items: center;
   width: 100%;
   padding: 0 20px;
-  background: #eef1f5;
-  border-bottom: 1px solid rgba(26, 39, 64, 0.08);
+  background: #ffffff;
+  border-bottom: 1px solid #eceae4;
   position: relative;
   z-index: 1;
 }
@@ -722,19 +735,13 @@
     display: none;
   }
 
-  /* Ocultar el logo partner estático para ganar espacio */
+  /* Ocultar el logo partner para ganar espacio */
   .zelify-topbar__brand-logo--partner {
     display: none;
   }
 
-  .zelify-topbar__brand-org--chip {
-    padding: 3px 6px;
-  }
-
-  .zelify-topbar-wrapper--mdc .zelify-topbar__brand-logo--org {
-    height: 22px;
-    max-height: 22px;
-    max-width: 96px;
+  .zelify-topbar__brand-divider {
+    display: none;
   }
 
   /* Ocultar context selector completo */
@@ -783,12 +790,6 @@
     height: 36px;
     max-width: none;
     max-height: none;
-  }
-
-  .zelify-topbar-wrapper--mdc .zelify-topbar__brand-logo--org {
-    height: 22px;
-    max-height: 22px;
-    max-width: 96px;
   }
 
   /* Buscador colapsado a ícono */
@@ -1040,11 +1041,21 @@
   font-family: var(--font-nata-sans), "Nata Sans", Arial, Helvetica, sans-serif !important;
 }
 
+.zelify-topbar-wrapper--mdc {
+  background: #ffffff;
+}
+
 .zelify-topbar-wrapper--mdc .zelify-topbar-primary {
-  min-height: 58px;
+  min-height: 56px;
   padding-top: 8px;
   padding-bottom: 8px;
-  background: #271a59;
+  background: #ffffff;
+  border-bottom: 1px solid #eceae4;
+}
+
+.zelify-topbar-wrapper--mdc .zelify-topbar-secondary {
+  background: #ffffff;
+  border-bottom: 1px solid #eceae4;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar__brand {
@@ -1060,116 +1071,85 @@
 
 .zelify-topbar-wrapper--mdc .zelify-topbar__brand-divider {
   width: 1px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.28);
+  height: 22px;
+  background: #e5e7eb;
   flex-shrink: 0;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar__brand-logo--partner {
   width: auto;
   height: 28px;
-  max-width: none;
+  max-width: 168px;
   max-height: none;
-  filter: brightness(0) invert(1);
-}
-
-.zelify-topbar__brand-org {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  max-height: 36px;
-}
-
-.zelify-topbar__brand-org--chip {
-  padding: 4px 8px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.96);
-}
-
-.zelify-topbar-wrapper--mdc .zelify-topbar__brand-logo--org {
-  width: auto;
-  height: 28px;
-  max-width: 140px;
-  max-height: 28px;
-  filter: none;
+  object-fit: contain;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar__actions {
-  gap: 10px;
+  gap: 8px;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-button {
   height: 36px;
   padding: 0 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 600;
 }
 
-.zelify-topbar-wrapper--mdc .zelify-topbar-button.is-primary {
-  background: #f3f4f6;
-  border-color: #f3f4f6;
-  color: #271a59;
-}
-
-.zelify-topbar-wrapper--mdc .zelify-topbar-button.is-primary:hover,
-.zelify-topbar-wrapper--mdc .zelify-topbar-button.is-primary.is-open {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #271a59;
-}
-
+.zelify-topbar-wrapper--mdc .zelify-topbar-button.is-primary,
 .zelify-topbar-wrapper--mdc .zelify-topbar-button.is-secondary,
+.zelify-topbar-wrapper--mdc .zelify-topbar-button.is-primary:hover,
 .zelify-topbar-wrapper--mdc .zelify-topbar-button.is-secondary:hover,
+.zelify-topbar-wrapper--mdc .zelify-topbar-button.is-primary.is-open,
 .zelify-topbar-wrapper--mdc .zelify-topbar-button.is-secondary.is-open {
-  background: transparent;
-  border-color: #ffffff;
-  color: #ffffff;
+  background: #f3f4f6;
+  border: 1px solid #f3f4f6;
+  color: #111827;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search {
-  width: 280px;
+  width: 260px;
   height: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search:hover,
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-wrap:focus-within .zelify-topbar-search,
 .zelify-topbar-wrapper--mdc .zelify-topbar-search:focus-within {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #ffffff;
+  background: #ffffff;
+  border-color: #d1d5db;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-icon {
-  color: #ffffff;
+  color: #6b7280;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-icon path {
-  fill: #ffffff;
+  fill: #6b7280;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-input,
 .zelify-topbar-wrapper--mdc .zelify-input--ghost {
   background: transparent !important;
   background-color: transparent !important;
-  color: #ffffff !important;
-  caret-color: #ffffff;
+  color: #111827 !important;
+  caret-color: #111827;
   box-shadow: none !important;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.72);
+  color: #9ca3af;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-input:-webkit-autofill,
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-input:-webkit-autofill:hover,
 .zelify-topbar-wrapper--mdc .zelify-topbar-search-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #ffffff;
-  caret-color: #ffffff;
-  box-shadow: 0 0 0 1000px #271a59 inset;
+  -webkit-text-fill-color: #111827;
+  caret-color: #111827;
+  box-shadow: 0 0 0 1000px #ffffff inset;
   transition: background-color 99999s ease-out;
 }
 
@@ -1177,32 +1157,32 @@
 .zelify-topbar-wrapper--mdc .zelify-topbar-icon-button {
   width: 36px;
   height: 36px;
-  border: 1px solid #ffffff;
-  border-radius: 8px;
+  border: 0;
+  border-radius: 10px;
   background: transparent;
-  color: #ffffff;
+  color: #111827;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-icon-button:hover,
 .zelify-topbar-wrapper--mdc .zelify-icon-button:active {
-  background: rgba(255, 255, 255, 0.08);
+  background: #f3f4f6;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-profile-trigger {
-  color: #ffffff;
+  color: #111827;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-profile-trigger__avatar,
 .zelify-topbar-wrapper--mdc .zelify-avatar {
   width: 28px;
   height: 28px;
-  background: #f3f4f6;
-  border-color: #f3f4f6;
-  color: #271a59;
+  background: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #111827;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-profile-trigger__meta strong {
-  color: #ffffff;
+  color: #111827;
   font-weight: 600;
 }
 
@@ -1210,45 +1190,76 @@
 .zelify-topbar-wrapper--mdc .zelify-lang-dropdown__trigger:hover,
 .zelify-topbar-wrapper--mdc .zelify-lang-dropdown__trigger.is-open {
   height: 36px;
-  border: 1px solid #ffffff;
-  border-radius: 8px;
-  background: transparent;
-  color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111827;
   font-weight: 600;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-lang-dropdown--compact .zelify-lang-dropdown__trigger {
-  min-width: 68px;
+  min-width: 58px;
   padding: 0 10px;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-lang-dropdown__chevron {
   opacity: 1;
+  color: #6b7280;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-context-selector {
-  min-width: 220px;
+  min-width: 0;
   height: 36px;
-  padding: 0 18px;
+  padding: 0 12px 0 14px;
   justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  border-radius: 8px;
-  background: transparent;
-  color: #ffffff;
-  font-size: 12px;
+  gap: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4b5563;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-context-selector:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: #ffffff;
+  background: #f9fafb;
+  border-color: #d1d5db;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-context-selector svg {
-  color: #ffffff;
+  color: #6b7280;
 }
 
 .zelify-topbar-wrapper--mdc .zelify-topbar__brand-name {
-  color: #ffffff;
+  color: #111827;
+}
+
+.zelify-topbar-wrapper--mdc .zelify-dropdown-menu,
+.zelify-topbar-wrapper--mdc .zelify-topbar-search-results {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 32px rgba(17, 24, 39, 0.1);
+}
+
+.zelify-topbar-wrapper--mdc .zelify-dropdown-menu__item,
+.zelify-topbar-wrapper--mdc .zelify-topbar-search-results__item {
+  color: #111827;
+}
+
+.zelify-topbar-wrapper--mdc .zelify-dropdown-menu__item:hover,
+.zelify-topbar-wrapper--mdc .zelify-topbar-search-results__item:hover {
+  background: #f3f4f6;
+}
+
+.zelify-topbar-wrapper--mdc .zelify-topbar-search-results__group {
+  color: #9ca3af;
+}
+
+.zelify-topbar-wrapper--mdc .zelify-topbar-search-results__label {
+  color: #111827;
+}
+
+.zelify-topbar-wrapper--mdc .zelify-topbar-hamburger {
+  color: #111827;
 }
