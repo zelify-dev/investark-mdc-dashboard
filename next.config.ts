@@ -6,7 +6,9 @@ import type { NextConfig } from "next";
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Vercel + Next 16.3 + standalone falla en onBuildComplete (falta next-server.js.nft.json).
+  // En Docker/self-host se mantiene standalone; en Vercel usa el output nativo de la plataforma.
+  output: process.env.VERCEL ? undefined : "standalone",
   images: {
     remotePatterns: [
       {
