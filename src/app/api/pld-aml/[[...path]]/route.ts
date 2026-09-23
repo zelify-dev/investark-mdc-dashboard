@@ -12,12 +12,6 @@ function upstreamUrl(request: NextRequest, path: string[] | undefined): string {
   const pathname = `/${(path ?? []).join("/")}`.replace(/\/+/g, "/");
   const search = new URLSearchParams(request.nextUrl.searchParams);
 
-  // /logs/export obtiene el tenant desde x-org-id. Las versiones anteriores
-  // enviaban estos valores como query params y el upstream los rechaza.
-  if (pathname === "/logs/export") {
-    search.delete("type");
-    search.delete("organization_id");
-  }
 
   const query = search.toString();
   return `${base}${pathname === "/" ? "/" : pathname}${query ? `?${query}` : ""}`;

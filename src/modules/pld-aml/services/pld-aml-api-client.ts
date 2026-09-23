@@ -8,7 +8,7 @@ export function getAmlUpstreamBaseUrl(): string {
   const value =
     typeof raw === "string" && raw.trim() !== ""
       ? raw
-      : "https://tulana.aethereun.com/api/pld-aml";
+      : "https://2janbqxjt2.us-east-1.awsapprunner.com";
   return value.trim().replace(/\/$/, "");
 }
 
