@@ -496,7 +496,7 @@ export function exportLogs(organizationId = getStoredOrganization()?.id) {
   }
 
   return amlBlob("/logs/export", {
-    method: "POST",
+    method: "GET",
     headers: {
       Accept: "text/plain",
       "x-org-id": orgId,
