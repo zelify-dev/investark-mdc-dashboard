@@ -7,11 +7,10 @@ import { AmlBanner, AmlField } from "@/modules/pld-aml/components/pld-aml-ui";
 import { PldAmlApiError, asList, triggerDownload } from "@/modules/pld-aml/services/pld-aml-api-client";
 import {
   asInternalListEntries,
-  downloadRegulatoryBatch,
   exportLogs,
   fetchInternalLists,
   fetchScreenings,
-  generateRegulatoryBatch,
+  generateRegulatorySiti,
 } from "@/modules/pld-aml/services/pld-aml.service";
 
 function errorMessage(error: unknown) {
@@ -31,6 +30,14 @@ function toCsv(headers: string[], rows: Array<Array<string | number | null | und
 
 function downloadCsv(filename: string, csv: string) {
   triggerDownload(new Blob([csv], { type: "text/csv;charset=utf-8" }), filename);
+}
+
+function toRegulatoryPeriod(value: string) {
+  const normalized = value.trim().replace(/^(\d{4})-(\d{2})$/, "$1$2");
+  if (!/^\d{6}$/.test(normalized)) {
+    throw new Error("El periodo debe tener el formato YYYYMM, por ejemplo 202609.");
+  }
+  return normalized;
 }
 
 export function PldAmlExportPanel() {
@@ -56,16 +63,9 @@ export function PldAmlExportPanel() {
   });
   const batchMutation = useMutation({
     mutationFn: async () => {
-      const created = await generateRegulatoryBatch({
-        report_type: "RELEVANTE",
-        period,
-        reporting_entity_key: entityKey.trim(),
-      });
-      const record = created && typeof created === "object" ? (created as Record<string, unknown>) : {};
-      const id = String(record.id || record.batch_id || record.batchId || "");
-      if (!id) throw new Error("El lote se generó pero no devolvió un identificador para descargar.");
-      const blob = await downloadRegulatoryBatch(id, "CSV");
-      triggerDownload(blob, `informe-pld-${period}.csv`);
+      const regulatoryPeriod = toRegulatoryPeriod(period);
+      const blob = await generateRegulatorySiti(regulatoryPeriod, entityKey.trim());
+      triggerDownload(blob, `informe-siti-${regulatoryPeriod}.txt`);
     },
   });
 
@@ -138,7 +138,7 @@ export function PldAmlExportPanel() {
         <h3>Informe regulatorio</h3>
         <div className="pld-form">
           <AmlField label="Periodo">
-            <input value={period} onChange={(event) => setPeriod(event.target.value)} placeholder="2026-Q1 o 2026-09" />
+            <input value={period} onChange={(event) => setPeriod(event.target.value)} placeholder="202609 o 2026-09" />
           </AmlField>
           <AmlField label="Clave de la entidad">
             <input value={entityKey} onChange={(event) => setEntityKey(event.target.value)} placeholder="Clave SITI" />
