@@ -25,7 +25,6 @@ import type {
   CreateRelevantOperationPayload,
   CreateUnusualOperationPayload,
   ExecuteEbrEvaluationPayload,
-  GenerateRegulatoryBatchPayload,
   HealthResponse,
   OrganizationValidationConfig,
   OrganizationValidationConfigPayload,
@@ -645,8 +644,14 @@ export function createInternalConcerningOperation(payload: CreateInternalConcern
   return amlRequest<unknown>("/reports/regulatory/internal-concerning", json(payload));
 }
 
-export function generateRegulatoryBatch(payload: GenerateRegulatoryBatchPayload) {
-  return amlRequest<unknown>("/reports/regulatory/generate-batch", json(payload));
+export function generateRegulatorySiti(period: string, entityKey: string) {
+  const orgId = getStoredOrganization()?.id?.trim();
+  if (!orgId) throw new Error("No hay una organización activa para generar el informe regulatorio.");
+
+  return amlBlob(
+    `/reports/regulatory/siti/generate${toQuery({ period, clave_entidad: entityKey })}`,
+    { method: "POST", headers: { "x-org-id": orgId } },
+  );
 }
 
 export function downloadRegulatoryBatch(id: string, format?: "XML" | "CSV" | "JSON") {
